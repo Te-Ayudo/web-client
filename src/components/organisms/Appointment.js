@@ -169,6 +169,7 @@ export const Appointment = () => {
           dateFormat="Pp"
           showTimeSelect
           className=" rounded-2xl  border  w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary "
+          withPortal
         />
 
         </div>

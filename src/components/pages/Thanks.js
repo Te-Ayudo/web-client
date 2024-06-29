@@ -1,12 +1,23 @@
 import Button from "../atoms/Button"
 import { useNavigate } from 'react-router-dom';
 
+
+import logoapple from '../../assets/apple.svg';
+import logogoogle from '../../assets/google-play.svg';
+
 export const Thanks = () => {
 
 
   const navigate = useNavigate();
   const onInicio = () => {
     navigate('/');
+  }
+
+  const onApple = () => {
+    console.log('apple');
+  }
+  const onGoogle = () => {
+    console.log('google');
   }
 
   return (
@@ -39,8 +50,35 @@ export const Thanks = () => {
 
   </span>
 
+
   <div className="p-4 absolute inset-x-0 bottom-0 flex items-center justify-center bg-white text-primary shadow-lg rounded-lg  " >
-      <div className=" flex justify-between items-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent mb-5 " >
+
+  <div className="flex flex-col items-center justify-center" >
+
+    <div className=" w-full bg-white flex flex-col space-y-1 p-3 " >
+        <Button bg='white' tc='orange' className=' border-orange-500 border-2 ' onClick={onInicio} > Volver al Inicio </Button>
+    </div>
+    <div className=" w-full bg-white flex flex-col space-y-1 p-3 " >
+        <Button> Chatea con nosotros </Button>
+    </div>
+    <div className=" w-full bg-white flex space-y-2 p-3 items-center justify-center " >
+
+        <div className='flex justify-center cursor-pointer' >
+        Descarga la app
+        </div>
+        <a href="http://onelink.to/teayudo" className='flex justify-center cursor-pointer ml-2' >
+          <img src={logoapple}  />
+        </a>
+        <a href="http://onelink.to/teayudo" className='flex justify-center cursor-pointer ml-2' >
+          <img src={logogoogle}  />
+        </a>
+
+    </div>
+
+  </div>
+
+
+      {/* <div className=" flex justify-between items-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent mb-5 " >
         <div className=" w-full bg-white flex flex-col space-y-2 p-3 " >
 
         <Button onClick={onInicio} > Volver al Inicio </Button>
@@ -51,9 +89,7 @@ export const Thanks = () => {
 
         <Button> Chatea con nosotros </Button>
         </div>
-      </div>
-
-
+      </div> */}
 
   </div>
 

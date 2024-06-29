@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import Button from "./Button"
 import { Lista } from "./Lista"
 
@@ -5,6 +6,7 @@ const Item = (props) => {
   const  servicios  = !!(props.servicios)? props.servicios :false ;
   const categorias = !!props.categoria? props.categoria: null ;
 
+  const search = useSelector( state => state.servicios.search );
 
   return (
     < >
@@ -38,6 +40,20 @@ const Item = (props) => {
         </div>
         <ul>
           {
+            (search.length > 0)
+            ?
+            (
+              search.map(
+                dato =>{
+                  return <li key={dato._id} >
+                    <Lista servicio={ dato } />
+                  </li>
+                }
+              )
+
+            )
+            :
+            (
             (servicios)?
               servicios.map(
                 servicio =>{
@@ -47,7 +63,7 @@ const Item = (props) => {
                 }
               )
               : ''
-
+            )
           }
         </ul>
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from 'react-modal'
 import Button from './atoms/Button';
 import { useDispatch } from 'react-redux';
@@ -19,7 +19,7 @@ const customStyles = {
 
 Modal.setAppElement('#root');
 
-export const ServModal = ({_id, name,unitPrice,description,imageURL='',unitEstimatedWorkMinutes,isOpen=false }) => {
+export const ServModal = ({_id, name,unitPrice,description='',imageURL='',unitEstimatedWorkMinutes,isOpen=false }) => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -29,6 +29,7 @@ export const ServModal = ({_id, name,unitPrice,description,imageURL='',unitEstim
     setCant(1);
     dispatch(setNotActiveModal());
   }
+
   const onIncrement = () => {
     const newvalor = cant + 1;
     if(newvalor < 1) return;
@@ -83,7 +84,7 @@ export const ServModal = ({_id, name,unitPrice,description,imageURL='',unitEstim
                 {" "}
                 <strong>{name}</strong>{" "}
               </div>
-              <div className="text-slate-500">{ !!description?description.substring(0,50)+'...':''}</div>
+              <div className="text-slate-500">{  (description.length>90)? (description.substring(0, 90)+'...') : ( description ) }</div>
               <div className="text-slate-500">
                 <span>Desde</span> <strong> Bs. {unitPrice} </strong>
               </div>

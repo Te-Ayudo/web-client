@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setActiveModal, setActiveService } from '../../store/servicios';
@@ -8,10 +8,20 @@ import useServiceCartRf from '../../hooks/useServiceCartRf';
 export const Lista = ({servicio,showallicon=false,quantity=0,orden=''}) => {
   // const [cantidad, setCantidad] = useState(cant);
   const { changeQuantity } = useServiceCartRf();
-  const { _id,imageURL,unitPrice,name,description } = servicio;
+  const { _id,imageURL,unitPrice,name,description="" } = servicio;
   const showicon = showallicon ?'':'hidden';
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [textLonger, setTextLonger] = useState(description)
+  useEffect(() => {
+    if(description.length>40){
+      setTextLonger( description.substring(0, 40)+'...' );
+    }
+  }, [])
+
+
+
 
 
   const onAddCart = () => {
@@ -39,7 +49,7 @@ export const Lista = ({servicio,showallicon=false,quantity=0,orden=''}) => {
             )
           }
          <div className="text-slate-500">
-            {!!description ? description.substring(0, 85) : ""}
+            { textLonger }
           </div>
           <div className="text-slate-500">
             <span>Desde</span> <strong> Bs. {unitPrice} </strong>

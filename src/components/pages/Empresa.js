@@ -21,6 +21,7 @@ export const Empresa = (props) => {
   const booking = useSelector((state) => state.booking.selected);
   const provider = useSelector((state) => state.proveedor.selected);
   //const service = useSelector((state) => state.servicios.selected);
+  const search = useSelector( state => state.servicios.search );
   const [groupedServices, setGroupedServices] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -180,7 +181,7 @@ export const Empresa = (props) => {
                           <h2 className='text-primary font-[600] mb-5 ' >
                           Recomendado
                           </h2>
-                        <div className="flex justify-center items-start " >
+                        <div className="flex  items-start " >
                           {servicesAvailableByBranch(provider.recommendedServices)[0] && (
                             <>
                     <div className="grid grid-flow-row-dense grid-cols-3">
@@ -231,7 +232,22 @@ export const Empresa = (props) => {
           <div className="col-span-full">
             <div className="mb-3 sm:mb-6">
               <ul>
-                {services
+                {
+             (search.length > 0)
+            ?
+            (
+              search.map(
+                dato =>{
+                  return <li key={dato._id} >
+                    <Lista servicio={ dato } />
+                  </li>
+                }
+              )
+
+            )
+            :
+            (
+                services
                   && services.map((servicio) => {
                       return (
                         <li key={servicio.id}>
@@ -239,6 +255,9 @@ export const Empresa = (props) => {
                         </li>
                       );
                     })
+            )
+
+
                   }
               </ul>
             </div>

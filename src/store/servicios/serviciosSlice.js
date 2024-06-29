@@ -7,12 +7,25 @@ export const serviciosSlice = createSlice({
     isOpenModal:false,
     messageSaved: '',
     services:[],
+    search: [],
     active: null,
 //      {
 //        _id,name,imageURL,description,unitPrice
 //      }
   },
   reducers: {
+    updateListService: ( state, action ) => {
+      state.isSaving = false;
+
+       state.search = state.services.filter(dato =>dato.name.includes(action.payload)  );
+
+      state.messageSaved = `${ action.payload }, actualizada correctamente`;
+
+    },
+    setEmptySearch: ( state ) => {
+      state.isSaving =false;
+      state.search = []
+    },
     savingNewService: ( state ) => {
         state.isSaving = true;
     },
@@ -39,4 +52,4 @@ export const serviciosSlice = createSlice({
 
 
 // Action creators are generated for each case reducer function
-export const { savingNewService,addNewEmptyService,setActiveService,setServices,setActiveModal,setNotActiveModal } = serviciosSlice.actions;
+export const { setEmptySearch, updateListService, savingNewService,addNewEmptyService,setActiveService,setServices,setActiveModal,setNotActiveModal } = serviciosSlice.actions;
