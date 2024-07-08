@@ -181,17 +181,15 @@ export const Empresa = (props) => {
                           <h2 className='text-primary font-[600] mb-5 ' >
                           Recomendado
                           </h2>
-                        <div className="flex  items-start " >
+                        <div className="flex flex-row  items-start " >
                           {servicesAvailableByBranch(provider.recommendedServices)[0] && (
                             <>
-                    <div className="grid grid-flow-row-dense grid-cols-3">
+                    <div className="flex flex-col w-1/3 h-fit mr-5">
                       <div className="col-span-full">
                           <img
                             src={ servicesAvailableByBranch(provider.recommendedServices)[0].imageURL }
                             alt=""
-                            width="120"
-                            height="120"
-                            className="flex-none rounded-md bg-slate-100 mr-5 bg-slate-500"
+                            className=" w-24 h-24 md:w-32 md:h-32 lg:w-32 lg:h-32 object-cover rounded-md "
                           />
                       </div>
                       <div className="col-span-full">
@@ -204,14 +202,12 @@ export const Empresa = (props) => {
 
                           {servicesAvailableByBranch(provider.recommendedServices)[1] && (
                             <>
-                    <div className="grid grid-flow-row-dense grid-cols-3">
+                    <div className="flex flex-col w-1/3 h-fit">
                       <div className="col-span-full">
                           <img
                             src={ servicesAvailableByBranch(provider.recommendedServices)[1].imageURL }
                             alt=""
-                            width="120"
-                            height="120"
-                            className="flex-none rounded-md bg-slate-100 mr-5 bg-slate-500"
+                            className=" w-24 h-24 md:w-32 md:h-32 lg:w-32 lg:h-32 object-cover rounded-md "
                           />
                       </div>
                       <div className="col-span-full">

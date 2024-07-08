@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 
-import { BOOKING_CUSTOMER_FULLNAME, BOOKING_CUSTOMER_PHONE, BOOKING_PAGO, BOOKING_SET, BOOKING_SET_COUPON } from '../../store';
+import { BOOKING_CUSTOMER_FULLNAME, BOOKING_CUSTOMER_PHONE, BOOKING_PAGO, BOOKING_SET, BOOKING_SET_COUPON, setActiveModalAddress } from '../../store';
 import Input from '../atoms/Input'
 import Button from '../atoms/Button'
 import TextArea from '../atoms/TextArea'
@@ -51,7 +51,7 @@ export const Appointment = () => {
   const [formValues, setFormValues] = useState({
     name: 'frank Callapa',
     telefono: '',
-    start: addDays(new Date(),1), //new Date(),
+    start: addDays(new Date().setHours(0,0,0,0),1), //new Date(),
     empleado: '',
     descuento: '',
     metodopago: ''
@@ -125,7 +125,11 @@ export const Appointment = () => {
   }
 
   const navigate = useNavigate();
-
+  const onAddress = () => {
+    console.log('guardar direccion');
+    dispatch( setActiveModalAddress() );
+    // navigate('/ubicacion');
+  }
   return (
     <>
   <div className="col-span-full">
@@ -239,6 +243,7 @@ export const Appointment = () => {
   !booking.isInBranch && (
     <div className="col-span-full">
       <div className="mb-3 sm:mb-6 text-left">
+
         <h2 className='text-primary font-[600] ' >
         Direccion (seleccionar direccion)
         </h2>
@@ -266,6 +271,11 @@ export const Appointment = () => {
           )
 
         }
+      </div>
+      <div className="mb-3 sm:mb-6">
+        <h2 onClick={ onAddress } className='text-primary font-[600] text-right cursor-pointer' >
+        Añadir nueva dirección
+        </h2>
       </div>
     </div>
 

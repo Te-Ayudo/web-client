@@ -1,13 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import GoogleMapReact from "google-map-react";
 import "./map.css";
-import { Icon } from "@iconify/react";
-import locationIcon from "@iconify/icons-mdi/map-marker";
-import AutoComplete from "./Buscardor";
-// import Marker from "./Marker";
 
 import GoogleMap from 'google-maps-react-markers'
-import { APIProvider,Map,AdvancedMarker,Pin,InfoWindow,Marker } from "@vis.gl/react-google-maps";
+import { APIProvider,Map,Marker } from "@vis.gl/react-google-maps";
 
 //import Autocomplete from "react-google-autocomplete";
 
@@ -18,6 +13,11 @@ const Maps = ({ address="santa cruz, Bolivia, Av. cumavi", lat="-17.7917873", ln
   useEffect(() => {
     setLocation({address,lat,lng})
   }, [lat,lng])
+
+  useEffect(() => {
+    console.log(address,lat,lng);
+  }, [])
+
 
   const divStyle = {
     height: altura ? '20vh' : '60vh',

@@ -10,6 +10,7 @@ export const useCreateBookingScreen = () => {
 
 	const provider = useSelector((state) => state.proveedor.selected)
 	const booking = useSelector((state) => state.booking.selected)
+	const {success} = useSelector((state) => state.booking)
   const dispatch = useDispatch()
 	//const navigation = useNavigation()
 	const [valueFact, setValueFact] = useState({ razonSocial: '', nit: '' })
@@ -236,6 +237,10 @@ export const useCreateBookingScreen = () => {
 		//getAvailability()
 		getAddresses()
 	}, [])
+	useEffect(() => {
+		//getAvailability()
+		getAddresses();
+	}, [success])
 
 	const onValueCh = (value) => {
 		if (!value) {

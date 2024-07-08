@@ -55,17 +55,15 @@ export const Lista = ({servicio,showallicon=false,quantity=0,orden=''}) => {
             <span>Desde</span> <strong> Bs. {unitPrice} </strong>
           </div>
         </div>
-        <div>
+        <div className='flex flex-col w-1/3 h-fit items-end' >
 
           {
             showallicon ? (
               <>
                 <img
                   src={imageURL}
-                  alt=""
-                  width="70"
-                  height="70"
-                  className="flex-none rounded-md bg-slate-100"
+                  alt="test"
+                className=" w-24 h-24 md:w-32 md:h-32 lg:w-32 lg:h-32 object-cover rounded-md "
                 />
               </>
             )
@@ -73,10 +71,8 @@ export const Lista = ({servicio,showallicon=false,quantity=0,orden=''}) => {
               <>
                 <img onClick={ onAddCart }
                 src={imageURL}
-                alt=""
-                width="70"
-                height="70"
-                className="flex-none rounded-md bg-slate-100 cursor-pointer "
+                alt={'producto'}
+                className=" w-24 h-24 md:w-32 md:h-32 lg:w-32 lg:h-32 object-cover rounded-lg"
                 />
               </>
             )

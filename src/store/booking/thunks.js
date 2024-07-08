@@ -1,6 +1,7 @@
 import _fetch from "../../wrappers/_fetch";
-import { BOOKING_CLEAR, BOOKING_COUPON_FAILURE, BOOKING_COUPON_SUCCESS, BOOKING_CREATE_REQUEST } from "./bookingSlice";
+import { BOOKING_CLEAR, BOOKING_COUPON_FAILURE, BOOKING_COUPON_SUCCESS, BOOKING_CREATE_REQUEST, BOOKING_SET_ERROR, BOOKING_SET_SUCESS } from "./bookingSlice";
 import Swal from "sweetalert2";
+import { registerApi } from "./helpers/registerApi";
 
 function handleResponse(response) {
   return response.text().then((text) => {
@@ -65,6 +66,37 @@ export const startVerifyCoupon = (booking) => {
 
       }
     );
+
+  }
+}
+
+export const startCreateAddress = (nombre,coord) => {
+console.log(nombre,coord);
+  return async(dispatch) => {
+
+		let user = JSON.parse(await localStorage.getItem('user'))
+    let	idUser = user._id
+    // console.log('guardar direccion');
+    const myResp = await registerApi(nombre,coord,idUser)
+
+    if (myResp['error']) {
+				return setTimeout(
+					function () {
+						//Alert.alert(myResp['error'])
+            console.log(myResp['error']);
+            dispatch(BOOKING_SET_ERROR(myResp['error']))
+					}.bind(this),
+					150
+				)
+			} else {
+        await localStorage.setItem("user", JSON.stringify(myResp.data));
+				return setTimeout(
+					function () {
+            dispatch(BOOKING_SET_SUCESS( 'Dirección registrada con éxito.' ));
+					}.bind(this),
+					150
+				)
+			}
 
   }
 }
