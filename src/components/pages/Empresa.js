@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { startListProveedores, startListServiciosbyProvider } from "../../store";
 import { DistanceDisplay } from "../../api/DistanceDisplay";
+import { useParams } from "react-router-dom";
 
 export const Empresa = (props) => {
 
@@ -25,14 +26,14 @@ export const Empresa = (props) => {
   const [groupedServices, setGroupedServices] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const params = useParams();
 
   const [ubicacion, setUbicacion] = useState({});
 
   useEffect(() => {
-
     //dispatch(startListServiciosbyProvider(booking.provider._id));
 
-    dispatch( startListProveedores() );
+    dispatch( startListProveedores(params.slug) );
     const position = {
       'latitude': JSON.parse(localStorage.getItem('latitude')),
       'longitude': JSON.parse(localStorage.getItem('longitude'))

@@ -5,7 +5,6 @@ import { startListServicios } from "../store/servicios";
 import { provider_set, startListCategoria, startListProveedores } from "../store";
 
 
-
 export const useCheckAuthToken = () => {
  var options = {
     enableHighAccuracy: true,
@@ -66,7 +65,6 @@ export const useCheckAuthToken = () => {
   // }, [items,selected]);
 
   useEffect(() => {
-
      const token = localStorage.getItem("authToken");
      if (!token) {
        dispatch(logout());
@@ -74,7 +72,8 @@ export const useCheckAuthToken = () => {
      }
 
     dispatch( startListCategoria() );
-    dispatch( startListProveedores() );
+    const currentSlug = window.location.pathname.split('/')[1];
+    dispatch( startListProveedores(currentSlug) );
     // const items = JSON.parse(localStorage.getItem('carrito'));
     // if (items) {
     // setItems(items);
@@ -97,8 +96,11 @@ export const useCheckAuthToken = () => {
   useEffect(() => {
   /* loading proveedores y servicios */
 
-      const idProveedor = process.env.REACT_APP_ID_PROVIDER_EXAMPLE;
-      const myProvider=providerList.filter((e) => e._id === idProveedor)[0]
+      const currentSlug = window.location.pathname.split('/')[1];
+      const myProvider=providerList.filter((e) => e.slugUrl === currentSlug)[0]
+      if (!myProvider) {
+        return;
+      }
       dispatch( provider_set(myProvider));
       dispatch( startListServicios(providerSelect) );
 

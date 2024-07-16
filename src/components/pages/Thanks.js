@@ -11,7 +11,8 @@ export const Thanks = () => {
 
   const navigate = useNavigate();
   const onInicio = () => {
-    navigate('/');
+    const currentSlug = window.location.pathname.split('/')[1];
+    navigate(`/${currentSlug}`);
   }
 
   const onApple = () => {

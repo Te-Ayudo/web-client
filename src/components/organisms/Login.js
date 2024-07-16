@@ -61,13 +61,15 @@ export const Login = () => {
 
 
   const onInicio = () => {
-    navigate('/')
+    const currentSlug = window.location.pathname.split('/')[1];
+    navigate(`/${currentSlug}`);
   }
   const onServicios = () => {
+    const currentSlug = window.location.pathname.split('/')[1];
     if(selected.isInBranch){
-      navigate('/sucursales')
+      navigate(`/${currentSlug}/sucursales`);
     }else{
-      navigate('/servicios')
+      navigate(`/${currentSlug}/servicios`);
     }
   }
 
@@ -82,6 +84,8 @@ export const Login = () => {
     dispatch( startListServicios() );
     dispatch(startLoginWithEmailPassword({email,password,role},onServicios));
   }
+
+  const currentSlug = window.location.pathname.split('/')[1];
 
   return (
 <>
@@ -137,7 +141,7 @@ export const Login = () => {
     <div className="col-span-full">
       <div className="mb-3 sm:mb-6">
         <Button
-          href={"/registrarse"}
+            href = {`/${currentSlug}/registrarse`}
           bg="btn-transparent w-[250px] sm:w-[270px] mx-auto"
           tc="text-secondary hover:text-white "
           className="sm:h-[48px] !text-[14px] bordered">

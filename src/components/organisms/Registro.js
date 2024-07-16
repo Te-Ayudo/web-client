@@ -40,7 +40,8 @@ export const Registro = () => {
   } = useForm(formData,formValidations);
 
   const onConfirmation = () => {
-    navigate('/confirmacion')
+    const currentSlug = window.location.pathname.split('/')[1];
+    navigate(`/${currentSlug}/confirmacion`);
   }
 
   const onSubmit = ( event ) => {

@@ -8,14 +8,16 @@ import { ServModal } from "../ServModal";
 
 import { startListProveedores } from '../../store';
 import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 const Servicios = (props) => {
 
 
   const dispatch = useDispatch();
+  const params = useParams();
 
   useEffect(() => {
-    dispatch( startListProveedores() );
+    dispatch( startListProveedores(params.slug) );
   }, [])
 
   const { services,isOpenModal,active } = useSelector( state => state.servicios );

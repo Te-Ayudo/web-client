@@ -7,7 +7,8 @@ const Logo = ({className}) => {
 
   const onClick = () => {
     console.log('cabecera');
-    navigate('/');
+    const currentSlug = window.location.pathname.split('/')[1];
+    navigate(`/${currentSlug}`);
 
   }
 

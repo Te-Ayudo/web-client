@@ -66,13 +66,18 @@ export const Service = () => {
   const onServicioDomicilio = (event) => {
     event.preventDefault();
     dispatch( BOOKING_NOTISINBRANCH() );
-    status === 'authenticated' ? navigate('/servicios'):navigate('login')
+    const currentSlug = window.location.pathname.split('/')[1];
+    
+    status === 'authenticated' ? navigate(`/${currentSlug}/servicios`):navigate(`/${currentSlug}/login`);
   }
 
   const onServicioLocal = (event) => {    event.preventDefault();
     dispatch( BOOKING_ISINBRANCH() );
-    status === 'authenticated' ? navigate('/sucursales'):navigate('login')
+    const currentSlug = window.location.pathname.split('/')[1];
+    status === 'authenticated' ? navigate(`/${currentSlug}/sucursales`):navigate(`/${currentSlug}/login`);
   }
+
+  const currentSlug = window.location.pathname.split('/')[1];
 
   return (
     <div className="text-center" >
@@ -84,7 +89,7 @@ export const Service = () => {
           <Button
             bg="btn-transparent"
             tc="text-secondary hover:text-white"
-            href = "/login"
+            href = {`/${currentSlug}/login`}
             onClick={ onServicioDomicilio }
             className="sm:h-[80px] lg-text-[26px] sm bordered">
             Servicio a domicilio
@@ -110,7 +115,7 @@ export const Service = () => {
           <Button
             bg="btn-transparent"
             tc="text-secondary hover:text-white"
-            href = "/login"
+            href = {`/${currentSlug}/login`}
             onClick={ onServicioLocal }
             className="sm:h-[80px] lg-text-[26px] bordered">
             Servicio en el local

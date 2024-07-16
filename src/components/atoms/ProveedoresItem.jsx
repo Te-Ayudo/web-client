@@ -17,8 +17,8 @@ export const ProveedoresItem = (item) => {
     dispatch( BOOKING_SET_PROVIDER(item) );
     if(selected?.isInBranch){
       dispatch( startListSucursales( {providerId:item._id} ) );
-
-      navigate('/sucursales')
+      const currentSlug = window.location.pathname.split('/')[1];
+      navigate(`/${currentSlug}/sucursales`);
     }
   }
 

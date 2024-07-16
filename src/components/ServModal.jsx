@@ -61,7 +61,8 @@ export const ServModal = ({_id, name,unitPrice,description='',imageURL='',unitEs
      ));
 
     dispatch(setNotActiveModal());
-    navigate('/carrito');
+    const currentSlug = window.location.pathname.split('/')[1];
+    navigate(`/${currentSlug}/carrito`);
 
   }
 

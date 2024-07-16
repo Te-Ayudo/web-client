@@ -259,7 +259,8 @@ export const useCreateBookingScreen = () => {
 
   const navigate = useNavigate();
 	const onConfirmation = () => {
-    navigate('/gracias')
+		const currentSlug = window.location.pathname.split('/')[1];
+		navigate(`/${currentSlug}/gracias`);
   }
 
 

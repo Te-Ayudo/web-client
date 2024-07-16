@@ -47,7 +47,8 @@ export const Navbar = ({onClick}) => {
     event.preventDefault();
     dispatch( startLogout());
     googleLogout();
-    navigate('/');
+    const currentSlug = window.location.pathname.split('/')[1];
+    navigate(`/${currentSlug}`);
   }
 
 
@@ -57,6 +58,7 @@ export const Navbar = ({onClick}) => {
     // navigate('/carrito');
   };
 
+  const currentSlug = window.location.pathname.split('/')[1];
 
   return (
   <nav className="flex justify-center sm:justify-between flex-col sm:flex-row w-full pt-6">
@@ -87,14 +89,14 @@ export const Navbar = ({onClick}) => {
     <div className="text-center sm:text-right md:text-right">
       <Button
         className = {`font-bold px-0 sm:pr-0 ${ isCheckingAuthentication?"hidden":"" } `}
-        href = "/login"
+        href = {`/${currentSlug}/login`}
         onClick = {onClick}
         decoration={<BiUser size="2rem" className="text-primary" />}>
         Iniciar Sesión
       </Button>
       <Button
         className = {`font-bold px-0 sm:pr-0 ${ !isCheckingAuthentication?"hidden":"" } `}
-        href = "/logout"
+        href = {`/${currentSlug}/logout`}
         onClick = {onLogout}
         decoration={<BiUser size="2rem" className="text-primary" />}>
         Cerrar Sesión

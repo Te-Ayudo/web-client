@@ -29,7 +29,8 @@ export const SucursalesItem = (item) => {
   const onSelect = (item) => {
     console.log(item);
     dispatch( BOOKING_SET_BRANCH(item) );
-    navigate('/empresa');
+    const currentSlug = window.location.pathname.split('/')[1];
+    navigate(`/${currentSlug}/empresa`);
   }
 
   return (

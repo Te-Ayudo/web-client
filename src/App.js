@@ -27,19 +27,19 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/registrarse" element={<Registrarse />} />
-        <Route path="/servicios" element={<Servicios />} />
-        <Route path="/programar" element={<ServiceAppointment />} />
-        <Route path="/gracias" element={<Thanks />} />
-        <Route path="/ubicacion" element={<RegistrarUbicacion />} />
+        <Route path="/:slug" element={<Home />} />
+        <Route path="/:slug/login" element={<Login />} />
+        <Route path="/:slug/registrarse" element={<Registrarse />} />
+        <Route path="/:slug/servicios" element={<Servicios />} />
+        <Route path="/:slug/programar" element={<ServiceAppointment />} />
+        <Route path="/:slug/gracias" element={<Thanks />} />
+        <Route path="/:slug/ubicacion" element={<RegistrarUbicacion />} />
         <Route path="*" element={<NotFound />} />
-        <Route path="/carrito" element={<Cart />} />
-        <Route path="/empresa" element={<Empresa />} />
-        <Route path="/proveedores" element={<ProveedoresPage />} />
-        <Route path="/sucursales" element={<SucursalesPage />} />
-        <Route path="/confirmacion" element={<ConfirmacionPage />} />
+        <Route path="/:slug/carrito" element={<Cart />} />
+        <Route path="/:slug/empresa" element={<Empresa />} />
+        <Route path="/:slug/proveedores" element={<ProveedoresPage />} />
+        <Route path="/:slug/sucursales" element={<SucursalesPage />} />
+        <Route path="/:slug/confirmacion" element={<ConfirmacionPage />} />
       </Routes>
     </BrowserRouter>
   );

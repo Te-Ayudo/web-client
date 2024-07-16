@@ -6,9 +6,11 @@ const Footer = ( { titulo="Ver Carrito",enlace="carrito" } ) =>  {
   const navigate = useNavigate();
 
   const onCarrito = () => {
+    const currentSlug = window.location.pathname.split('/')[1];
+
     enlace === 'carrito'
-    ?navigate( '/carrito' )
-    :navigate('/programar');
+    ?navigate(`/${currentSlug}/carrito`)
+    :navigate(`/${currentSlug}/programar`);
   }
   return (
 

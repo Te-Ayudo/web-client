@@ -18,11 +18,13 @@ export const Cart = () => {
   //   { id: 1, titulo: 'Servicio 1', precio: '80', image: 'https://placehold.co/200x200'} ]
 
   const onServicio = () => {
+    const currentSlug = window.location.pathname.split('/')[1];
+
     if(!!isInBranch){
-navigate('/empresa')
+      navigate(`/${currentSlug}/empresa`);
     }
     else{
-navigate('/servicios')
+      navigate(`/${currentSlug}/servicios`);
     }
   }
 

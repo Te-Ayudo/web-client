@@ -17,6 +17,8 @@ function Modal({children, isModalOpen, closeModal, showBack}) {
     return () => document.removeEventListener('click', checkClickOutside);
   });
 
+  const currentSlug = window.location.pathname.split('/')[1];
+
   return (
     <div ref={modalRef}
       className="news-modal-overlay topV"
@@ -26,7 +28,7 @@ function Modal({children, isModalOpen, closeModal, showBack}) {
         {showBack ? 
           <Button 
             className = "absolute left-18 top-0 w-[30px]" 
-            href = "/login" 
+            href = {`/${currentSlug}/login`} 
             onClick = {closeModal}
             decoration = {<BiChevronLeft size="3rem" className="text-primary !p-0" />}>
           </Button>
