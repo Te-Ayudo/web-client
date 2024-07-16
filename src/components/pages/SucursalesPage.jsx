@@ -12,13 +12,7 @@ import { startListProveedores } from '../../store';
 
 export const SucursalesPage = () => {
 
-  const {selected} = useSelector( state => state.booking );
   const branches = useSelector( state => state.branch.item );
-	const providers = useSelector((state) => state.proveedor.item)
-  const category = useSelector((state) => state.category.selected)
-
-  const [useCategoriesFilter, setuseCategoriesFilter] = useState(null)
-	const [filtered, setFiltered] = useState([])
 
   const dispatch = useDispatch();
 
@@ -29,7 +23,7 @@ export const SucursalesPage = () => {
     dispatch( startListProveedores() );
   }, [])
 
-  
+
   const onLogin = (  ) => {
     navigate('/login');
   }

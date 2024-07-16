@@ -4,21 +4,23 @@ import Input from "../atoms/Input";
 import { useForm } from "../../hooks/useForm";
 import { Alert, AlertS } from "../atoms/Alert";
 import { useDispatch, useSelector } from "react-redux";
-import { startCreateAddress } from "../../store";
+import { setNotActiveModalAddress, startCreateAddress } from "../../store";
 
-
-const DEFAULT_CENTER ={ lat:-17.7917873, lng:-63.1355414 };
+const DEFAULT_CENTER = { lat: -17.7917873, lng: -63.1355414 };
 const DEFAULT_ZOOM = 15;
 
 const formData = {
-  nombre: ''
-}
+  nombre: "",
+};
 
 const formValidations = {
-  nombre: [ (value) => value.length >= 4, 'El nombre debe tener mas de 4 letras.' ],
-}
+  nombre: [
+    (value) => value.length >= 4,
+    "El nombre debe tener mas de 4 letras.",
+  ],
+};
 
-export const GoogleMaps = ({locations,className}) => {
+export const GoogleMaps = ({ locations, className }) => {
   const ref = useRef(null);
 
   const dispatch = useDispatch();
@@ -30,20 +32,22 @@ export const GoogleMaps = ({locations,className}) => {
 
   const [showhelper, setShowhelper] = useState(false);
 
-  const {success,error} = useSelector( state => state.booking );
+  const { success, error } = useSelector((state) => state.booking);
 
-  const { formState,nombre,onInputChange,isFormValid,nombreValid } = useForm(formData,formValidations);
+  const { formState, nombre, onInputChange, isFormValid, nombreValid } =
+    useForm(formData, formValidations);
 
   useEffect(() => {
+    getUserLocationDefault();
+  }, []);
 
-    if(clicks.length === 0 && Object.entries(current).length === 0 ){
-     setShowhelper(true);
-    }else{
+  useEffect(() => {
+    if (clicks.length === 0 && Object.entries(current).length === 0) {
+      setShowhelper(true);
+    } else {
       setShowhelper(false);
     }
-
-  }, [clicks,current])
-
+  }, [clicks, current]);
 
   const onClick = (e) => {
     console.log(e.latLng);
@@ -53,30 +57,28 @@ export const GoogleMaps = ({locations,className}) => {
 
   const onSubmit = (event) => {
     setFormSubmitedd(true);
-    if(clicks.length === 0 && Object.entries(current).length === 0 ){
-      return ;
+    if (clicks.length === 0 && Object.entries(current).length === 0) {
+      return;
     }
-    if( !isFormValid ) return ;
+    if (!isFormValid) return;
     let coor;
-    if(clicks.length === 0 ){
-      coor=current;
-    }else{
-      clicks.map((latLng,i)=>{
+    if (clicks.length === 0) {
+      coor = current;
+    } else {
+      clicks.map((latLng, i) => {
         console.log(latLng.toJSON());
-        coor=latLng.toJSON();
-      })
+        coor = latLng.toJSON();
+      });
     }
 
-    dispatch(startCreateAddress(nombre,coor));
-
-
-
-  }
+    dispatch(startCreateAddress(nombre, coor));
+    setTimeout(() => {
+      dispatch(setNotActiveModalAddress());
+    }, 5000);
+  };
 
   const onIdle = (m) => {
     console.log("onIdle");
-    // setZoom(m.getZoom()!);
-    // setCenter(m.getCenter()!.toJSON());
   };
 
   const form = (
@@ -85,78 +87,105 @@ export const GoogleMaps = ({locations,className}) => {
         padding: "1rem",
         flexBasis: "250px",
         height: "100%",
-        overflow: "auto"
+        overflow: "auto",
       }}
     >
+      <span className={`text-red-700 ${showhelper ? "" : "hidden"} `}>
+        {" "}
+        {"Click en usar ubicacion actual o en el mapa "}{" "}
+      </span>
 
-      {/* <h3>{ (clicks.length === 0 && Object.entries(current).length === 0) ? "Click en usar ubicacion actual o en el mapa " : ""}</h3> */}
-
-      <span className= {`text-red-700 ${ showhelper ? "" : "hidden"  } `} > { "Click en usar ubicacion actual o en el mapa " } </span>
-
-      <div className="mb-1" >
+      <div className="mb-1">
         <Input
           type="text"
           label="Alias de la Ubicacion"
           name="nombre"
-          value={ nombre }
-          onChange={ onInputChange }
-          error={ !!nombreValid && formSubmitedd}
-          helperText={ nombreValid }
+          value={nombre}
+          onChange={onInputChange}
+          error={!!nombreValid && formSubmitedd}
+          helperText={nombreValid}
         />
-
       </div>
 
-      {/* {clicks.map((latLng, i) => (
-        <pre key={i}>{JSON.stringify(latLng.toJSON(), null, 2)}</pre>
-      ))} */}
-    <div className={`col-span-full ${!!error?'':'hidden'} `}  >
-      { <Alert mensaje={ error} /> }
-    </div>
-    <div className={`col-span-full ${!!success?'':'hidden'} `}  >
-      { <AlertS mensaje={ success} /> }
-    </div>
+      <div className={`col-span-full ${!!error ? "" : "hidden"} `}>
+        {<Alert mensaje={error} />}
+      </div>
+      <div className={`col-span-full ${!!success ? "" : "hidden"} `}>
+        {<AlertS mensaje={success} />}
+      </div>
 
-    {/* <div className={`col-span-full ${!!error?'':'hidden'} `}  >
+      {/* <div className={`col-span-full ${!!error?'':'hidden'} `}  >
       <Alert mensaje={error} />
     </div> */}
 
-      <div className="flex items-center justify-center" >
+      <div className="flex items-center justify-center">
         <button
           className="btn-base text-[12px] sm:text-[15px] lg:text-[20px] bg-primary text-white"
-          onClick={() => onSubmit()}>Guardar Ubicación</button>
+          onClick={() => onSubmit()}
+        >
+          Guardar Ubicación
+        </button>
       </div>
     </div>
   );
 
-  const getUserLocation = (event) => {
-    event.preventDefault();
-
+  const getUserLocationDefault = () => {
     if (navigator.geolocation) {
-
       navigator.geolocation.getCurrentPosition(
         (position) => {
           // save the geolocation coordinates in two variables
           const { latitude, longitude } = position.coords;
           const latlng = {
-            'lat':latitude,
-            'lng':longitude
-          }
-            setCurrent(latlng);
-            setClicks([])
-            setCenter({ ...center, lat: Number(latitude) , lng: Number(longitude) })
-
+            lat: latitude,
+            lng: longitude,
+          };
+          setCurrent(latlng);
+          setClicks([]);
+          setCenter({
+            ...center,
+            lat: Number(latitude),
+            lng: Number(longitude),
+          });
         },
         // if there was an error getting the users location
         (error) => {
-          console.error('Error getting user location:', error);
+          console.error("Error getting user location:", error);
         }
       );
-
     } else {
       console.log("Geolocation is not supported by this browser.");
     }
+  };
 
-  }
+  const getUserLocation = (event) => {
+    event.preventDefault();
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          // save the geolocation coordinates in two variables
+          const { latitude, longitude } = position.coords;
+          const latlng = {
+            lat: latitude,
+            lng: longitude,
+          };
+          setCurrent(latlng);
+          setClicks([]);
+          setCenter({
+            ...center,
+            lat: Number(latitude),
+            lng: Number(longitude),
+          });
+        },
+        // if there was an error getting the users location
+        (error) => {
+          console.error("Error getting user location:", error);
+        }
+      );
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+    }
+  };
 
   return (
     <>
@@ -164,41 +193,33 @@ export const GoogleMaps = ({locations,className}) => {
         ref={ref}
         style={{ width: "100%", height: "300px" }}
       /> */}
-        <h3 className="font-normal hover:font-bold  text-primary mb-5">
-          <button onClick={ getUserLocation }>
-            Usar mi ubicacion actual
-          </button>
-        </h3>
+      <h3 className="font-normal hover:font-bold  text-primary mb-5">
+        <button onClick={getUserLocation}>Usar mi ubicacion actual</button>
+      </h3>
 
-        <Map
-          center={center}
-          onClick={onClick}
-          onIdle={onIdle}
-          zoom= {DEFAULT_ZOOM}
-          style={{ flexGrow: "1", width: "100%", height:"300px" }}
-        >
-          {clicks.map((latLng, i) => (
-            <Marker key={i} position={latLng} />
-          ))}
-          { Object.entries(current).length === 0 ? ( ''):(<Marker position={current} />)
-          }
+      <Map
+        center={center}
+        onClick={onClick}
+        onIdle={onIdle}
+        zoom={DEFAULT_ZOOM}
+        style={{ flexGrow: "1", width: "100%", height: "300px" }}
+      >
+        {clicks.map((latLng, i) => (
+          <Marker key={i} position={latLng} />
+        ))}
+        {Object.entries(current).length === 0 ? (
+          ""
+        ) : (
+          <Marker position={current} />
+        )}
+      </Map>
 
-        </Map>
-
-    {form}
+      {form}
     </>
   );
 };
 
-
-
-const Map = ({
-  onClick,
-  onIdle,
-  children,
-  style,
-  ...options
-}) => {
+const Map = ({ onClick, onIdle, children, style, ...options }) => {
   const ref = useRef(null);
   const [map, setMap] = useState();
 
@@ -246,7 +267,6 @@ const Map = ({
   );
 };
 
-
 const Marker = (options) => {
   const [marker, setMarker] = useState();
 
@@ -272,22 +292,22 @@ const Marker = (options) => {
   return null;
 };
 
-const deepCompareEqualsForMaps = createCustomEqual(
-  (deepEqual) => (a, b) => {
-    if (
-      (a) ||
-      a instanceof window.google.maps.LatLng ||
-      (b) ||
-      b instanceof window.google.maps.LatLng
-    ) {
-      return new window.google.maps.LatLng(a).equals(new window.google.maps.LatLng(b));
-    }
-
-    // TODO extend to other types
-    // use fast-equals for other objects
-    return deepEqual(a, b);
+const deepCompareEqualsForMaps = createCustomEqual((deepEqual) => (a, b) => {
+  if (
+    a ||
+    a instanceof window.google.maps.LatLng ||
+    b ||
+    b instanceof window.google.maps.LatLng
+  ) {
+    return new window.google.maps.LatLng(a).equals(
+      new window.google.maps.LatLng(b)
+    );
   }
-);
+
+  // TODO extend to other types
+  // use fast-equals for other objects
+  return deepEqual(a, b);
+});
 
 function useDeepCompareMemoize(value) {
   const ref = React.useRef();
@@ -299,9 +319,6 @@ function useDeepCompareMemoize(value) {
   return ref.current;
 }
 
-function useDeepCompareEffectForMaps(
-  callback,
-  dependencies
-) {
+function useDeepCompareEffectForMaps(callback, dependencies) {
   React.useEffect(callback, dependencies.map(useDeepCompareMemoize));
 }

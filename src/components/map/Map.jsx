@@ -4,8 +4,6 @@ import "./map.css";
 import GoogleMap from 'google-maps-react-markers'
 import { APIProvider,Map,Marker } from "@vis.gl/react-google-maps";
 
-//import Autocomplete from "react-google-autocomplete";
-
 const Maps = ({ address="santa cruz, Bolivia, Av. cumavi", lat="-17.7917873", lng="-63.1355414", drag=true, altura =false }) => {
 
   const [location, setLocation] = useState({address,lat,lng})
@@ -20,7 +18,7 @@ const Maps = ({ address="santa cruz, Bolivia, Av. cumavi", lat="-17.7917873", ln
 
 
   const divStyle = {
-    height: altura ? '20vh' : '60vh',
+    height: altura ? '30vh' : '60vh',
   };
 
   return (

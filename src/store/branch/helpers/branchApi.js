@@ -4,7 +4,7 @@ export const branchApi = async(filter = {}) => {
 
   const urlApi = process.env.REACT_APP_API_URL;
   const urlPath = `${urlApi}/enterprise/branches?filter=${JSON.stringify(filter)}&perPage=1000`;
-
+  console.log(urlPath);
   try {
     const resp = await _fetch( urlPath , {
       method: 'GET'

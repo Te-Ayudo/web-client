@@ -10,7 +10,7 @@ const Home = () => {
   const {isShowing, toggle} = useModal();
 
   return (
-    <Main 
+    <Main
       header={<Header/>}
       footer={<Footer />}
     >

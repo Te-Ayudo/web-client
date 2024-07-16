@@ -42,7 +42,7 @@ function App() {
         <Route path="/:slug/confirmacion" element={<ConfirmacionPage />} />
       </Routes>
     </BrowserRouter>
-  );
+  )
 }
 
 export default App;

@@ -64,7 +64,7 @@ export const Thanks = () => {
         <Button bg='white' tc='orange' className=' border-orange-500 border-2 ' onClick={onInicio} > Volver al Inicio </Button>
     </div>
     <div className=" w-full bg-white flex flex-col space-y-1 p-3 " >
-        <Button> Chatea con nosotros </Button>
+        <Button href='https://api.whatsapp.com/send?phone=%2B59178104295&data=AWDOijtFDS61A1UJATwj0qYErEr_ehqV86kPeyEodHHH4ZasL0v0OGP0okqqvu8BCGAZZW8z-gwTFeTF0yPqk4iP_MG-18Bgr_Ou4aToQ4MmjDdC5FLDJG2bvAZkWeEMi-GH7cJwGw0mc4MsFbltGOKY72QAS9zjE6JFpUC_1lVWaDb_tIu33o_sacucOlO0L8JNJ4IFF8IpAeLKv3Jr1_qS2bjFlaFiSFPTeqU6caItG4l9hAT9fPahgo0iaASj_fN3IZi1jipglGhiKB8Ws-g6ZNx2aOYxWYj6FXxdF2DZNzA&source=FB_Page&app=facebook&entry_point=page_cta&fbclid=IwAR0nNb8O1MekOaMyfoNscsJb14RCFDXpdA69xmFH65rbAjrnOoN9E_cxwZE' > Chatea con nosotros </Button>
     </div>
   </div>
 
