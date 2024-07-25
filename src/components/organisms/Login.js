@@ -65,12 +65,18 @@ export const Login = () => {
     navigate(`/${currentSlug}`);
   }
   const onServicios = () => {
-    const currentSlug = window.location.pathname.split('/')[1];
-    if(selected.isInBranch){
-      navigate(`/${currentSlug}/sucursales`);
-    }else{
-      navigate(`/${currentSlug}/servicios`);
-    }
+    // const currentSlug = window.location.pathname.split('/')[1];
+    // if(selected.isInBranch){
+    //   navigate(`/${currentSlug}/sucursales`);
+    // }else{
+    //   navigate(`/${currentSlug}/servicios`);
+    // }
+    navigate('/')
+    // if(selected.isInBranch){
+    //   navigate('/sucursales')
+    // }else{
+    //   navigate('/servicios')
+    // }
   }
 
   const login = useGoogleLogin({
