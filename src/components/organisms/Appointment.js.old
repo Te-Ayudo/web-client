@@ -18,7 +18,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import { useCreateBookingScreen } from "./../../hooks";
-import { addDays, format
+import { addDays, format,setHours,setMinutes,
+  isMonday,isThursday,isWednesday,isTuesday,isFriday,isSaturday,isSunday
  } from "date-fns";
 import Maps from "../map/Map";
 
@@ -56,11 +57,130 @@ export const Appointment = () => {
     // handleValueFact,
     onVerifyCoupon,
   } = useCreateBookingScreen();
+  //Todo: cargar fechas y horas disponibles
+  console.log(availability);
 
-  const employeeAvailableByBranch = (employees) => {
-    return employees.filter((employee) =>
-      (booking.isInBranch && booking.branch._id === employee.branch) ? employee : false
-    );
+  const [selectedDate, setSelectedDate] = useState(setHours(setMinutes(new Date(2024, 8, 9, 8, 30), 0), 8))
+  const [horas, setHoras] = useState([new Date('2020-08-08'), new Date('2020-08-09')])
+  const [excludedTimes, setExcludedTimes] = useState([])
+
+  const handleSelectedDate = (date) => {
+    setSelectedDate(date)
+  }
+
+  console.log(excludedTimes);
+
+  const getExcludedTimes = (date) => {
+    let arrSpecificDates = [];
+    // console.log( format(new Date(date)),"eeee");
+    const day1 = date.getDay();
+    const dayNames = ["Sunday", "Monday", "Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const nday = dayNames[day1];
+    // console.log(availability[0]);
+
+    let armarHorasWeed = [];
+    switch (nday) {
+      case "Monday":
+          const novo = availability[0];
+           for (let i = 0; i < novo.length; i++) {
+            const horaI = novo[i].startHour;
+            const horaF = novo[i].endHour;
+            const horaIm = novo[i].startMinute;
+            const horaFm = novo[i].endMinute;
+            console.log(horaI,'__',horaF);
+
+            var now = date;
+            now.setHours(horaI);
+            now.setMinutes(horaIm);
+            now.setSeconds(0);
+
+            armarHorasWeed.push({
+              time:now.getHours().toString().padStart(2,'0') +':'+ now.getMinutes().toString().padStart(2,'0'),
+              date:new Date(now).toLocaleDateString()
+            });
+
+
+            for(var j = horaI; j < 50; j++){
+                armarHorasWeed.push({
+                  time:now.getHours().toString().padStart(2,'0') +':'+ now.getMinutes().toString().padStart(2,'0'),
+                  date:new Date(now).toLocaleDateString()
+                });
+
+                now.setMinutes(now.getMinutes() + 30);
+                // console.log(now.getHours() + ":" + ("00" + now.getMinutes()).slice(-2));
+                armarHorasWeed.push({
+                  time:now.getHours().toString().padStart(2,'0') +':'+ now.getMinutes().toString().padStart(2,'0'),
+                  date:new Date(now).toLocaleDateString()
+                });
+
+                if( now.getHours() >= horaF ){
+                  break;
+                }
+
+                }
+           }
+
+        break;
+
+      case "Tuesday":
+
+        break;
+      case "Wednesday":
+
+        break;
+      case "Thursday":
+
+        break;
+      case "Friday":
+
+        break;
+      case "Saturday":
+
+        break;
+      case "Sunday":
+
+        break;
+      default:
+        break;
+    }
+    setExcludedTimes(armarHorasWeed)
+
+
+
+
+
+
+
+
+
+    // for (let i = 0; i < arrDates.length; i++) {
+    //   if (
+    //     moment(date, moment.ISO_8601).format("YYYY/MM/DD") ===
+    //     moment(arrDates[i], moment.ISO_8601).format("YYYY/MM/DD")
+    //   ) {
+    //     arrSpecificDates.push(moment(arrDates[i], moment.ISO_8601).toObject());
+    //   }
+    // }
+
+    // let arrExcludedTimes = [];
+    // if (arrSpecificDates.length > 0) {
+    //   for (let i = 0; i < arrSpecificDates.length; i++) {
+    //     const test = arrSpecificDates[i];
+    //     arrExcludedTimes.push({
+    //       time: (
+    //         test.hours.toString().padStart(2, "0") +
+    //         ":" +
+    //         test.minutes.toString().padStart(2, "0")
+    //       ).toString(),
+    //       date: new Date().toDateString(),
+    //     });
+    //     console.log(arrExcludedTimes);
+
+    //     setExcludedTimes(arrExcludedTimes);
+    //   }
+    // } else {
+    //   setExcludedTimes(arrExcludedTimes);
+    // }
   };
 
   const [formValues, setFormValues] = useState({
@@ -140,6 +260,8 @@ export const Appointment = () => {
       })
     );
 
+    //update fecha para calendario
+    setSelectedDate(result)
   };
 
   const navigate = useNavigate();
@@ -195,27 +317,14 @@ export const Appointment = () => {
               onChange={onInputChanged}
             >
               <option value=""> Empleado (Opcional) ... </option>
-              { 
-                booking.isInBranch?(
-                employeeAvailableByBranch(employee).map((metodo) => {
+              {employee.map((metodo) => {
                 return (
                   <option key={metodo._id} value={JSON.stringify(metodo)}>
                     {" "}
                     {metodo.fullName}{" "}
                   </option>
                 );
-                })
-                ):(
-                employee.map((metodo) => {
-                return (
-                  <option key={metodo._id} value={JSON.stringify(metodo)}>
-                    {" "}
-                    {metodo.fullName}{" "}
-                  </option>
-                );
-                })
-                )
-            }
+              })}
             </select>
           </div>
         </div>
@@ -227,10 +336,29 @@ export const Appointment = () => {
                 minDate={formValues.start}
                 selected={formValues.start}
                 onChange={(event) => onDateChange(event)}
+                onSelect={getExcludedTimes}
                 dateFormat="Pp"
                 showTimeSelect
                 className=" rounded-2xl  border  w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary "
                 withPortal
+              />
+              <DatePicker
+                selected={formValues.start}
+                onChange={(event) => onDateChange(event)}
+                onSelect={getExcludedTimes}
+                includeTimes={
+                    excludedTimes.map((exclude, index) => { return new Date(new Date().setHours(parseInt(exclude.time.slice(0, -3)), exclude.time.slice(3), 0)); })
+                }
+
+                popperPlacement="top-start"
+                showTimeSelect
+                showTimeSelectOnly
+                timeIntervals={30}
+                timeFormat="HH:mm"
+                dateFormat="hh:mm aa"
+                minDate={formValues.start}
+                // minTime={setHours(setMinutes(new Date(), 0), 8)}
+                // maxTime={setHours(setMinutes(new Date(), 45), 14)}
               />
             </div>
           </div>

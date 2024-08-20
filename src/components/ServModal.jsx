@@ -78,12 +78,12 @@ export const ServModal = ({_id, name,unitPrice,description='',imageURL='',unitEs
       <div className="container w-350 ">
         <div className="grid grid-cols-1 gap-4">
           <div className="flex justify-between items-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent mb-5">
-            <div className="w-2/3 bg-white flex flex-col space-y-2 p-3  inline-flex items-start space-x-2">
+            <div className="w-2/3 bg-white flex flex-col space-y-2 p-3  inline-flex items-start space-x-2 text-wrap break-all">
               <div className="text-slate-500 ">
                 {" "}
                 <strong>{name}</strong>{" "}
               </div>
-              <div className="text-slate-500">{  (description.length>90)? (description.substring(0, 90)+'...') : ( description ) }</div>
+              <div className="text-slate-500 text-wrap break-all">{  (description.length>90)? (description.substring(0, 90)+'...') : ( description ) }</div>
               <div className="text-slate-500">
                 <span>Desde</span> <strong> Bs. {unitPrice} </strong>
               </div>
