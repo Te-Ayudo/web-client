@@ -118,6 +118,9 @@ export const bookingSlice = createSlice({
 		BOOKING_SET_CART:(state, {payload}) => {
 			state.selected.serviceCart = payload
 		},
+		BOOKING_SET_EMPLOYEE:(state, {payload}) => {
+			state.selected.employee = payload
+		},
 		BOOKING_ADD_TO_CART: (state, action) => {
 			//booking = state.selected
 			let mserviceCart = []
@@ -201,6 +204,7 @@ export const {
 	BOOKING_ADD_TO_CART,
 	BOOKING_REMOVE_FROM_CART,
 	BOOKING_SET_CART,
+	BOOKING_SET_EMPLOYEE,
 	BOOKING_SET_BRANCH,
 	setActiveModalAddress,
 	setNotActiveModalAddress

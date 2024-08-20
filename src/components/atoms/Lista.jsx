@@ -34,7 +34,7 @@ export const Lista = ({servicio,showallicon=false,quantity=0,orden=''}) => {
   return (
     <>
       <div className="flex justify-between items-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent mb-5">
-        <div className="w-2/3 bg-white flex flex-col space-y-2 p-3  inline-flex items-start space-x-2">
+        <div className="w-2/3 bg-white flex flex-col space-y-2 p-3  inline-flex items-start space-x-2 text-wrap break-all ">
           {
             showallicon?(
           <div  className="text-slate-500">
