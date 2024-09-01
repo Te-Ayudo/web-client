@@ -22,7 +22,7 @@ const Maps = ({ address="santa cruz, Bolivia, Av. cumavi", lat="-17.7917873", ln
   };
 
   return (
-    <APIProvider apiKey="AIzaSyDTLtxGuSpbM9VRudSVAUAjuilzLKnHQCk" >
+    <APIProvider apiKey="AIzaSyBEdXyDKYlIu9xV8qcBidcDnfsAwIN0Luo" >
 
    <div className="map">
 
