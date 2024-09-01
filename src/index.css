@@ -23,7 +23,8 @@ footer{
 .pb-16{
   padding-bottom: 100px;
 }
-
+.datePicker > div {width: 90%;}
+.datePicker div input {border: none;}
 .search .wrapper:first-child {
   border: 2px solid orange;
   border-color: #FF770F ;

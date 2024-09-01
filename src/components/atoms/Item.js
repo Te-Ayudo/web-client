@@ -27,6 +27,74 @@ const Item = (props) => {
             </dl>
           </div>
         </article>
+        {/* agregar recomendados */}
+        { !!props.recomendado?
+        (
+          props.recomendado.length>0 && (
+  <>
+  
+            <div className="col-span-full">
+              <div className="mb-3 sm:mb-6">
+                <h2 className='text-primary font-[600] mb-5 ' >
+                Recomendado
+                </h2>
+              <div className="flex flex-row  items-start " >
+                {props.recomendado[0] && (
+                  <>
+          <div className="flex flex-col w-1/3 h-fit mr-5">
+            <div className="col-span-full">
+                <img
+                  src={ props.recomendado[0].imageURL }
+                  alt=""
+                  className=" w-24 h-24 md:w-32 md:h-32 lg:w-32 lg:h-32 object-cover rounded-md "
+                />
+            </div>
+            <div className="col-span-full">
+                <h2 className='text-primary font-[600] mb-5 ' >
+                  { props.recomendado[0].name } </h2>
+            </div>
+          </div>
+                  </>
+                )}
+
+                {props.recomendado[1] && (
+                  <>
+          <div className="flex flex-col w-1/3 h-fit">
+            <div className="col-span-full">
+                <img
+                  src={ props.recomendado[1].imageURL }
+                  alt=""
+                  className=" w-24 h-24 md:w-32 md:h-32 lg:w-32 lg:h-32 object-cover rounded-md "
+                />
+            </div>
+            <div className="col-span-full">
+                <h2 className='text-primary font-[600] mb-5 ' >
+                  { props.recomendado[1].name } </h2>
+            </div>
+          </div>
+                  </>
+                )}
+
+              </div>
+
+              </div>
+            </div>
+  </>            
+          )
+        )
+        :
+        (
+          //TODO: no hay recomendados
+          ''
+        )}
+
+
+        <div className="" >
+          <Button className="pl-0" disabled  >
+            Servicios
+          </Button>
+        </div>
+
         <div className="py-4">
           {
             (!!categorias)?

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { startLoginGoogle, startLoginWithEmailPassword } from "../../store/auth";
 
@@ -21,11 +21,13 @@ const formData = {
 }
 
 export const Login = () => {
+  const {providerid} = useParams();
 
   const [formSubmitedd, setFormSubmitedd] = useState(false)
   const { error } = useSelector( state => state.auth );
   const {selected} = useSelector( state => state.booking );
-
+  const myprov = useSelector( state => state.proveedor.selected );
+  
   const [ userg, setUserg ] = useState([]);
 
   useEffect(() => {
@@ -59,24 +61,11 @@ export const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
   const onInicio = () => {
-    const currentSlug = window.location.pathname.split('/')[1];
-    navigate(`/${currentSlug}`);
+    navigate(`/${providerid}/`)
   }
   const onServicios = () => {
-    // const currentSlug = window.location.pathname.split('/')[1];
-    // if(selected.isInBranch){
-    //   navigate(`/${currentSlug}/sucursales`);
-    // }else{
-    //   navigate(`/${currentSlug}/servicios`);
-    // }
-    navigate('/')
-    // if(selected.isInBranch){
-    //   navigate('/sucursales')
-    // }else{
-    //   navigate('/servicios')
-    // }
+    navigate(`/${providerid}/`)
   }
 
   const login = useGoogleLogin({
@@ -91,10 +80,14 @@ export const Login = () => {
     dispatch(startLoginWithEmailPassword({email,password,role},onServicios));
   }
 
-  const currentSlug = window.location.pathname.split('/')[1];
+  const isProviedor=!!providerid;
 
   return (
 <>
+  {
+    myprov===undefined?('Error en el proveedor'):(
+      <div>
+
    <form className="text-center" method="POST" onSubmit={ onSubmit } >
     <Logo className="h-8 sm:h-14 mb-6 sm:mb-14 " />
     <div className="col-span-full">
@@ -116,7 +109,6 @@ export const Login = () => {
           name= "password"
           value={password}
           onChange={ onInputChange }
-
         />
       </div>
     </div>
@@ -136,6 +128,7 @@ export const Login = () => {
       <div className="mb-3 sm:mb-6">
         <Button
           //href={"/empresa"}
+          disabled={ !isProviedor }
           type="submit"
           bg="bg-primary w-[250px] sm:w-[270px] mx-auto hover:bg-white "
           tc="text-white hover:text-secondary"
@@ -147,7 +140,7 @@ export const Login = () => {
     <div className="col-span-full">
       <div className="mb-3 sm:mb-6">
         <Button
-            href = {`/${currentSlug}/registrarse`}
+          href={`/${providerid}/registrarse`}
           bg="btn-transparent w-[250px] sm:w-[270px] mx-auto"
           tc="text-secondary hover:text-white "
           className="sm:h-[48px] !text-[14px] bordered">
@@ -159,7 +152,9 @@ export const Login = () => {
     <div className="text-center" >
     <div className="col-span-full">
       <div className="mb-3 sm:mb-6">
-        <Button onClick={ ()=> login()}
+        <Button 
+          disabled={ !isProviedor }
+          onClick={ ()=> login()}
           bg="btn-transparent w-[250px] sm:w-[270px] mx-auto"
           tc="text-secondary hover:text-white "
           className="sm:h-[48px] !text-[12px] bordered mt-0 p-0 "
@@ -176,6 +171,10 @@ export const Login = () => {
     </div>
 
     </div>
+    
+      </div>
+    )
+  }
 
 
 

@@ -72,8 +72,8 @@ export const useCheckAuthToken = () => {
      }
 
     dispatch( startListCategoria() );
-    const currentSlug = window.location.pathname.split('/')[1];
-    dispatch( startListProveedores(currentSlug) );
+    // const currentSlug = window.location.pathname.split('/')[1];
+    // dispatch( startListProveedores(currentSlug) );
     // const items = JSON.parse(localStorage.getItem('carrito'));
     // if (items) {
     // setItems(items);

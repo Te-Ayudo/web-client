@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux";
 import Button from "../atoms/Button";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const Footer = ( { titulo="Ver Carrito",enlace="carrito" } ) =>  {
-
+  const {providerid} = useParams();
   const navigate = useNavigate();
 
   const carrito = useSelector((state) => state.booking.selected.serviceCart);
@@ -14,8 +14,8 @@ const Footer = ( { titulo="Ver Carrito",enlace="carrito" } ) =>  {
     const currentSlug = window.location.pathname.split('/')[1];
 
     enlace === 'carrito'
-    ?navigate(`/${currentSlug}/carrito`)
-    :navigate(`/${currentSlug}/programar`);
+    ?navigate(`/${providerid}/carrito` )
+    :navigate(`/${providerid}/programar`);
   }
   return (
 

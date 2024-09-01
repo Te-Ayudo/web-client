@@ -9,15 +9,12 @@ export const serviciosSlice = createSlice({
     services:[],
     search: [],
     active: null,
-//      {
-//        _id,name,imageURL,description,unitPrice
-//      }
   },
   reducers: {
     updateListService: ( state, action ) => {
       state.isSaving = false;
 
-       state.search = state.services.filter(dato =>dato.name.includes(action.payload)  );
+      state.search = state.services.filter(dato =>dato.name.toLowerCase().includes(action.payload.toLowerCase())  );
 
       state.messageSaved = `${ action.payload }, actualizada correctamente`;
 

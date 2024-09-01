@@ -33,8 +33,6 @@ export const startCreatingUserWithEmailPassword = ({ first_name,last_name,email,
 
 export const startLoginGoogle = (user,navigation) => {
   return async(dispatch) => {
-    console.log(user);
-    console.log('**************************');
     const {data} = await loginGoogleapi(user);
     console.log(data);
 		let responseJSON = data;

@@ -33,8 +33,8 @@ export const proveedorSlice = createSlice({
     provider_getall_failure:(state, {payload}) => {
       state.loading = false;
       state.error = {
-        message:payload.error.message,
-        code:payload.error.code,
+        message:payload.error?.message,
+        code:payload.error?.code,
       }
     },
     provider_getone_request:(state) => {
@@ -55,7 +55,7 @@ export const proveedorSlice = createSlice({
         code:payload.error.code,
       }
     },
-    provider_set:(state,{payload}) => {
+    provider_set:(state,{payload}) => {  
       state.selected = payload
     }
 

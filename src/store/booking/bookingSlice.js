@@ -74,6 +74,7 @@ export const bookingSlice = createSlice({
 			state.selected.coupon=payload
 		},
 		BOOKING_SET_PROVIDER:(state,{payload}) => {
+      
 			state.selected.provider=payload;
 		},
 		BOOKING_ISINBRANCH:(state) => {

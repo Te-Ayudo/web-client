@@ -11,7 +11,7 @@ import {
 
 const loaderId = "ownersTownGoogleMapApiId";
 const config = {
-  googleMapsApiKey: "AIzaSyDTLtxGuSpbM9VRudSVAUAjuilzLKnHQCk",
+  googleMapsApiKey: "AIzaSyBEdXyDKYlIu9xV8qcBidcDnfsAwIN0Luo",
   // language: "en",
   // region: "IN",
   // version: "weekly",

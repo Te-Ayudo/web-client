@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { startCreatingUserWithEmailPassword } from "../../store";
 import { useForm } from "../../hooks/useForm";
 import { Alert } from "../atoms/Alert";
@@ -26,6 +26,7 @@ const formData = {
 }
 
 export const Registro = () => {
+  const {providerid} = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [formSubmitedd, setFormSubmitedd] = useState(false)
@@ -40,8 +41,7 @@ export const Registro = () => {
   } = useForm(formData,formValidations);
 
   const onConfirmation = () => {
-    const currentSlug = window.location.pathname.split('/')[1];
-    navigate(`/${currentSlug}/confirmacion`);
+    navigate(`/${providerid}/confirmacion`);
   }
 
   const onSubmit = ( event ) => {
@@ -52,6 +52,7 @@ export const Registro = () => {
 
     dispatch( startCreatingUserWithEmailPassword(formState,onConfirmation) );
   }
+  const isProviedor=!!providerid;  
   return (
   <form className="text-center" method="POST" onSubmit={ onSubmit } >
     <h3 className="h3 text-primary">Crear Cuenta</h3>

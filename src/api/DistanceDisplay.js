@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 const calculateDistance = async (origin, destination) => {
   try {
-    const api_key = "AIzaSyDTLtxGuSpbM9VRudSVAUAjuilzLKnHQCk";
+    const api_key = "AIzaSyBEdXyDKYlIu9xV8qcBidcDnfsAwIN0Luo";
     const proxyurl = "https://cors-anywhere.herokuapp.com/";
     const apiUrl = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin.latitude},${origin.longitude}&destinations=${destination.latitude},${destination.longitude}&key=${api_key}`;
 
