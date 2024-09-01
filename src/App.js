@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./components/pages/Login";
 import Registrarse from "./components/pages/Registrarse";
 import RegistrarUbicacion from "./components/pages/RegistrarUbicacion";
@@ -27,19 +27,23 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/:slug" element={<Home />} />
-        <Route path="/:slug/login" element={<Login />} />
-        <Route path="/:slug/registrarse" element={<Registrarse />} />
-        <Route path="/:slug/servicios" element={<Servicios />} />
-        <Route path="/:slug/programar" element={<ServiceAppointment />} />
-        <Route path="/:slug/gracias" element={<Thanks />} />
-        <Route path="/:slug/ubicacion" element={<RegistrarUbicacion />} />
+        <Route path="/" element={ <Home /> } />
+        <Route path=":providerid" element={ <Home /> } />
+        {/* <Route path="/" element={<Home />} /> */}
+
+        <Route path=":providerid/login" element={<Login />} />
+        <Route path=":providerid/registrarse" element={<Registrarse />} />
+        
+        <Route path=":providerid/servicios" element={<Servicios />} />
+        <Route path=":providerid/programar" element={<ServiceAppointment />} />
+        <Route path=":providerid/gracias" element={<Thanks />} />
+        <Route path=":providerid/ubicacion" element={<RegistrarUbicacion />} />
         <Route path="*" element={<NotFound />} />
-        <Route path="/:slug/carrito" element={<Cart />} />
-        <Route path="/:slug/empresa" element={<Empresa />} />
-        <Route path="/:slug/proveedores" element={<ProveedoresPage />} />
-        <Route path="/:slug/sucursales" element={<SucursalesPage />} />
-        <Route path="/:slug/confirmacion" element={<ConfirmacionPage />} />
+        <Route path=":providerid/carrito" element={<Cart />} />
+        <Route path=":providerid/empresa" element={<Empresa />} />
+        <Route path=":providerid/proveedores" element={<ProveedoresPage />} />
+        <Route path=":providerid/sucursales" element={<SucursalesPage />} />
+        <Route path=":providerid/confirmacion" element={<ConfirmacionPage />} />
       </Routes>
     </BrowserRouter>
   )

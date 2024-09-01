@@ -8,25 +8,25 @@ import Main from "../templates/Main"
 import { useDispatch, useSelector } from 'react-redux';
 import { startListSucursales } from '../../store/branch';
 import { useEffect, useState } from 'react';
-import { startListProveedores } from '../../store';
+
 
 export const SucursalesPage = () => {
 
+	const proveedor = useSelector((state) => state.proveedor.selected)
   const branches = useSelector( state => state.branch.item );
 
   const dispatch = useDispatch();
 
-  const navigate = useNavigate();
-
+  const listSucursales = (sucursales) => {
+    return sucursales.filter((sucursal)=>(
+      proveedor._id === sucursal.providerId ? sucursal : false
+    ))
+    
+  }  
+  
   useEffect(() => {
     dispatch( startListSucursales() );
-    dispatch( startListProveedores() );
   }, [])
-
-
-  const onLogin = (  ) => {
-    navigate('/login');
-  }
 
   return (
     <>
@@ -34,7 +34,7 @@ export const SucursalesPage = () => {
         <List>
           <Button  className="btn-auto font-normal mb-5" disabled={true} > Sucursales </Button>
           <ul>
-            { branches.map((item) => (
+            { listSucursales(branches).map((item) => (
               <SucursalesItem key={item.id} {...item}  />
            ))}
           </ul>

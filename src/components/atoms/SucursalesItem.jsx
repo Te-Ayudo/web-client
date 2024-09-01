@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { BOOKING_SET_BRANCH } from "../../store";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { DistanceDisplay } from "../../api/DistanceDisplay";
 import { useEffect, useState } from "react";
 
 export const SucursalesItem = (item) => {
-
+  const {providerid} = useParams();
   const booking = useSelector((state) => state.booking.selected);
 
   const dispatch = useDispatch();
@@ -27,10 +27,8 @@ export const SucursalesItem = (item) => {
   const { id,addressInfo,name } = item;
 
   const onSelect = (item) => {
-    console.log(item);
     dispatch( BOOKING_SET_BRANCH(item) );
-    const currentSlug = window.location.pathname.split('/')[1];
-    navigate(`/${currentSlug}/empresa`);
+    navigate(`/${providerid}/empresa`);
   }
 
   return (

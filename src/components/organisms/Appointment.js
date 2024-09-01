@@ -18,8 +18,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import { useCreateBookingScreen } from "./../../hooks";
-import { addDays, format
- } from "date-fns";
+import { addDays, format } from "date-fns";
 import Maps from "../map/Map";
 
 export const Appointment = () => {
@@ -64,7 +63,7 @@ export const Appointment = () => {
   };
 
   const [formValues, setFormValues] = useState({
-    name: "frank Callapa",
+    name: "User Testing",
     telefono: "",
     start: (maxAvailableAfterHours >= 24)? addDays(new Date().setHours(0, 0, 0, 0), 1): new Date() , //new Date(),
     empleado: "",
@@ -89,7 +88,7 @@ export const Appointment = () => {
       empleado: "",
       descuento: "",
       metodopago: "",
-      start: (maxAvailableAfterHours >= 24)? addDays(new Date(), 1): new Date() , //new Date(),
+      start: null, //new Date(),
     });
   }, []);
 
@@ -181,17 +180,10 @@ export const Appointment = () => {
         </div>
         <div className="col-span-full">
           <div className="mb-3 sm:mb-6">
-            {/* <Input
-              name="empleado"
-              type="text"
-              label="Empleado (opcional)"
-              value={formValues.empleado}
-              onChange={onInputChanged}
-            /> */}
             <select
               name="empleado"
               className="rounded-2xl border-solid border border-primary w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary"
-              value={formValues.direccion}
+              value={formValues.empleado}
               onChange={onInputChanged}
             >
               <option value=""> Empleado (Opcional) ... </option>
@@ -222,16 +214,22 @@ export const Appointment = () => {
 
         <div className="col-span-full">
           <div className="mb-3 sm:mb-6">
-            <div className=" flex justify-end flex-row-reverse sm:w-2/3 rounded-2xl border-solid border-2 border-primary mb-3 sm:mb-0 ">
-              <DatePicker
-                minDate={formValues.start}
-                selected={formValues.start}
-                onChange={(event) => onDateChange(event)}
-                dateFormat="Pp"
-                showTimeSelect
-                className=" rounded-2xl  border  w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary "
-                withPortal
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="datePicker flex justify-end flex-row-reverse sm:w-2/3 rounded-2xl border-solid border border-primary mb-3 sm:mb-0 w-full">
+                <DatePicker
+                  minDate={formValues.start}
+                  selected={formValues.start}
+                  onChange={(event) => onDateChange(event)}
+                  dateFormat="Pp"
+                  showTimeSelect
+                  className="rounded-2xl border w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary "
+                  withPortal
+                  placeholderText="Seleccionar una fecha"
+                />
+              </div>
+              <div>
+                
+              </div>
             </div>
           </div>
         </div>
@@ -251,7 +249,7 @@ export const Appointment = () => {
                 <Button
                   disabled={!isCheckingCouponBtn}
                   onClick={onVerifyCoupon}
-                  className="sm:h-[48px] !text-[14px]"
+                  className="sm:h-[48px] !text-[14px] w-full"
                 >
                   Aplicar Cupon
                 </Button>
@@ -348,12 +346,7 @@ export const Appointment = () => {
                 ) : (
                   ""
                 )
-                // (!!ubication.coordinates)?
-                // <Maps address={ubication.direction}
-                //     lat={ ubication.coordinates.latitude }
-                //     lng={ ubication.coordinates.longitude }
-                // />
-                // : ''
+
               }
             </div>
           </div>

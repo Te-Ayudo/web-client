@@ -27,7 +27,7 @@ export const ProveedoresPage = () => {
 
   useEffect(() => {
     dispatch( startListSucursales() );
-    dispatch( startListProveedores() );
+    // dispatch( startListProveedores() );
 		setFiltered(providers)
   }, [])
 

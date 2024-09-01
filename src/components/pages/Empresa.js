@@ -9,9 +9,9 @@ import Maps from "../map/Map";
 import { ServModal } from "../ServModal";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { startListProveedores, startListServiciosbyProvider } from "../../store";
 import { DistanceDisplay } from "../../api/DistanceDisplay";
 import { useParams } from "react-router-dom";
+import { startListProveedores } from "../../store";
 
 export const Empresa = (props) => {
 
@@ -33,7 +33,7 @@ export const Empresa = (props) => {
   useEffect(() => {
     //dispatch(startListServiciosbyProvider(booking.provider._id));
 
-    dispatch( startListProveedores(params.slug) );
+    dispatch( startListProveedores(params.providerid) );
     const position = {
       'latitude': JSON.parse(localStorage.getItem('latitude')),
       'longitude': JSON.parse(localStorage.getItem('longitude'))
@@ -44,7 +44,9 @@ export const Empresa = (props) => {
 
   }, []);
 
-  const servicesAvailableByBranch = (services) => {
+  const servicesAvailableByBranch = (services) => {    
+    
+    return services;
     return services.filter((service) =>
       booking.isInBranch ? booking.branch.services.includes(service._id) : true
     );
@@ -75,14 +77,7 @@ export const Empresa = (props) => {
     const newWindow = window.open(urlAndroid, '_blank', 'noopener,noreferrer')
     if (newWindow) newWindow.opener = null
 
-    //const finalUrl = Platform.OS === "ios" ? url : urlAndroid;
-    //Linking.openURL(finalUrl);
   };
-
-
-
-
-
 
   return (
     <Main header={<Header />}
@@ -177,63 +172,73 @@ export const Empresa = (props) => {
             </div>
             )
           }
-          { booking.branch && servicesAvailableByBranch(provider.recommendedServices).length > 0 && (
-            <>
-
-                      <div className="col-span-full">
-                        <div className="mb-3 sm:mb-6">
-                          <h2 className='text-primary font-[600] mb-5 ' >
-                          Recomendado
-                          </h2>
-                        <div className="flex flex-row  items-start " >
-                          {servicesAvailableByBranch(provider.recommendedServices)[0] && (
-                            <>
-                    <div className="flex flex-col w-1/3 h-fit mr-5">
-                      <div className="col-span-full">
-                          <img
-                            src={ servicesAvailableByBranch(provider.recommendedServices)[0].imageURL }
-                            alt=""
-                            className=" w-24 h-24 md:w-32 md:h-32 lg:w-32 lg:h-32 object-cover rounded-md "
-                          />
-                      </div>
-                      <div className="col-span-full">
-                          <h2 className='text-primary font-[600] mb-5 ' >
-                            { servicesAvailableByBranch(provider.recommendedServices)[0].name } </h2>
-                      </div>
-                    </div>
-                            </>
-                          )}
-
-                          {servicesAvailableByBranch(provider.recommendedServices)[1] && (
-                            <>
-                    <div className="flex flex-col w-1/3 h-fit">
-                      <div className="col-span-full">
-                          <img
-                            src={ servicesAvailableByBranch(provider.recommendedServices)[1].imageURL }
-                            alt=""
-                            className=" w-24 h-24 md:w-32 md:h-32 lg:w-32 lg:h-32 object-cover rounded-md "
-                          />
-                      </div>
-                      <div className="col-span-full">
-                          <h2 className='text-primary font-[600] mb-5 ' >
-                            { servicesAvailableByBranch(provider.recommendedServices)[1].name } </h2>
-                      </div>
-                    </div>
-                            </>
-                          )}
-
+          { !!provider.recommendedServices?
+          (
+            
+            booking.branch && servicesAvailableByBranch(provider.recommendedServices).length > 0 && (
+              <>
+  
+                        <div className="col-span-full">
+                          <div className="mb-3 sm:mb-6">
+                            <h2 className='text-primary font-[600] mb-5 ' >
+                            Recomendado
+                            </h2>
+                          <div className="flex flex-row  items-start " >
+                            {servicesAvailableByBranch(provider.recommendedServices)[0] && (
+                              <>
+                      <div className="flex flex-col w-1/3 h-fit mr-5">
+                        <div className="col-span-full">
+                            <img
+                              src={ servicesAvailableByBranch(provider.recommendedServices)[0].imageURL }
+                              alt=""
+                              className=" w-24 h-24 md:w-32 md:h-32 lg:w-32 lg:h-32 object-cover rounded-md "
+                            />
                         </div>
-
+                        <div className="col-span-full">
+                            <h2 className='text-primary font-[600] mb-5 ' >
+                              { servicesAvailableByBranch(provider.recommendedServices)[0].name } </h2>
                         </div>
                       </div>
-            </>
-          )}
-      <div className="container" >
+                              </>
+                            )}
+  
+                            {servicesAvailableByBranch(provider.recommendedServices)[1] && (
+                              <>
+                      <div className="flex flex-col w-1/3 h-fit">
+                        <div className="col-span-full">
+                            <img
+                              src={ servicesAvailableByBranch(provider.recommendedServices)[1].imageURL }
+                              alt=""
+                              className=" w-24 h-24 md:w-32 md:h-32 lg:w-32 lg:h-32 object-cover rounded-md "
+                            />
+                        </div>
+                        <div className="col-span-full">
+                            <h2 className='text-primary font-[600] mb-5 ' >
+                              { servicesAvailableByBranch(provider.recommendedServices)[1].name } </h2>
+                        </div>
+                      </div>
+                              </>
+                            )}
+  
+                          </div>
+  
+                          </div>
+                        </div>
+              </>
+            )
+          )
+          :
+          (
+            //TODO: no hay recomendados
+            ''
+          )
+          }
+          { }
+      <div className="" >
       <Button className="" disabled  >
         Servicios
       </Button>
       </div>
-
 
           <div className="col-span-full">
             <div className="mb-3 sm:mb-6">
@@ -253,8 +258,6 @@ export const Empresa = (props) => {
             )
             :
             (
-
-
                 services
                   && servicesAvailableByBranch(services).map((servicio) => {
                       return (

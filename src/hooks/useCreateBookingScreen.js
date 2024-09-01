@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useNavigation } from 'react-router-dom'
+import { useNavigate, useNavigation, useParams } from 'react-router-dom'
 import _fetch from './../wrappers/_fetch'
 import { startCreateBooking, startVerifyCoupon } from '../store/booking/thunks'
 import Swal from "sweetalert2";
@@ -8,6 +8,7 @@ import { BOOKING_SET_ADDRESS, BOOKING_SET_CUSTOMER } from '../store'
 import { employeeApi } from '../store/booking/helpers/employeeApi'
 
 export const useCreateBookingScreen = () => {
+  const {providerid} = useParams();
 
 	const provider = useSelector((state) => state.proveedor.selected)
 	const booking = useSelector((state) => state.booking.selected)
@@ -94,7 +95,7 @@ export const useCreateBookingScreen = () => {
 		const employee = booking.serviceCart?.map(function(element){
    	return element.service._id;
 		})
-		const result = (await employeeApi(metodo, employee))
+		const result = (await employeeApi(metodo, employee,provider._id))
 
 
 		 const employeefilter = result?.data.map(function(element){
@@ -280,8 +281,7 @@ export const useCreateBookingScreen = () => {
 
   const navigate = useNavigate();
 	const onConfirmation = () => {
-		const currentSlug = window.location.pathname.split('/')[1];
-		navigate(`/${currentSlug}/gracias`);
+    navigate(`/${providerid}/gracias`)
   }
 
 

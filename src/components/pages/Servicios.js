@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import {  useDispatch, useSelector } from "react-redux";
 import Main from "../templates/Main";
 import Header from "../organisms/Header";
 import Footer from "../organisms/Footer";
@@ -18,7 +18,7 @@ const Servicios = (props) => {
   const params = useParams();
 
   useEffect(() => {
-    dispatch( startListProveedores(params.slug) );
+    dispatch( startListProveedores(params.providerid) );
   }, [])
 
   const { services,isOpenModal,active } = useSelector( state => state.servicios );
@@ -31,12 +31,6 @@ const Servicios = (props) => {
     >
       <ServModal isOpen={ isOpenModal } {...active} />
 
-      <div className="container m-5" >
-      <Button className="" disabled  >
-        Servicios
-      </Button>
-      </div>
-
       <List>
         {
         proveedor && (
@@ -44,10 +38,11 @@ const Servicios = (props) => {
             key= {proveedor._id}
             id= {proveedor._id}
             empresa= {proveedor.first_name}
-            puntaje= {'3.5'}
+            puntaje= {proveedor.avgRating}
             image= {proveedor.picture}
             categoria = {null}
             servicios= {proveedor.services}
+            recomendado={proveedor.recommendedServices}
           />
 
         )

@@ -55,7 +55,7 @@ export const proveedorSlice = createSlice({
         code:payload.error.code,
       }
     },
-    provider_set:(state,{payload}) => {
+    provider_set:(state,{payload}) => {  
       state.selected = payload
     }
 

@@ -3,7 +3,7 @@ import Modal from 'react-modal'
 import Button from './atoms/Button';
 import { useDispatch } from 'react-redux';
 import { setNotActiveModal } from '../store/servicios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { BOOKING_ADD_TO_CART, addNewItem } from '../store';
 
 const customStyles = {
@@ -18,7 +18,7 @@ const customStyles = {
 Modal.setAppElement('#root');
 
 export const ServModal = ({_id, name,unitPrice,description='',imageURL='',unitEstimatedWorkMinutes,isOpen=false }) => {
-
+  const {providerid} = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -61,8 +61,7 @@ export const ServModal = ({_id, name,unitPrice,description='',imageURL='',unitEs
      ));
 
     dispatch(setNotActiveModal());
-    const currentSlug = window.location.pathname.split('/')[1];
-    navigate(`/${currentSlug}/carrito`);
+    navigate(`/${providerid}/carrito`);
 
   }
 
@@ -83,7 +82,7 @@ export const ServModal = ({_id, name,unitPrice,description='',imageURL='',unitEs
                 {" "}
                 <strong>{name}</strong>{" "}
               </div>
-              <div className="text-slate-500 text-wrap break-all">{  (description.length>90)? (description.substring(0, 90)+'...') : ( description ) }</div>
+              <div className="text-slate-500 text-wrap break-all">{ ( description ) }</div>
               <div className="text-slate-500">
                 <span>Desde</span> <strong> Bs. {unitPrice} </strong>
               </div>
