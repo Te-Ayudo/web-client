@@ -3,7 +3,7 @@ import _fetch from "../../../wrappers/_fetch";
 export const employeeApi = async(method,service,id_prov) => {
 
   // const idProveedor = process.env.REACT_APP_ID_PROVIDER_EXAMPLE;
-  const teayudoUrl= 'https://test.teayudo.com.bo/api/employee/provider/'+id_prov;
+  const teayudoUrl= process.env.REACT_APP_API_URL+'/employee/provider/'+id_prov;
 
   try {
 

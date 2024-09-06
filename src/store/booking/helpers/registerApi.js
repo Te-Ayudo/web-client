@@ -2,7 +2,7 @@ import _fetch from "../../../wrappers/_fetch";
 
 export const registerApi = async(nombre,coordenada,idUser) => {
 
-  const teayudoUrl= 'https://test.teayudo.com.bo/api/registerDirection';
+  const teayudoUrl= process.env.REACT_APP_API_URL+'/registerDirection';
   const newcoord = {
     latitude:coordenada.lat,
     longitude:coordenada.lng

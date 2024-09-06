@@ -21,7 +21,7 @@ function handleResponse(response) {
       body: JSON.stringify(object)
     };
 
-    return await _fetch(`https://test.teayudo.com.bo/api/${route}/`, requestOptions).then(
+    return await _fetch(`${process.env.REACT_APP_API_URL}/${route}/`, requestOptions).then(
       handleResponse
     );
   }

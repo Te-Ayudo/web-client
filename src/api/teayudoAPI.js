@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 const teayudoAPI = axios.create({
-  baseURL:'https://test.teayudo.com.bo/api'
+  baseURL: process.env.REACT_APP_API_URL
 });
 
 teayudoAPI.interceptors.request.use( config => {

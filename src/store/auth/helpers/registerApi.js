@@ -1,7 +1,7 @@
 
 export const registerApi = async({ first_name,last_name,email,password,phone,role }) => {
 
-  const teayudoUrl= 'https://test.teayudo.com.bo/api/register';
+  const teayudoUrl= process.env.REACT_APP_API_URL + '/register';
 
   const formData = new FormData();
   formData.append('first_name',first_name);
