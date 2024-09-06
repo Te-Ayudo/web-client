@@ -49,7 +49,7 @@ export const ServModal = ( { _id, name, unitPrice, description = '', imageURL = 
     const price = cant * unitPrice;
     const quantity = cant;
     const estimatedWorkMinutes = cant * unitEstimatedWorkMinutes;
-    const serv = { _id, name, unitPrice, description, imageURL, unitEstimatedWorkMinutes };
+    const serv = { _id, name, unitPrice, description, imageURL, unitEstimatedWorkMinutes, variablePrice };
     dispatch( BOOKING_ADD_TO_CART(
       {
         quantity,
