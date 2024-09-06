@@ -20,6 +20,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useCreateBookingScreen } from "./../../hooks";
 import { addDays, format } from "date-fns";
 import Maps from "../map/Map";
+import moment from "moment";
 
 export const Appointment = () => {
   const booking = useSelector((state) => state.booking.selected);
@@ -31,7 +32,7 @@ export const Appointment = () => {
   const {
     // showCalendarModal,
     // closeModal,
-    // _hourPicker,
+    _hourPicker,
     maxAvailableAfterHours,
     availability,
     // showCouponrModal,
@@ -58,14 +59,19 @@ export const Appointment = () => {
 
   const employeeAvailableByBranch = (employees) => {
     return employees.filter((employee) =>
-      (booking.isInBranch && booking.branch._id === employee.branch) ? employee : false
+      booking.isInBranch && booking.branch._id === employee.branch
+        ? employee
+        : false
     );
   };
 
   const [formValues, setFormValues] = useState({
     name: "User Testing",
     telefono: "",
-    start: (maxAvailableAfterHours >= 24)? addDays(new Date().setHours(0, 0, 0, 0), 1): new Date() , //new Date(),
+    start:
+      maxAvailableAfterHours >= 24
+        ? addDays(new Date().setHours(0, 0, 0, 0), 1)
+        : null, //new Date(),
     empleado: "",
     descuento: "",
     metodopago: "",
@@ -88,7 +94,7 @@ export const Appointment = () => {
       empleado: "",
       descuento: "",
       metodopago: "",
-      start: null, //new Date(),
+      start: null,
     });
   }, []);
 
@@ -116,7 +122,7 @@ export const Appointment = () => {
 
     if (target.name === "empleado") {
       const a = !!target.value ? JSON.parse(target.value) : "{}";
-      dispatch(BOOKING_SET_EMPLOYEE( a ));
+      dispatch(BOOKING_SET_EMPLOYEE(a));
     }
 
     if (target.name === "direccion") {
@@ -138,7 +144,7 @@ export const Appointment = () => {
         bookingDate: result,
       })
     );
-
+    _hourPicker(event);
   };
 
   const navigate = useNavigate();
@@ -187,27 +193,23 @@ export const Appointment = () => {
               onChange={onInputChanged}
             >
               <option value=""> Empleado (Opcional) ... </option>
-              { 
-                booking.isInBranch?(
-                employeeAvailableByBranch(employee).map((metodo) => {
-                return (
-                  <option key={metodo._id} value={JSON.stringify(metodo)}>
-                    {" "}
-                    {metodo.fullName}{" "}
-                  </option>
-                );
-                })
-                ):(
-                employee.map((metodo) => {
-                return (
-                  <option key={metodo._id} value={JSON.stringify(metodo)}>
-                    {" "}
-                    {metodo.fullName}{" "}
-                  </option>
-                );
-                })
-                )
-            }
+              {booking.isInBranch
+                ? employeeAvailableByBranch(employee).map((metodo) => {
+                    return (
+                      <option key={metodo._id} value={JSON.stringify(metodo)}>
+                        {" "}
+                        {metodo.fullName}{" "}
+                      </option>
+                    );
+                  })
+                : employee.map((metodo) => {
+                    return (
+                      <option key={metodo._id} value={JSON.stringify(metodo)}>
+                        {" "}
+                        {metodo.fullName}{" "}
+                      </option>
+                    );
+                  })}
             </select>
           </div>
         </div>
@@ -217,19 +219,28 @@ export const Appointment = () => {
             <div className="grid grid-cols-2 gap-4">
               <div className="datePicker flex justify-end flex-row-reverse sm:w-2/3 rounded-2xl border-solid border border-primary mb-3 sm:mb-0 w-full">
                 <DatePicker
-                  minDate={formValues.start}
-                  selected={formValues.start}
+                  // minDate={null}
+                  selected={booking.startDate || formValues.start}
                   onChange={(event) => onDateChange(event)}
                   dateFormat="Pp"
                   showTimeSelect
+                  filterDate={(date) => {
+                    const _date = moment(date);
+                    return availability[_date.isoWeekday() - 1].length > 0;
+                  }}
+                  includeTimes={hourPicker}
                   className="rounded-2xl border w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary "
                   withPortal
                   placeholderText="Seleccionar una fecha"
+                  timeClassName={(time) => {
+                    const _time = moment(time);
+                    if (!hourPicker.includes(new Date(_time).getTime())) {
+                      return "hide";
+                    }
+                  }}
                 />
               </div>
-              <div>
-                
-              </div>
+              <div></div>
             </div>
           </div>
         </div>
@@ -335,19 +346,16 @@ export const Appointment = () => {
         <div className="col-span-full">
           <div className="mb-3 sm:mb-6">
             <div className="map">
-              {
-                !!booking.customer.address._id ? (
-                  <Maps
-                    address={booking.customer.address.street}
-                    lat={booking.customer.address.coordinates.latitude}
-                    lng={booking.customer.address.coordinates.longitude}
-                    drag={false}
-                  />
-                ) : (
-                  ""
-                )
-
-              }
+              {!!booking.customer.address._id ? (
+                <Maps
+                  address={booking.customer.address.street}
+                  lat={booking.customer.address.coordinates.latitude}
+                  lng={booking.customer.address.coordinates.longitude}
+                  drag={false}
+                />
+              ) : (
+                ""
+              )}
             </div>
           </div>
         </div>

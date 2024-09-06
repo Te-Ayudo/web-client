@@ -105,6 +105,10 @@ footer{
 
 }
 
+.hide {
+  display: none !important;
+}
+
 
 
 

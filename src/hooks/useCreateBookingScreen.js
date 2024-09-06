@@ -4,8 +4,9 @@ import { useNavigate, useNavigation, useParams } from 'react-router-dom'
 import _fetch from './../wrappers/_fetch'
 import { startCreateBooking, startVerifyCoupon } from '../store/booking/thunks'
 import Swal from "sweetalert2";
-import { BOOKING_SET_ADDRESS, BOOKING_SET_CUSTOMER } from '../store'
+import { BOOKING_SET, BOOKING_SET_ADDRESS, BOOKING_SET_CUSTOMER } from '../store'
 import { employeeApi } from '../store/booking/helpers/employeeApi'
+import moment from 'moment';
 
 export const useCreateBookingScreen = () => {
   const {providerid} = useParams();
@@ -39,16 +40,18 @@ export const useCreateBookingScreen = () => {
 
   const getAvailability = async () => {
 		try {
-			let response = await _fetch(
-				"https://test.teayudo.com.bo"+ '/api/availability/' + provider._id,
-				{
-					method: 'GET',
-					headers: {
-						Accept: 'application/json',
-						'Content-Type': 'application/json',
-					},
-				}
-			)
+			const id = booking.employee?._id ?? provider._id;
+			let url = process.env.REACT_APP_API_URL + "/availability/" + id;
+			if (booking.branch?._id) {
+			  url += "?branch=" + booking.branch?._id;
+			}
+			let response = await _fetch(url, {
+				method: "GET",
+				headers: {
+				  Accept: "application/json",
+				  "Content-Type": "application/json",
+				},
+			  });
 			let responseJSON = await response.json()
 			let availability = {
 				0: [],
@@ -264,6 +267,10 @@ export const useCreateBookingScreen = () => {
 		getAddresses();
 	}, [success])
 
+	useEffect(() => {
+		getAvailability();
+	  }, [booking.employee]);
+
 	const onValueCh = (value) => {
 		if (!value) {
 			return {}
@@ -284,11 +291,64 @@ export const useCreateBookingScreen = () => {
     navigate(`/${providerid}/gracias`)
   }
 
+  const _hourPicker = async (date) => {
+    let array = [];
+    let today = moment();
+    let isSameDay = moment(today).isSame(date, "day");
+    let response = await _fetch(
+		process.env.REACT_APP_API_URL  + "/dateAvailability/" + provider._id,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          date: moment(date).startOf("day").utc().format(),
+          estimatedTime: booking.totalEstimatedWorkMinutes,
+          isInBranch: booking.isInBranch,
+          branch: booking.branch?._id,
+          employee: booking.employee?._id ?? null,
+          serviceCart: booking.serviceCart.map((e) => e.service?._id),
+        }),
+      }
+    );
+    const responseJSON = await response.json();
+    responseJSON.data.availability.map((e) => {
+      const _date = moment(e);
+      if (
+        isSameDay &&
+        _date.hours() <= today.hours() + maxAvailableAfterHours
+      ) {
+        return;
+      }
+
+      array.push((new Date(e)).getTime());
+    });
+    setHourPicker(array);
+  };
+
+  const _setHour = (_hour) => {
+    if (!_hour) {
+      return;
+    }
+    setHour(_hour);
+    dispatch(
+		BOOKING_SET.set({
+        bookingDate: _hour
+          ? moment(booking.bookingDate)
+              .hours(_hour)
+              .minutes((_hour % 1) * 60)
+              .format()
+          : booking.bookingDate,
+      })
+    );
+  };
 
 	return {
 		// showCalendarModal,
 		// closeModal,
-		// _hourPicker,
+		_hourPicker,
 		maxAvailableAfterHours,
 		availability,
 		// showCouponrModal,
@@ -297,7 +357,7 @@ export const useCreateBookingScreen = () => {
 		// onVerifyCoupon,
 		// setShowCalendarModal,
 		hour,
-		// _setHour,
+		_setHour,
 		hourPicker,
 		discount,
 		paymentMethods,
