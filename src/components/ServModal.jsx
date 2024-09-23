@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import Modal from 'react-modal';
-import Button from './atoms/Button';
-import { useDispatch } from 'react-redux';
-import { setNotActiveModal } from '../store/servicios';
-import { useNavigate, useParams } from 'react-router-dom';
-import { BOOKING_ADD_TO_CART, addNewItem } from '../store';
+import { useEffect, useState } from "react";
+import Modal from "react-modal";
+import Button from "./atoms/Button";
+import { useDispatch } from "react-redux";
+import { setNotActiveModal } from "../store/servicios";
+import { useNavigate, useParams } from "react-router-dom";
+import { BOOKING_ADD_TO_CART } from "../store";
 
 const customStyles = {
   content: {
@@ -17,77 +17,92 @@ const customStyles = {
   },
 };
 
-Modal.setAppElement( '#root' );
+Modal.setAppElement("#root");
 
-export const ServModal = ( { _id, name, unitPrice, description = '', imageURL = '', unitEstimatedWorkMinutes, variablePrice, isOpen = false } ) => {
+export const ServModal = ({ _id, name, unitPrice, description = "", imageURL = "", unitEstimatedWorkMinutes, variablePrice, isOpen = false }) => {
   const { providerid } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [ cant, setCant ] = useState( 1 );
+  const [cant, setCant] = useState(1);
 
-  const [ isReadMore, setIsReadMore ] = useState(false);
+  const [isReadMore, setIsReadMore] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsReadMore(false);
+    }
+  }, [isOpen]);
 
   const onCloseModal = () => {
-    setCant( 1 );
-    dispatch( setNotActiveModal() );
+    setCant(1);
+    dispatch(setNotActiveModal());
   };
 
   const onIncrement = () => {
     const newvalor = cant + 1;
-    if ( newvalor < 1 ) return;
-    setCant( cant + 1 );
+    if (newvalor < 1) return;
+    setCant(cant + 1);
   };
   const onDecrement = () => {
     const newvalor = cant - 1;
-    if ( newvalor < 1 ) return;
-    setCant( cant - 1 );
+    if (newvalor < 1) return;
+    setCant(cant - 1);
   };
 
   const onCarrito = () => {
-    console.log( 'agregar al carrito' );
+    console.log("agregar al carrito");
     //dispatch( addNewItem( { _id,name,unitPrice,description,imageURL,cant } ) );
-    if ( cant < 1 ) {
-      return setCant( 1 );
+    if (cant < 1) {
+      return setCant(1);
     }
 
     const price = cant * unitPrice;
     const quantity = cant;
     const estimatedWorkMinutes = cant * unitEstimatedWorkMinutes;
     const serv = { _id, name, unitPrice, description, imageURL, unitEstimatedWorkMinutes, variablePrice };
-    dispatch( BOOKING_ADD_TO_CART(
-      {
+    dispatch(
+      BOOKING_ADD_TO_CART({
         quantity,
         service: serv,
         price,
-        estimatedWorkMinutes
-      }
+        estimatedWorkMinutes,
+      })
+    );
 
-    ) );
-
-    dispatch( setNotActiveModal() );
-    navigate( `/${ providerid }/carrito` );
-
+    dispatch(setNotActiveModal());
+    navigate(`/${providerid}/carrito`);
   };
 
   const toggleReadMore = () => {
     setIsReadMore(!isReadMore);
   };
 
+  const descriptionLines = description.split("\n");
+
   return (
     <Modal isOpen={isOpen} onRequestClose={onCloseModal} style={customStyles} className="modal" overlayClassName="modal-fondo" closeTimeoutMS={200}>
-      <div className="container">
-        <div className="grid grid-cols-1">
-          <div className="flex flex-col sm:flex-row smitems-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent mb-2">
+      <div className="container w-full">
+        <div className="flex flex-col">
+          <div className="flex flex-col sm:flex-row sm:items-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent mb-2">
             <div className="w-full sm:w-2/3 bg-white flex flex-col basis-3/4 space-y-2 p-3 inline-flex items-start space-x-2 text-wrap">
               <div className="text-slate-500 ">
                 {" "}
                 <strong>{name}</strong>{" "}
               </div>
-              <div className={`text-slate-500 text-wrap break-words text-justify overflow-hidden ${isReadMore ? "" : "line-clamp-5"}`}>{description}</div>
-              <button onClick={toggleReadMore} className="text-blue-500 cursor-pointer mt-0">
-                {isReadMore ? "Leer menos" : "Leer más"}
-              </button>
+              <div className={`text-slate-500 text-wrap break-words text-justify overflow-hidden ${isReadMore ? "" : "line-clamp-5"}`}>
+                {descriptionLines.map((line, index) => (
+                  <span key={index}>
+                    {line}
+                    <br />
+                  </span>
+                ))}
+              </div>
+              {descriptionLines.length > 5 && (
+                <button onClick={toggleReadMore} className="text-blue-500 cursor-pointer mt-0">
+                  {isReadMore ? "Leer menos" : "Leer más"}
+                </button>
+              )}
               <div className="text-slate-500">
                 {variablePrice ? <span className="text-primary">Desde</span> : ""}
                 <strong> Bs. {unitPrice} </strong>
@@ -114,7 +129,7 @@ export const ServModal = ( { _id, name, unitPrice, description = '', imageURL = 
             </div>
           </div>
 
-          <div className="container flexCenter mx-auto my-auto">
+          <div className="container flexCenter mx-auto my-auto sm:my-0">
             <Button className="" onClick={onCarrito}>
               Agregar
             </Button>

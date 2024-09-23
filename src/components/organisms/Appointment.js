@@ -216,8 +216,8 @@ export const Appointment = () => {
 
         <div className="col-span-full">
           <div className="mb-3 sm:mb-6">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="datePicker flex justify-end flex-row-reverse sm:w-2/3 rounded-2xl border-solid border border-primary mb-3 sm:mb-0 w-full">
+            <div className="flex flex-wrap gap-4 w-full">
+              <div className="datePicker flex justify-end flex-row-reverse flex-grow sm:w-2/3 rounded-2xl border-solid border border-primary mb-3 sm:mb-0 w-full">
                 <DatePicker
                   // minDate={null}
                   selected={booking.startDate || formValues.start}
@@ -240,7 +240,6 @@ export const Appointment = () => {
                   }}
                 />
               </div>
-              <div></div>
             </div>
           </div>
         </div>
