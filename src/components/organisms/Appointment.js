@@ -216,8 +216,8 @@ export const Appointment = () => {
 
         <div className="col-span-full">
           <div className="mb-3 sm:mb-6">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="datePicker flex justify-end flex-row-reverse sm:w-2/3 rounded-2xl border-solid border border-primary mb-3 sm:mb-0 w-full">
+            <div className="flex flex-wrap gap-4 w-full">
+              <div className="datePicker flex justify-end flex-row-reverse flex-grow sm:w-2/3 rounded-2xl border-solid border border-primary mb-3 sm:mb-0 w-full">
                 <DatePicker
                   // minDate={null}
                   selected={booking.startDate || formValues.start}
@@ -240,14 +240,13 @@ export const Appointment = () => {
                   }}
                 />
               </div>
-              <div></div>
             </div>
           </div>
         </div>
         <div className="col-span-full">
           <div className="mb-3 sm:mb-6">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
+            <div className="flex flex-wrap gap-4">
+              <div className="grow">
                 <Input
                   name="descuento"
                   type="text"
@@ -256,7 +255,7 @@ export const Appointment = () => {
                   onChange={onInputChanged}
                 />
               </div>
-              <div>
+              <div className="grow">
                 <Button
                   disabled={!isCheckingCouponBtn}
                   onClick={onVerifyCoupon}
@@ -302,8 +301,8 @@ export const Appointment = () => {
               </h2>
             </div>
             <div className="mb-3 sm:mb-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
+              <div className="flex flex-wrap gap-4">
+                <div className="grow">
                   {Object.keys(addresses).length === 0 ? (
                     "No tienes direccion"
                   ) : (
@@ -328,7 +327,7 @@ export const Appointment = () => {
                     </select>
                   )}
                 </div>
-                <div>
+                <div className="grow">
                   <Button
                     href="#"
                     onClick={onAddress}
