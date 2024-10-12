@@ -30,7 +30,7 @@ const Servicios = (props) => {
       footer={<Footer />}
     >
       <ServModal isOpen={ isOpenModal } {...active} />
-
+    
       <List>
         {
         proveedor && (
@@ -41,7 +41,7 @@ const Servicios = (props) => {
             puntaje= {proveedor.avgRating}
             image= {proveedor.picture}
             categoria = {null}
-            servicios= {proveedor.services}
+            servicios= {services}
             recomendado={proveedor.recommendedServices}
           />
 
