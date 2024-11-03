@@ -19,7 +19,7 @@ const customStyles = {
 
 Modal.setAppElement("#root");
 
-export const ServModal = ({ _id, name, unitPrice, description = "", imageURL = "", unitEstimatedWorkMinutes, variablePrice, isOpen = false }) => {
+export const ServModal = ({ _id, name, unitPrice, description = "", imageURL = "", unitEstimatedWorkMinutes, variablePrice, isOpen = false, availableAfterHours }) => {
   const { providerid } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ export const ServModal = ({ _id, name, unitPrice, description = "", imageURL = "
     const price = cant * unitPrice;
     const quantity = cant;
     const estimatedWorkMinutes = cant * unitEstimatedWorkMinutes;
-    const serv = { _id, name, unitPrice, description, imageURL, unitEstimatedWorkMinutes, variablePrice };
+    const serv = { _id, name, unitPrice, description, imageURL, unitEstimatedWorkMinutes, variablePrice, availableAfterHours };
     dispatch(
       BOOKING_ADD_TO_CART({
         quantity,

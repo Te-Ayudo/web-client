@@ -218,27 +218,36 @@ export const Appointment = () => {
           <div className="mb-3 sm:mb-6">
             <div className="flex flex-wrap gap-4 w-full">
               <div className="datePicker flex justify-end flex-row-reverse flex-grow sm:w-2/3 rounded-2xl border-solid border border-primary mb-3 sm:mb-0 w-full">
-                <DatePicker
-                  // minDate={null}
-                  selected={booking.startDate || formValues.start}
-                  onChange={(event) => onDateChange(event)}
-                  dateFormat="Pp"
-                  showTimeSelect
-                  filterDate={(date) => {
-                    const _date = moment(date);
-                    return availability[_date.isoWeekday() - 1].length > 0;
-                  }}
-                  includeTimes={hourPicker}
-                  className="rounded-2xl border w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary "
-                  withPortal
-                  placeholderText="Seleccionar una fecha"
-                  timeClassName={(time) => {
-                    const _time = moment(time);
-                    if (!hourPicker.includes(new Date(_time).getTime())) {
-                      return "hide";
-                    }
-                  }}
-                />
+                {hourPicker.length >= 0 && (
+                  <DatePicker
+                    selected={booking.startDate || formValues.start}
+                    onChange={(event) => onDateChange(event)}
+                    dateFormat="Pp"
+                    showTimeSelect
+                    filterDate={(date) => {
+                      const _date = moment(date);
+                      return availability[_date.isoWeekday() - 1].length > 0;
+                    }}
+                    includeTimes={hourPicker}
+                    className="rounded-2xl border w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary "
+                    withPortal
+                    placeholderText="Seleccionar una fecha"
+                    onCalendarOpen={() => {
+                      onDateChange(new Date());
+                    }}
+                    // allowSameDay
+                    timeClassName={(time) => {
+                      const _time = moment(time);
+                      if (!hourPicker.includes(new Date(_time).getTime())) {
+                        return "hide";
+                      }
+                      const now = new moment();
+                      if (_time.isBefore(now, "minute")) {
+                        return "hide";
+                      }
+                    }}
+                  />
+                )}
               </div>
             </div>
           </div>

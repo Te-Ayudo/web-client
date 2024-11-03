@@ -36,7 +36,7 @@ export const useCreateBookingScreen = () => {
 	])
 	const [employee, setEmployee] = useState([])
 	const [hour, setHour] = useState(null)
-	const [maxAvailableAfterHours, setMaxAvailableAfterHours] = useState(24)
+	const [maxAvailableAfterHours, setMaxAvailableAfterHours] = useState(1)
 
   const getAvailability = async () => {
 		try {
