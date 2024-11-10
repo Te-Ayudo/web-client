@@ -98,6 +98,26 @@ export const Appointment = () => {
     });
   }, []);
 
+  useEffect(() => {
+    const now = new Date();
+    if (hourPicker.length > 0) {
+      const startDate = hourPicker.find((hour) => {
+        return new Date(hour).getTime() >= now.getTime();
+      });
+      if (startDate) {
+        setFormValues({ ...formValues, start: new Date(startDate) });
+        dispatch(
+          BOOKING_SET({
+            bookingDate: format(
+              new Date(startDate),
+              "yyyy-MM-dd'T'HH:mm:ssxxx"
+            ),
+          })
+        );
+      }
+    }
+  }, [hourPicker]);
+
   const onInputChanged = ({ target }) => {
     setFormValues({
       ...formValues,
@@ -233,7 +253,7 @@ export const Appointment = () => {
                     withPortal
                     placeholderText="Seleccionar una fecha"
                     onCalendarOpen={() => {
-                      onDateChange(new Date());
+                      _hourPicker(new Date());
                     }}
                     // allowSameDay
                     timeClassName={(time) => {
