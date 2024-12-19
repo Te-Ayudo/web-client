@@ -100,7 +100,7 @@ export const Appointment = () => {
 
   useEffect(() => {
     const now = new Date();
-    if (hourPicker.length > 0) {
+    if (hourPicker.length > 0 && !formValues.start) { 
       const startDate = hourPicker.find((hour) => {
         return new Date(hour).getTime() >= now.getTime();
       });
@@ -154,17 +154,16 @@ export const Appointment = () => {
   const onDateChange = (event) => {
     setFormValues({
       ...formValues,
-      ["start"]: event,
+      start: event, // Actualiza directamente el valor seleccionado
     });
-
-    //TODO: guardar fecha
+  
     const result = format(event, "yyyy-MM-dd'T'HH:mm:ssxxx");
     dispatch(
       BOOKING_SET({
         bookingDate: result,
       })
     );
-    _hourPicker(event);
+    _hourPicker(event); // Actualiza las horas disponibles para la nueva fecha
   };
 
   const navigate = useNavigate();
