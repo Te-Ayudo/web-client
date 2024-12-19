@@ -195,6 +195,7 @@ export const useCreateBookingScreen = () => {
 						logoURL: provider.picture,
 						phone: provider.phone,
 					},
+					createdFrom: 'Web',
 					notes: booking?.billingInfo?.notes || '',
 				},
 				onConfirmation
