@@ -98,6 +98,26 @@ export const Appointment = () => {
     });
   }, []);
 
+  useEffect(() => {
+    const now = new Date();
+    if (hourPicker.length > 0 && !formValues.start) { 
+      const startDate = hourPicker.find((hour) => {
+        return new Date(hour).getTime() >= now.getTime();
+      });
+      if (startDate) {
+        setFormValues({ ...formValues, start: new Date(startDate) });
+        dispatch(
+          BOOKING_SET({
+            bookingDate: format(
+              new Date(startDate),
+              "yyyy-MM-dd'T'HH:mm:ssxxx"
+            ),
+          })
+        );
+      }
+    }
+  }, [hourPicker]);
+
   const onInputChanged = ({ target }) => {
     setFormValues({
       ...formValues,
@@ -134,17 +154,16 @@ export const Appointment = () => {
   const onDateChange = (event) => {
     setFormValues({
       ...formValues,
-      ["start"]: event,
+      start: event, // Actualiza directamente el valor seleccionado
     });
-
-    //TODO: guardar fecha
+  
     const result = format(event, "yyyy-MM-dd'T'HH:mm:ssxxx");
     dispatch(
       BOOKING_SET({
         bookingDate: result,
       })
     );
-    _hourPicker(event);
+    _hourPicker(event); // Actualiza las horas disponibles para la nueva fecha
   };
 
   const navigate = useNavigate();
@@ -218,27 +237,36 @@ export const Appointment = () => {
           <div className="mb-3 sm:mb-6">
             <div className="flex flex-wrap gap-4 w-full">
               <div className="datePicker flex justify-end flex-row-reverse flex-grow sm:w-2/3 rounded-2xl border-solid border border-primary mb-3 sm:mb-0 w-full">
-                <DatePicker
-                  // minDate={null}
-                  selected={booking.startDate || formValues.start}
-                  onChange={(event) => onDateChange(event)}
-                  dateFormat="Pp"
-                  showTimeSelect
-                  filterDate={(date) => {
-                    const _date = moment(date);
-                    return availability[_date.isoWeekday() - 1].length > 0;
-                  }}
-                  includeTimes={hourPicker}
-                  className="rounded-2xl border w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary "
-                  withPortal
-                  placeholderText="Seleccionar una fecha"
-                  timeClassName={(time) => {
-                    const _time = moment(time);
-                    if (!hourPicker.includes(new Date(_time).getTime())) {
-                      return "hide";
-                    }
-                  }}
-                />
+                {hourPicker.length >= 0 && (
+                  <DatePicker
+                    selected={booking.startDate || formValues.start}
+                    onChange={(event) => onDateChange(event)}
+                    dateFormat="Pp"
+                    showTimeSelect
+                    filterDate={(date) => {
+                      const _date = moment(date);
+                      return availability[_date.isoWeekday() - 1].length > 0;
+                    }}
+                    includeTimes={hourPicker}
+                    className="rounded-2xl border w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary "
+                    withPortal
+                    placeholderText="Seleccionar una fecha"
+                    onCalendarOpen={() => {
+                      _hourPicker(new Date());
+                    }}
+                    // allowSameDay
+                    timeClassName={(time) => {
+                      const _time = moment(time);
+                      if (!hourPicker.includes(new Date(_time).getTime())) {
+                        return "hide";
+                      }
+                      const now = new moment();
+                      if (_time.isBefore(now, "minute")) {
+                        return "hide";
+                      }
+                    }}
+                  />
+                )}
               </div>
             </div>
           </div>
