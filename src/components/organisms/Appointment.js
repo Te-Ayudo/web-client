@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
 import {
   BOOKING_CUSTOMER_FULLNAME,
@@ -24,47 +23,47 @@ import moment from "moment";
 
 export const Appointment = () => {
   const booking = useSelector((state) => state.booking.selected);
-  const bookingLoading = useSelector((state) => state.booking.loading);
-  const state = useSelector((state) => state);
-  const provider = useSelector((state) => state.proveedor.selected);
   const dispatch = useDispatch();
+  const [isBranch, setIsBranch] = useState( false )
+  console.log(isBranch)
   const isCheckingCouponBtn = useMemo(() => !!booking.coupon, [booking.coupon]);
   const {
-    // showCalendarModal,
-    // closeModal,
     _hourPicker,
     maxAvailableAfterHours,
     availability,
-    // showCouponrModal,
-    // setShowCouponModal,
-    dialogVisible,
-    // onVerifyCoupon,
-    // setShowCalendarModal,
-    hour,
-    // _setHour,
     hourPicker,
-    discount,
     paymentMethods,
-    // selectedValue,
     onValueCh,
     addresses,
     employee,
-    setDialogVisible,
     onSubmit,
-    valueFact,
-    setValueFact,
-    // handleValueFact,
     onVerifyCoupon,
   } = useCreateBookingScreen();
 
+  const savedBooking = localStorage.getItem('bookingStorage');
+  
+	const finalBooking = JSON.parse(savedBooking);
+
+  useEffect(() => {
+    if (finalBooking?.isInBranch) {
+      setIsBranch(true);
+    }else{
+      setIsBranch(false);
+    }
+  }, [finalBooking]);
+  // console.log(finalBooking)
   const employeeAvailableByBranch = (employees) => {
+    
+    // console.log(employee)
     return employees.filter((employee) =>
-      booking.isInBranch && booking.branch._id === employee.branch
+      finalBooking.isInBranch && finalBooking.branch._id === employee.branch
         ? employee
         : false
     );
   };
-
+  // console.log(employeeAvailableByBranch(employee));
+  // console.log(employee)
+  // console.log(employeeAvailableByBranch(employee));
   const [formValues, setFormValues] = useState({
     name: "User Testing",
     telefono: "",
@@ -166,7 +165,6 @@ export const Appointment = () => {
     _hourPicker(event); // Actualiza las horas disponibles para la nueva fecha
   };
 
-  const navigate = useNavigate();
   const onAddress = (e) => {
     e.preventDefault();
     console.log("guardar direccion");
@@ -212,7 +210,7 @@ export const Appointment = () => {
               onChange={onInputChanged}
             >
               <option value=""> Empleado (Opcional) ... </option>
-              {booking.isInBranch
+              { isBranch
                 ? employeeAvailableByBranch(employee).map((metodo) => {
                     return (
                       <option key={metodo._id} value={JSON.stringify(metodo)}>
