@@ -193,7 +193,7 @@ export const useCreateBookingScreen = () => {
 						...booking.customer,
 						_id: user._id,
 						fullName: (user.first_name + ' ' + user.last_name).trim(),
-						phone: user.phone,
+						phone: booking.customer.phone,
 						pushToken: user.pushToken,
 						email: user.email,
 					},
@@ -204,6 +204,7 @@ export const useCreateBookingScreen = () => {
 						logoURL: provider.picture,
 						phone: provider.phone,
 					},
+					createdFrom: 'Web',
 					notes: booking?.billingInfo?.notes || '',
 				},
 				
