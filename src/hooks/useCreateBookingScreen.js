@@ -36,6 +36,7 @@ export const useCreateBookingScreen = () => {
 	const [employee, setEmployee] = useState([])
 	const [hour, setHour] = useState(null)
 	const [maxAvailableAfterHours, setMaxAvailableAfterHours] = useState(1)
+	const [loading, setLoading] = useState(false);
 
   const getAvailability = async () => {
 		try {
@@ -180,6 +181,7 @@ export const useCreateBookingScreen = () => {
 			})
 			return
 		}
+		setLoading(true);
 		dispatch(
       startCreateBooking(
 				{
@@ -300,7 +302,8 @@ export const useCreateBookingScreen = () => {
 
   const navigate = useNavigate();
 	const onConfirmation = () => {
-    navigate(`/${providerid}/gracias`)
+		setLoading(false);
+    	navigate(`/${providerid}/gracias`)
   }
 
   const _hourPicker = async (date) => {
@@ -379,6 +382,7 @@ export const useCreateBookingScreen = () => {
 		employee,
 		setDialogVisible,
 		onSubmit,
+		loading,
 		valueFact,
 		setValueFact,
 		// handleValueFact,
