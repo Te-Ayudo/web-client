@@ -9,7 +9,7 @@ const Button = ({className, href, onClick, children, fs, bg, tc, decoration,disa
 
   const renderButton = () => (
     <button
-      className={classes}
+      className={`${classes} active:bg-opacity-80`}
       onClick={onClick}
       disabled={disabled}
       >
