@@ -37,6 +37,7 @@ export const Appointment = () => {
     addresses,
     employee,
     onSubmit,
+    loading,
     onVerifyCoupon,
   } = useCreateBookingScreen();
 
@@ -357,7 +358,7 @@ export const Appointment = () => {
                   <Button
                     href="#"
                     onClick={onAddress}
-                    className="sm:h-[48px] !text-[14px]"
+                    className="sm:h-[48px] !text-[14px] active:bg-opacity-80"
                   >
                     Añadir nueva dirección
                   </Button>
@@ -393,8 +394,8 @@ export const Appointment = () => {
 
         <div className="col-span-full">
           <div className="mb-3 sm:mb-6">
-            <Button type="submit" className="sm:h-[48px] !text-[14px]">
-              Confirmar Servicio
+            <Button type="submit" className="sm:h-[48px] !text-[14px]" disabled={loading}>
+              {loading? "Confirmando..." : "Confirmar servicio"}
             </Button>
           </div>
         </div>
