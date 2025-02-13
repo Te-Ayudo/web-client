@@ -9,8 +9,9 @@ import handok from '../../assets/frame_ok.svg';
 export const Thanks = () => {
 
   const {providerid} = useParams();
-  console.log(providerid);
-  
+  localStorage.removeItem('employeeStorage');
+	localStorage.removeItem('bookingStorage');
+	localStorage.removeItem('providerIdStorage');
 
   const navigate = useNavigate();
   const onInicio = () => {

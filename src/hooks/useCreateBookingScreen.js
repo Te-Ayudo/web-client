@@ -14,8 +14,7 @@ export const useCreateBookingScreen = () => {
 	const provider = useSelector((state) => state.proveedor.selected)
 	const booking = useSelector((state) => state.booking.selected)
 	const {success} = useSelector((state) => state.booking)
-  const dispatch = useDispatch()
-	//const navigation = useNavigation()
+    const dispatch = useDispatch()
 	const [valueFact, setValueFact] = useState({ razonSocial: '', nit: '' })
 	const [availability, setAvailability] = useState({
 		0: [],
@@ -37,6 +36,7 @@ export const useCreateBookingScreen = () => {
 	const [employee, setEmployee] = useState([])
 	const [hour, setHour] = useState(null)
 	const [maxAvailableAfterHours, setMaxAvailableAfterHours] = useState(1)
+	const [loading, setLoading] = useState(false);
 
   const getAvailability = async () => {
 		try {
@@ -70,7 +70,7 @@ export const useCreateBookingScreen = () => {
 			console.error(error)
 		}
 	}
-
+	
   const getAddresses = async () => {
 		let user = JSON.parse(await localStorage.getItem('user'))
 		setUser(user)
@@ -94,12 +94,22 @@ export const useCreateBookingScreen = () => {
 	}
 
 	const getListEmployee = async () => {
-		const metodo = booking.isInBranch?'En sucursal':'A domicilio'
 		const employee = booking.serviceCart?.map(function(element){
-   	return element.service._id;
+   			return element.service._id;
 		})
-		const result = (await employeeApi(metodo, employee,provider._id))
-
+		if (employee && employee.length > 0) {
+			localStorage.setItem('employeeStorage', JSON.stringify(employee));
+			localStorage.setItem('bookingStorage', JSON.stringify(booking));
+			localStorage.setItem('providerIdStorage', provider._id); 
+		}
+		const savedEmployee = localStorage.getItem('employeeStorage');
+		const savedProviderId = localStorage.getItem('providerIdStorage');
+		const savedBooking = localStorage.getItem('bookingStorage');
+		const finalBooking = JSON.parse(savedBooking);
+		const savedMetodo = finalBooking.isInBranch?'En sucursal':'A domicilio'
+		const finalEmployee = savedEmployee ? JSON.parse(savedEmployee) : employee;
+		const result = (await employeeApi(savedMetodo, finalEmployee, savedProviderId))
+		console.log(result)
 
 		 const employeefilter = result?.data.map(function(element){
   	 	return {
@@ -171,6 +181,7 @@ export const useCreateBookingScreen = () => {
 			})
 			return
 		}
+		setLoading(true);
 		dispatch(
       startCreateBooking(
 				{
@@ -184,7 +195,7 @@ export const useCreateBookingScreen = () => {
 						...booking.customer,
 						_id: user._id,
 						fullName: (user.first_name + ' ' + user.last_name).trim(),
-						phone: user.phone,
+						phone: booking.customer.phone,
 						pushToken: user.pushToken,
 						email: user.email,
 					},
@@ -198,8 +209,10 @@ export const useCreateBookingScreen = () => {
 					createdFrom: 'Web',
 					notes: booking?.billingInfo?.notes || '',
 				},
+				
 				onConfirmation
 			)
+			
 		)
 	}
 
@@ -289,7 +302,8 @@ export const useCreateBookingScreen = () => {
 
   const navigate = useNavigate();
 	const onConfirmation = () => {
-    navigate(`/${providerid}/gracias`)
+		setLoading(false);
+    	navigate(`/${providerid}/gracias`)
   }
 
   const _hourPicker = async (date) => {
@@ -368,6 +382,7 @@ export const useCreateBookingScreen = () => {
 		employee,
 		setDialogVisible,
 		onSubmit,
+		loading,
 		valueFact,
 		setValueFact,
 		// handleValueFact,
