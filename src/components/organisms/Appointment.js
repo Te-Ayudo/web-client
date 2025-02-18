@@ -39,8 +39,43 @@ export const Appointment = () => {
     onSubmit,
     loading,
     onVerifyCoupon,
+    unavailability,
   } = useCreateBookingScreen();
-
+  console.log(unavailability)
+  const getBlockedDates = (unavailablePeriods) => {
+    let blockedDates = [];
+  
+    unavailablePeriods.forEach(({ startDate, endDate }) => {
+      let start = moment(startDate);
+      let end = moment(endDate);
+  
+      let startDay = start.clone().startOf("day"); // Día de inicio (00:00)
+      let endDay = end.clone().startOf("day"); // Día de fin (00:00)
+  
+      while (startDay.isSameOrBefore(endDay)) {
+        // Control del primer día
+        if (startDay.isSame(start, "day")) {
+          if (start.hours() <= 8) {
+            blockedDates.push(startDay.clone()); // Bloquear completamente
+          }
+        } 
+        // Control del último día
+        else if (startDay.isSame(end, "day")) {
+          if (end.hours() >= 23) {
+            blockedDates.push(startDay.clone()); // Bloquear completamente
+          }
+        } 
+        // Días intermedios siempre bloqueados
+        else {
+          blockedDates.push(startDay.clone());
+        }
+  
+        startDay.add(1, "day"); // Avanzar un día
+      }
+    });
+  
+    return blockedDates;
+  };
   const savedBooking = localStorage.getItem('bookingStorage');
   
 	const finalBooking = JSON.parse(savedBooking);
@@ -52,19 +87,14 @@ export const Appointment = () => {
       setIsBranch(false);
     }
   }, [finalBooking]);
-  // console.log(finalBooking)
   const employeeAvailableByBranch = (employees) => {
     
-    // console.log(employee)
     return employees.filter((employee) =>
       finalBooking.isInBranch && finalBooking.branch._id === employee.branch
         ? employee
         : false
     );
   };
-  // console.log(employeeAvailableByBranch(employee));
-  // console.log(employee)
-  // console.log(employeeAvailableByBranch(employee));
   const [formValues, setFormValues] = useState({
     name: "User Testing",
     telefono: "",
@@ -171,6 +201,7 @@ export const Appointment = () => {
     console.log("guardar direccion");
     dispatch(setActiveModalAddress());
   };
+  const blockedDates = getBlockedDates(unavailability);
   return (
     <>
       <div className="col-span-full">
@@ -244,7 +275,16 @@ export const Appointment = () => {
                     showTimeSelect
                     filterDate={(date) => {
                       const _date = moment(date);
-                      return availability[_date.isoWeekday() - 1].length > 0;
+                      
+                      // Verificar que el día NO esté bloqueado
+                      const isBlocked = blockedDates.some((blockedDate) =>
+                        _date.isSame(blockedDate, "day")
+                      );
+              
+                      // Verificar disponibilidad en `availability`
+                      const isAvailable = availability[_date.isoWeekday() - 1]?.length > 0;
+              
+                      return isAvailable && !isBlocked;
                     }}
                     includeTimes={hourPicker}
                     className="rounded-2xl border w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary "
