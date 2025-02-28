@@ -16,6 +16,7 @@ import { SucursalesPage } from "./components/pages/SucursalesPage";
 import { ConfirmacionPage } from "./components/pages/ConfirmacionPage";
 import { useCheckAuthToken } from "./hooks/useCheckAuthToken";
 import { ProveedoresPage } from "./components/pages/ProveedoresPage";
+import { Rating } from "./components/pages/Rating";
 
 function App() {
 
@@ -33,7 +34,7 @@ function App() {
 
         <Route path=":providerid/login" element={<Login />} />
         <Route path=":providerid/registrarse" element={<Registrarse />} />
-        
+        <Route path=":providerid/rating" element={<Rating />} />
         <Route path=":providerid/servicios" element={<Servicios />} />
         <Route path=":providerid/programar" element={<ServiceAppointment />} />
         <Route path=":providerid/gracias" element={<Thanks />} />
