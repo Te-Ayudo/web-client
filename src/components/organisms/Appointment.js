@@ -276,8 +276,7 @@ export const Appointment = () => {
                     showTimeSelect
                     filterDate={(date) => {
                       const _date = moment(date);
-                      // console.log(date)
-                      // Verificar que el día NO esté bloqueado
+
                       const isBlocked = blockedDates.some((blockedDate) =>
                         _date.isSame(blockedDate, "day")
                       );
