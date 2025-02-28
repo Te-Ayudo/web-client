@@ -26,6 +26,7 @@ export const useCreateBookingScreen = () => {
 		6: [],
 	})
 	const [unavailability, setUnavailability] = useState([])
+	const [dateBusy, setDateBusy] = useState([])
 	const [addresses, setAddresses] = useState([])
 	const [hourPicker, setHourPicker] = useState([])
 	const [user, setUser] = useState(null)
@@ -67,6 +68,7 @@ export const useCreateBookingScreen = () => {
 				availability[e.dayIndex].push(e)
 			})
 			setUnavailability(responseJSON.data?.unavailability)
+			setDateBusy(responseJSON.data?.busy)
 			setAvailability(availability)
 		} catch (error) {
 			console.error(error)
@@ -388,8 +390,8 @@ export const useCreateBookingScreen = () => {
 		loading,
 		valueFact,
 		setValueFact,
-		// handleValueFact,
-		onVerifyCoupon
+		onVerifyCoupon,
+		dateBusy
 	}
 
 
