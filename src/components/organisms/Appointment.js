@@ -25,7 +25,6 @@ export const Appointment = () => {
   const booking = useSelector((state) => state.booking.selected);
   const dispatch = useDispatch();
   const [isBranch, setIsBranch] = useState( false )
-  console.log(isBranch)
   const isCheckingCouponBtn = useMemo(() => !!booking.coupon, [booking.coupon]);
   const {
     _hourPicker,
@@ -40,8 +39,10 @@ export const Appointment = () => {
     loading,
     onVerifyCoupon,
     unavailability,
+    dateBusy
   } = useCreateBookingScreen();
-  console.log(unavailability)
+  // console.log('DateBusy: ',dateBusy)
+  console.log(availability)
   const getBlockedDates = (unavailablePeriods) => {
     let blockedDates = [];
   
@@ -275,16 +276,37 @@ export const Appointment = () => {
                     showTimeSelect
                     filterDate={(date) => {
                       const _date = moment(date);
-                      
-                      // Verificar que el día NO esté bloqueado
+
                       const isBlocked = blockedDates.some((blockedDate) =>
                         _date.isSame(blockedDate, "day")
                       );
               
                       // Verificar disponibilidad en `availability`
                       const isAvailable = availability[_date.isoWeekday() - 1]?.length > 0;
-              
-                      return isAvailable && !isBlocked;
+                      const dayIndex = _date.isoWeekday() - 1;
+                      const employeeAvailability = availability[dayIndex];
+                      if (employeeAvailability.length === 0) return false; 
+                      const busyPeriods = dateBusy
+                        .filter(busy => moment(busy.start).isSame(_date, "day"))
+                        .map(({ start, end }) => ({
+                          start: moment(start).hours() * 60 + moment(start).minutes(),
+                          end: moment(end).hours() * 60 + moment(end).minutes(),
+                        }));
+                      console.log(busyPeriods)
+                      let availableMinutes = new Set();
+                      employeeAvailability.forEach(({ startHour, startMinute, endHour, endMinute }) => {
+                        for (let i = startHour * 60 + startMinute; i < endHour * 60 + endMinute; i++) {
+                          availableMinutes.add(i);
+                        }
+                      });
+
+                      busyPeriods.forEach(({ start, end }) => {
+                        for (let i = start; i < end; i++) {
+                          availableMinutes.delete(i);
+                        }
+                      });
+                      const allIntervalsBusy = availableMinutes.size === 0;
+                      return isAvailable && !isBlocked && !allIntervalsBusy;
                     }}
                     includeTimes={hourPicker}
                     className="rounded-2xl border w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary "
@@ -336,11 +358,6 @@ export const Appointment = () => {
         </div>
         <div className="col-span-full">
           <div className="mb-3 sm:mb-6">
-            {/* <Input
-          name="metodo"
-          type="text"
-          label="Metodo de pago"
-        /> */}
             <select
               name="metodopago"
               className="rounded-2xl border-solid border border-primary w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary"
