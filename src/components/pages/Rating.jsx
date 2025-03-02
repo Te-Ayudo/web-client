@@ -18,7 +18,7 @@ export const Rating = () => {
       return response.text().then((text) => {
         const data = text && JSON.parse(text);
          if (!response.ok) {
-            const error = (data && data.message) || response.statusText;
+            const error = (data && data.error) || response.statusText;
             return Promise.reject(error);
          }
         return data;
@@ -99,7 +99,8 @@ export const Rating = () => {
          await updateBook(bookId, _booking);
          Swal.fire({ icon: "success", title: "¡Gracias!", text: "Calificación enviada." });
       } catch (error) {
-         Swal.fire({ icon: "error", title: "Error", text: "No se pudo enviar la calificación." });
+         const messageError = error === "Ya se ha enviado la calificación." ? "Ya se ha enviado la calificación." : "No se pudo enviar la calificación.";
+         Swal.fire({ icon: "error", title: "Error", text: messageError });
       }
    };
 
