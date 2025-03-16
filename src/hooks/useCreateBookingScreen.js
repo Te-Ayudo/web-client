@@ -10,9 +10,10 @@ import moment from 'moment';
 
 export const useCreateBookingScreen = () => {
   const {providerid} = useParams();
-
+ 
 	const provider = useSelector((state) => state.proveedor.selected)
 	const booking = useSelector((state) => state.booking.selected)
+	console.log('RESERVA: !!',booking)
 	const {success} = useSelector((state) => state.booking)
     const dispatch = useDispatch()
 	const [valueFact, setValueFact] = useState({ razonSocial: '', nit: '' })
@@ -39,13 +40,14 @@ export const useCreateBookingScreen = () => {
 	const [hour, setHour] = useState(null)
 	const [maxAvailableAfterHours, setMaxAvailableAfterHours] = useState(1)
 	const [loading, setLoading] = useState(false);
-
   const getAvailability = async () => {
 		try {
-			const id = booking.employee?._id ?? provider._id;
-			let url = process.env.REACT_APP_API_URL + "/availability/" + id;
-			if (booking.branch?._id) {
-			  url += "?branch=" + booking.branch?._id;
+			const id = booking.employee?._id ?? 0;
+			let url = `${process.env.REACT_APP_API_URL}/availability/${id}`;
+			const savedBooking = localStorage.getItem('bookingStorage');
+			const finalBooking = JSON.parse(savedBooking);
+			if (finalBooking.branch?._id) {
+			  url += "?branch=" + finalBooking.branch?._id;
 			}
 			let response = await _fetch(url, {
 				method: "GET",
@@ -113,7 +115,6 @@ export const useCreateBookingScreen = () => {
 		const savedMetodo = finalBooking.isInBranch?'En sucursal':'A domicilio'
 		const finalEmployee = savedEmployee ? JSON.parse(savedEmployee) : employee;
 		const result = (await employeeApi(savedMetodo, finalEmployee, savedProviderId))
-		console.log(result)
 
 		 const employeefilter = result?.data.map(function(element){
   	 	return {
@@ -314,8 +315,14 @@ export const useCreateBookingScreen = () => {
     let array = [];
     let today = moment();
     let isSameDay = moment(today).isSame(date, "day");
+	const id = booking.employee?._id ?? 0;
+	const savedBooking = localStorage.getItem('bookingStorage');
+	const finalBooking = JSON.parse(savedBooking);
+	const providerId = localStorage.getItem('providerIdStorage');
+	// const finalProvider = JSON.parse(providerId);
+	console.log('PROVIDER',providerId)
     let response = await _fetch(
-		process.env.REACT_APP_API_URL  + "/dateAvailability/" + provider._id,
+		process.env.REACT_APP_API_URL  + "/dateAvailability/" + (id === 0 ? 0 : providerId),
       {
         method: "POST",
         headers: {
@@ -324,11 +331,11 @@ export const useCreateBookingScreen = () => {
         },
         body: JSON.stringify({
           date: moment(date).startOf("day").utc().format(),
-          estimatedTime: booking.totalEstimatedWorkMinutes,
-          isInBranch: booking.isInBranch,
-          branch: booking.branch?._id,
+          estimatedTime: finalBooking.totalEstimatedWorkMinutes,
+          isInBranch: finalBooking.isInBranch,
+          branch: finalBooking.branch?._id,
           employee: booking.employee?._id ?? null,
-          serviceCart: booking.serviceCart.map((e) => e.service?._id),
+          serviceCart: finalBooking.serviceCart.map((e) => e.service?._id),
         }),
       }
     );

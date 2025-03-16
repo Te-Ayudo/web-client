@@ -43,7 +43,7 @@ export const Appointment = () => {
   } = useCreateBookingScreen();
   // console.log('DateBusy: ',dateBusy)
   console.log(availability)
-  const getBlockedDates = (unavailablePeriods) => {
+  const getBlockedDates = (unavailablePeriods = []) => {
     let blockedDates = [];
   
     unavailablePeriods.forEach(({ startDate, endDate }) => {
@@ -202,7 +202,7 @@ export const Appointment = () => {
     console.log("guardar direccion");
     dispatch(setActiveModalAddress());
   };
-  const blockedDates = getBlockedDates(unavailability);
+  const blockedDates = getBlockedDates(unavailability || []);
   return (
     <>
       <div className="col-span-full">
@@ -274,6 +274,7 @@ export const Appointment = () => {
                     onChange={(event) => onDateChange(event)}
                     dateFormat="Pp"
                     showTimeSelect
+                    minDate={new Date()}
                     filterDate={(date) => {
                       const _date = moment(date);
 
@@ -292,7 +293,7 @@ export const Appointment = () => {
                           start: moment(start).hours() * 60 + moment(start).minutes(),
                           end: moment(end).hours() * 60 + moment(end).minutes(),
                         }));
-                      console.log(busyPeriods)
+                      // console.log(busyPeriods)
                       let availableMinutes = new Set();
                       employeeAvailability.forEach(({ startHour, startMinute, endHour, endMinute }) => {
                         for (let i = startHour * 60 + startMinute; i < endHour * 60 + endMinute; i++) {
