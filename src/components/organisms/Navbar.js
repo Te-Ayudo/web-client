@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
 import {BiUser} from "react-icons/bi"
 import Button from "../atoms/Button";
-import { startLogout } from "../../store";
+import { login, startLogout } from "../../store";
 import { startListServicios } from "../../store/servicios";
 import {  useNavigate, useParams } from "react-router-dom";
 import { googleLogout } from '@react-oauth/google';
@@ -33,11 +33,19 @@ export const Navbar = ({onClick}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    let storageToken = localStorage.getItem("authToken");
+    let userStorage = localStorage.getItem("user");
+    if (storageToken) {
+      setToken(storageToken)
+      if (userStorage) {
+        dispatch(login(JSON.parse(userStorage)));
+      }
+    }
     setToken(localStorage.getItem("authToken"))
   }, [])
   
   useEffect(() => {
-    setTimeout(async () => await autoLogin(), 500)
+    setTimeout(async () => await autoLogin(), 0)
   }, [token])
   
    useEffect(() => {
@@ -98,25 +106,27 @@ export const Navbar = ({onClick}) => {
       await isAvailable()
 			if (online) {
         const urlApi = process.env.REACT_APP_API_URL;
-        const urlPath = `${urlApi}/auth`;
+        const urlPath = `${urlApi}/authLogin`;
         await _fetch(urlPath, {
           method: 'GET',
 					headers: {
             Accept: 'application/json',
 						'Content-Type': 'application/json',
 					},
+          
 				}).then(async (response) => {
           if (response) {
-            response
+            response     
             .json()
-            .then(async (json) => {                
-								if (json.user) {
-									let user = await JSON.stringify(json['user'])
+            .then(async (data) => {                     
+								if (data.data.user) {
+                  let user = await JSON.stringify(data.data.user)
 									await localStorage.setItem(
-										'authToken',
-										'Bearer ' + json['data']['token']
-									)
-									await localStorage.setItem('user', user)
+                    	'authToken',
+                    	'Bearer ' + data.data.token
+                    )
+                  await localStorage.setItem('user', user)
+                  dispatch(login(user));
 
 								} else {
                   setToken('')
@@ -133,7 +143,6 @@ export const Navbar = ({onClick}) => {
 			}
 		}
 	}
-
   return (
   <nav className="flex justify-center sm:justify-between flex-col sm:flex-row w-full pt-6">
 

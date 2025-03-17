@@ -5,77 +5,72 @@ import Swal from "sweetalert2";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 
-import { useNavigate, useParams } from 'react-router-dom';
-import { sendRegisterCodeWithWhatsapp, startCreatingUserWithEmailPassword, startCreatingUserWithWhatsapp, startListServicios } from "../../store";
+import { useNavigate, useParams } from "react-router-dom";
+import { sendCodeWithWhatsapp, startListServicios, startUserWithWhatsapp } from "../../store";
 import { useForm } from "../../hooks/useForm";
 import { Alert } from "../atoms/Alert";
 import phone_code from "../../assets/phone_code.json";
 
 const formValidations = {
   // email: [ (value) => value.includes('@'), 'El correo debe de tener una @' ],
-  // password: [ (value) => value.length >= 6, 'El password debe de tener mas de 6 letras.' ],  
-  first_name: [ (value) => value.length >= 1, 'El nombre es obligatorio' ],
-  last_name: [ (value) => value.length >= 1, 'El nombre es obligatorio' ],
-}
+  // password: [ (value) => value.length >= 6, 'El password debe de tener mas de 6 letras.' ],
+  first_name: [(value) => value.length >= 1, "El nombre es obligatorio"],
+  last_name: [(value) => value.length >= 1, "El nombre es obligatorio"],
+  phone: [(value) => value.length >= 1, "El teléfono es obligatorio"],
+};
 
-const formData = {  
-  first_name:   '',
-  last_name:    '',
-  codePhone:    '591',
-  phone:        '',  
-  otpCode: '',
-}
+const formData = {
+  first_name: "",
+  last_name: "",
+  codePhone: "591",
+  phone: "",
+  otpCode: "",
+};
 
-export const Registro = () => {
-  const {providerid} = useParams();
+export const UpdateCustomer = () => {
+  const { providerid } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [formSubmitedd, setFormSubmitedd] = useState(false)
-  const [otpSent, setOtpSent] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [formSubmitedd, setFormSubmitedd] = useState(false);
+  const [otpUpdateSent, setOtpUpdateSent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const {status,error} = useSelector( state => state.auth );
-  const isCheckingAuthentication =  useMemo( () => status === 'checking',[status] );
+  const { status, error } = useSelector((state) => state.auth);
+  const isCheckingAuthentication = useMemo(() => status === "checking", [status]);
 
   useEffect(() => {
-      if( error !== null && formSubmitedd ){
-        Swal.fire('Error en la authentificacion',error,'error')
-      }
-  
-    }, [error])
+    if (error !== null && formSubmitedd) {
+      Swal.fire("Error en la authentificacion", error, "error");
+    }
+  }, [error]);
 
-
-  const {
-    formState,first_name,last_name,codePhone,phone, otpCode, onInputChange,
-    isFormValid,first_nameValid,last_nameValid
-  } = useForm(formData,formValidations);
+  const { formState, first_name, last_name, codePhone, phone, otpCode, onInputChange, isFormValid, first_nameValid, last_nameValid } = useForm(formData, formValidations);
 
   const onServicios = () => {
     navigate(`/${providerid}/`);
   };
 
-  const onSubmitPhone = ( event ) => {
+  const onSubmitPhone = (event) => {
     event.preventDefault();
     setFormSubmitedd(true);
     setLoading(true);
+    if (!isFormValid) return;
 
-    if( !isFormValid ) return ;
+    dispatch(sendCodeWithWhatsapp(formState, () => setOtpUpdateSent(true))).finally(() => setLoading(false));
+    // setOtpUpdateSent(true);
+  };
 
-    dispatch(sendRegisterCodeWithWhatsapp(formState, () => setOtpSent(true))).finally(() => setLoading(false));
-  }
-
-  const onSubmitOTP = ( event ) => {
+  const onSubmitOTP = (event) => {
     event.preventDefault();
     setFormSubmitedd(true);
     setLoading(true);
     dispatch(startListServicios());
-    dispatch(startCreatingUserWithWhatsapp({ code: otpCode }, onServicios)).finally(() => setLoading(false));
-
-  }
-  const isProviedor=!!providerid;  
+    dispatch(startUserWithWhatsapp({ code: otpCode }, onServicios)).finally(() => setLoading(false));
+  };
+  const isProviedor = !!providerid;
   return (
-    <form className="text-center" method="POST" onSubmit={otpSent ? onSubmitOTP : onSubmitPhone}>
-      <h3 className="h3 text-primary">Crear Cuenta</h3>
+    <form className="text-center" onSubmit={otpUpdateSent ? onSubmitOTP : onSubmitPhone}>
+      <h3 className="h3 text-primary">Completa tu perfil</h3>
       <div className="col-span-full">
         <div className="mb-3 sm:mb-6">
           <Input type="text" label="Nombre(s)" name="first_name" value={first_name} onChange={onInputChange} error={!!first_nameValid && formSubmitedd} helperText={first_nameValid} />
@@ -102,7 +97,7 @@ export const Registro = () => {
           <Input type="text" label="Teléfono" name="phone" value={phone} onChange={onInputChange} />
         </div>
       </div>
-      {otpSent && (
+      {otpUpdateSent && (
         <div className="col-span-full">
           <div className="mb-3 sm:mb-6">
             <Input type="text" label="Código OTP" name="otpCode" value={otpCode} onChange={onInputChange} />
@@ -120,7 +115,7 @@ export const Registro = () => {
               <div className="flex justify-center items-center">
                 <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></div>
               </div>
-            ) : otpSent ? (
+            ) : otpUpdateSent ? (
               "Verificar"
             ) : (
               "Enviar código"
@@ -130,7 +125,6 @@ export const Registro = () => {
       </div>
     </form>
   );
+};
 
-}
-
-export default Registro
+export default UpdateCustomer;

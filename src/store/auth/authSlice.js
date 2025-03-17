@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { loginWhatsappApi } from './helpers/loginWhatsappApi';
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -6,6 +7,8 @@ export const authSlice = createSlice({
     status: 'not-authenticated', //checking, email-confirmation , not-authenticated authenticated
     uid: null,
     email: null,
+    phone: null,
+    codePhone: null,
     displayName: null,
     photoURL: null,
     error: null
@@ -15,6 +18,19 @@ export const authSlice = createSlice({
         state.status = 'authenticated';
         state.uid = payload.uid;
         state.email = payload.email;
+        state.phone = payload.phone;
+        state.codePhone = payload.codePhone;
+        state.displayName = payload.displayName;
+        state.photoURL = payload.photoURL;
+        state.error = null
+
+    },
+    loginWhatsapp: (state, {payload}) => {
+        state.status = 'authenticated';
+        state.uid = payload.uid;
+        state.email = payload.email;
+        state.phone = payload.phone;
+        state.codePhone = payload.codePhone;
         state.displayName = payload.displayName;
         state.photoURL = payload.photoURL;
         state.error = null
@@ -48,4 +64,4 @@ export const authSlice = createSlice({
 
 
 // Action creators are generated for each case reducer function
-export const { login,logout,checkingCredentials,confirmation,clearErrorMessage } = authSlice.actions;
+export const { login, loginWhatsapp, logout,checkingCredentials,confirmation,clearErrorMessage } = authSlice.actions;

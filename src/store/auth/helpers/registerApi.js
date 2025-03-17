@@ -1,15 +1,17 @@
 
-export const registerApi = async({ first_name,last_name,email,password,phone,role }) => {
+export const registerApi = async({ codePhone,phone }) => {
 
-  const teayudoUrl= process.env.REACT_APP_API_URL + '/register';
-
+  const teayudoUrl= process.env.REACT_APP_API_URL + '/completeProfile';
+  const first_name = localStorage.getItem('first_name');
+  const last_name = localStorage.getItem('last_name');
+  
   const formData = new FormData();
-  formData.append('first_name',first_name);
-  formData.append('last_name',last_name);
-  formData.append('email',email);
-  formData.append('password',password);
-  formData.append('phone',phone);
-  formData.append('role',role);
+  formData.append('data', JSON.stringify({ 
+    first_name: first_name, 
+    last_name: last_name 
+  }));
+  formData.append('codePhone', codePhone);
+  formData.append('phone',phone);  
 
   try {
 
