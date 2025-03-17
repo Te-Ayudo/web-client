@@ -11,8 +11,8 @@ const Inicio = () => {
       header={<Header/>}
       footer={<Footer />}
     >
-      <Modal>
-        <Login />
+      <Modal showBack={1}>
+        <Login/>
       </Modal>
     </Main>
   )
