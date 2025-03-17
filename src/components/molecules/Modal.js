@@ -28,7 +28,7 @@ function Modal({children, isModalOpen, closeModal, showBack}) {
         {showBack ? 
           <Button 
             className = "absolute left-18 top-0 w-[30px]" 
-            href = {`/${currentSlug}/login`} 
+            href = {`/${currentSlug}/loginWhatsapp`}
             onClick = {closeModal}
             decoration = {<BiChevronLeft size="3rem" className="text-primary !p-0" />}>
           </Button>
