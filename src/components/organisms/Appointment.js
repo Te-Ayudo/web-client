@@ -110,6 +110,7 @@ export const Appointment = () => {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
+    console.log("user", user)
     let first_name = "";
     if (user.first_name) {
       first_name = user.first_name + " " + user.last_name;
@@ -127,6 +128,8 @@ export const Appointment = () => {
       metodopago: "",
       start: null,
     });
+
+    dispatch(BOOKING_CUSTOMER_PHONE({ phone })); 
   }, []);
 
   useEffect(() => {
@@ -223,17 +226,17 @@ export const Appointment = () => {
             />
           </div>
         </div>
-        <div className="col-span-full">
+        {/* <div className="col-span-full">
           <div className="mb-3 sm:mb-6">
             <Input
               name="telefono"
               type="text"
               label="Telefono"
               value={formValues.telefono}
-              onChange={onInputChanged}
+              onChange={onInputChanged}              
             />
           </div>
-        </div>
+        </div> */}
         <div className="col-span-full">
           <div className="mb-3 sm:mb-6">
             <select
