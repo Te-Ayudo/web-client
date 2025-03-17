@@ -9,6 +9,7 @@ import Home from "./components/pages/Home";
 import Servicios from "./components/pages/Servicios";
 import NotFound from "./components/pages/NotFound"
 import ServiceAppointment from "./components/pages/ServiceAppointment";
+import LandingPage from "./components/pages/Landing";
 import { Thanks } from "./components/pages/Thanks";
 import { Cart } from "./components/pages/Cart";
 import { Empresa } from "./components/pages/Empresa";
@@ -17,10 +18,13 @@ import { ConfirmacionPage } from "./components/pages/ConfirmacionPage";
 import { useCheckAuthToken } from "./hooks/useCheckAuthToken";
 import { ProveedoresPage } from "./components/pages/ProveedoresPage";
 import { Rating } from "./components/pages/Rating";
+import LoginWhatsapp from "./components/pages/LoginWhatsapp";
+import LoginWhatsappOTP from "./components/pages/LoginWhatsappOTP";
+import RegistroOTPPage from "./components/pages/RegistroOTP";
 
 function App() {
 
-  const { status } = useCheckAuthToken();
+  // const { status } = useCheckAuthToken();
   const { services,isLoading} = useSelector( state => state.carrito );
   const { selected } = useSelector( state => state.booking );
   const serviceCart = selected.serviceCart
@@ -31,9 +35,12 @@ function App() {
         <Route path="/" element={ <Home /> } />
         <Route path=":providerid" element={ <Home /> } />
         {/* <Route path="/" element={<Home />} /> */}
-
+        <Route path=":providerid/landing" element={<LandingPage />} />        
+        <Route path=":providerid/loginWhatsapp" element={<LoginWhatsapp />} />
+        <Route path=":providerid/loginWhatsappOTP" element={<LoginWhatsappOTP />} />
         <Route path=":providerid/login" element={<Login />} />
         <Route path=":providerid/registrarse" element={<Registrarse />} />
+        <Route path=":providerid/registrarseOTP" element={<RegistroOTPPage />} />
         <Route path=":providerid/rating" element={<Rating />} />
         <Route path=":providerid/servicios" element={<Servicios />} />
         <Route path=":providerid/programar" element={<ServiceAppointment />} />
