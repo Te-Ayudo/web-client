@@ -83,103 +83,70 @@ export const Login = () => {
   const isProviedor=!!providerid;
 
   return (
-<>
-  {
-    myprov===undefined?('Error en el proveedor'):(
-      <div>
-
-   <form className="text-center" method="POST" onSubmit={ onSubmit } >
-    <Logo className="h-8 sm:h-14 mb-6 sm:mb-14 " />
-    <div className="col-span-full">
-      <div className="mb-3 sm:mb-6">
-        <Input
-          type="email"
-          label="Email"
-          name= "email"
-          value={email}
-          onChange={ onInputChange }
-        />
-      </div>
-    </div>
-    <div className="col-span-full">
-      <div className="mb-3 sm:mb-6">
-        <Input
-          type="password"
-          label="Contraseña"
-          name= "password"
-          value={password}
-          onChange={ onInputChange }
-        />
-      </div>
-    </div>
-    <div className="col-span-full">
-      <div className="mb-3 sm:mb-6 text-right">
-        <Button
-          bg = "bg-transparent"
-          tc= "text-primary"
-          className = "font-[400] !p-0 !text-[14px] !sm:text-[13px]"
-          href = "https://app.teayudo.com.bo/#/forgotPassword?role=cliente"
-        >
-          Olvidaste tu contraseña?
-        </Button>
-      </div>
-    </div>
-    <div className="col-span-full">
-      <div className="mb-3 sm:mb-6">
-        <Button
-          //href={"/empresa"}
-          disabled={ !isProviedor }
-          type="submit"
-          bg="bg-primary w-[250px] sm:w-[270px] mx-auto hover:bg-white "
-          tc="text-white hover:text-secondary"
-          className="sm:h-[48px] !text-[14px] bordered">
-          Ingresar
-        </Button>
-      </div>
-    </div>
-    <div className="col-span-full">
-      <div className="mb-3 sm:mb-6">
-        <Button
-          href={`/${providerid}/registrarse`}
-          bg="btn-transparent w-[250px] sm:w-[270px] mx-auto"
-          tc="text-secondary hover:text-white "
-          className="sm:h-[48px] !text-[14px] bordered">
-          Registrarse
-        </Button>
-      </div>
-    </div>
-  </form>
-    <div className="text-center" >
-    <div className="col-span-full">
-      <div className="mb-3 sm:mb-6">
-        <Button 
-          disabled={ !isProviedor }
-          onClick={ ()=> login()}
-          bg="btn-transparent w-[250px] sm:w-[270px] mx-auto"
-          tc="text-secondary hover:text-white "
-          className="sm:h-[48px] !text-[12px] bordered mt-0 p-0 "
-          >
-            <div className="grid grid-cols-3 gap-4  w-full text-center justify-center" >
-              <span className="flex  text-right items-center justify-end " >
-                <SVGComponent width={'25px'} heigh={'25px'} fill={'#9c9a9a'}   />
-              </span>
-              <span className="col-span-2 text-left items-center pt-1" > Iniciar sesión con Google</span>
+    <>
+      {myprov === undefined ? (
+        "Error en el proveedor"
+      ) : (
+        <div>
+          <form className="text-center" method="POST" onSubmit={onSubmit}>
+            <Logo className="h-8 sm:h-14 mb-6 sm:mb-14 " />
+            <div className="col-span-full">
+              <div className="mb-3 sm:mb-6">
+                <Input type="email" label="Email" name="email" value={email} onChange={onInputChange} />
+              </div>
             </div>
-
-        </Button>
-      </div>
-    </div>
-
-    </div>
-    
-      </div>
-    )
-  }
-
-
-
-</>
-  )
+            <div className="col-span-full">
+              <div className="mb-3 sm:mb-6">
+                <Input type="password" label="Contraseña" name="password" value={password} onChange={onInputChange} />
+              </div>
+            </div>
+            <div className="col-span-full">
+              <div className="mb-3 sm:mb-6 text-right">
+                <Button bg="bg-transparent" tc="text-primary" className="font-[400] !p-0 !text-[12px] !sm:text-[13px]" href="https://app.teayudo.com.bo/#/forgotPassword?role=cliente">
+                  Olvidaste tu contraseña?
+                </Button>
+              </div>
+            </div>
+            <div className="col-span-full">
+              <div className="mb-3 sm:mb-6">
+                <Button
+                  //href={"/empresa"}
+                  disabled={!isProviedor}
+                  type="submit"
+                  bg="bg-primary w-[250px] sm:w-[270px] mx-auto hover:bg-white "
+                  tc="text-white hover:text-secondary"
+                  className="sm:h-[48px] !text-[12px] bordered"
+                >
+                  Ingresar
+                </Button>
+              </div>
+            </div>
+            <div className="col-span-full">
+              <div className="mb-3 sm:mb-6">
+                <Button href={`/${providerid}/registrarse`} bg="btn-transparent w-[250px] sm:w-[270px] mx-auto" tc="text-secondary hover:text-white " className="sm:h-[48px] !text-[12px] bordered">
+                  Registrarse
+                </Button>
+              </div>
+            </div>
+          </form>
+          <div className="text-center">
+            <div className="col-span-full">
+              <div className="mb-3 sm:mb-6">
+                <Button disabled={!isProviedor} onClick={() => login()} bg="btn-transparent w-[250px] sm:w-[270px] mx-auto" tc="text-secondary hover:text-white " className="sm:h-[48px] !text-[12px] bordered whitespace-nowrap">
+                  <div className="flex items-center justify-center w-full">
+                    <span className="flex items-center justify-center mr-2">
+                      <SVGComponent width={"18px"} height={"18px"} fill={"#9c9a9a"} />
+                    </span>
+                    <span className="text-center">Iniciar sesión con Google</span>
+                  </div>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
 }
 
 export default Login
