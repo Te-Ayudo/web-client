@@ -6,8 +6,7 @@ export const registerApi = async(nombre,coordenada,idUser) => {
   const newcoord = {
     latitude:coordenada.lat,
     longitude:coordenada.lng
-  }
-  console.log(nombre, newcoord ,idUser);
+  }  
   try {
 
     const resp = await _fetch( teayudoUrl, {

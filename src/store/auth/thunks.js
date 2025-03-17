@@ -5,7 +5,6 @@ import { loginApi } from "./helpers/loginApi";
 import { loginWhatsappApi } from "./helpers/loginWhatsappApi";
 import { loginGoogleapi } from "./helpers/loginGoogleapi";
 import { loginWhatsappOTPApi } from "./helpers/loginWhatsappOTPApi";
-import { json } from "react-router-dom";
 import { registerWhatsappOTPApi } from "./helpers/registerWhatsappOTPApi";
 import { sendCodeApi } from "./helpers/sendCodeApi";
 import { validateCodePhone } from "./helpers/validateCodeApi";
@@ -41,11 +40,9 @@ export const startCreatingUserWithEmailPassword = ({ first_name,last_name,email,
 
 export const sendCodeWithWhatsapp = ({ first_name, last_name, codePhone, phone }, onConfirmation) => {
   return async (dispatch) => {
-    // dispatch(checkingCredentials());
     const { data, ...res } = await sendCodeApi({ first_name, last_name, codePhone, phone });
 
     const responseJSON = data;
-    console.log("response", responseJSON.message);
     if (responseJSON.error) {
       dispatch(logout(data));
       setTimeout(() => {
@@ -65,8 +62,7 @@ export const startUserWithWhatsapp = ({ code }, onConfirmation) => {
     const phone = localStorage.getItem("phone");
     // dispatch(checkingCredentials());
     const { data } = await validateCodePhone({ codePhone, phone, code });
-
-    console.log(data.user);
+    
     if (data.error) {
       dispatch(logout(data));
       setTimeout(() => {
@@ -76,8 +72,7 @@ export const startUserWithWhatsapp = ({ code }, onConfirmation) => {
     }
 
     if (data.data) {
-      const { data } = await updateCustomer({ codePhone, phone });
-      console.log(data);
+      const { data } = await updateCustomer({ codePhone, phone });      
       // const responseJSON = data;
       if (data.error) {
         dispatch(logout(data));
@@ -107,7 +102,7 @@ export const sendRegisterCodeWithWhatsapp = ({ first_name,last_name,codePhone,ph
  return async(dispatch) => {
 
     dispatch( checkingCredentials() );
-    const { data, ...res } = await registerWhatsappApi({ first_name, last_name, codePhone, phone });
+    const { data } = await registerWhatsappApi({ first_name, last_name, codePhone, phone });
 
     const responseJSON = data;      
     if (responseJSON.error) {
@@ -129,8 +124,6 @@ export const startCreatingUserWithWhatsapp = ({ code },onConfirmation) => {
     const phone = localStorage.getItem('phone');
     dispatch( checkingCredentials() );
     const { data } = await registerWhatsappOTPApi({ codePhone, phone, code });
-      
-    console.log(data.user);
     if (data.error) {
       dispatch(logout(data));
       setTimeout(() => {
@@ -142,8 +135,6 @@ export const startCreatingUserWithWhatsapp = ({ code },onConfirmation) => {
     if (data.data.user) {
       
       const { data } = await registerApi({ codePhone, phone });
-      console.log(data);
-      // const responseJSON = data;
       if (data.error) {
         dispatch(logout(data));
         setTimeout(() => {
@@ -170,8 +161,7 @@ export const startCreatingUserWithWhatsapp = ({ code },onConfirmation) => {
 
 export const startLoginGoogle = (user,navigation) => {
   return async(dispatch) => {
-    const {data} = await loginGoogleapi(user);
-    console.log(data);
+    const {data} = await loginGoogleapi(user);    
 		let responseJSON = data;
 		let error = data?.error;
 
@@ -182,8 +172,7 @@ export const startLoginGoogle = (user,navigation) => {
       },10);
       return;
     }
-    if (responseJSON?.error) {
-      console.log('error responsejson');
+    if (responseJSON?.error) {      
       responseJSON = {
         user: {
           role: false,
@@ -192,7 +181,6 @@ export const startLoginGoogle = (user,navigation) => {
     }
 
     if( responseJSON?.token  ){
-      console.log('error errror');
         const data ={
           uid:user.id,
           email:user.email,
@@ -225,8 +213,7 @@ export const startLoginWithEmailPassword = ({email, password,role},onServicios) 
   return async(dispatch) => {
     dispatch( checkingCredentials() );
     const { data } = await loginApi({email, password, role});
-    console.log('======================================');
-    console.log(data);
+    console.log('======================================');    
 		let responseJSON = data;
 		let error = data.error;
 
@@ -247,8 +234,8 @@ export const startLoginWithEmailPassword = ({email, password,role},onServicios) 
     if (
       !error &&
       responseJSON.user.role !== 'proveedor-empleado' &&
-      responseJSON.user.role != 'empleado' &&
-      responseJSON.user.role != 'proveedor-empresa' &&
+      responseJSON.user.role !== 'empleado' &&
+      responseJSON.user.role !== 'proveedor-empresa' &&
       responseJSON.user.state
     ){
     		await localStorage.setItem(
@@ -297,9 +284,7 @@ export const startLoginWithWhatsapp = ({phone,codePhone}, onServicios) => {
   return async(dispatch) => {
     dispatch( checkingCredentials() );
     const { data } = await loginWhatsappApi({ phone, codePhone });
-    console.log('======================================');
-    console.log(data);
-		let responseJSON = data;
+    console.log('======================================');    
 		let error = data.error;
 
     if( error ) {
@@ -325,8 +310,7 @@ export const startLoginWithWhatsappOTP = ({otpCode}, onServicios) => {
     const phone = localStorage.getItem('phone');
     const codePhone = localStorage.getItem('codePhone');
     const { data } = await loginWhatsappOTPApi({ phone, codePhone, code: otpCode });
-    console.log('======================================');
-    console.log(data);
+    console.log('======================================');    
 		let responseJSON = data;    
     let error = data.error;
     if( error ) {

@@ -26,9 +26,7 @@ export const startListServiciosbyProvider = (idProveedor) => {
 
 export const startAddService = ({ _id,imageURL,unitPrice,name,description }) => {
 
-return async(dispatch) =>{
-
-    console.log( { _id,imageURL,unitPrice,name,description } );
+return async(dispatch) =>{    
 
     const count =0;
 

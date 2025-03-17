@@ -267,7 +267,7 @@ export const Appointment = () => {
   const navigate = useNavigate();
   const onAddress = (e) => {
     e.preventDefault();
-    console.log("guardar direccion");
+    
     dispatch(setActiveModalAddress());
   };
   return (

@@ -41,8 +41,6 @@ export const Appointment = () => {
     unavailability,
     dateBusy
   } = useCreateBookingScreen();
-  // console.log('DateBusy: ',dateBusy)
-  console.log(availability)
   const getBlockedDates = (unavailablePeriods = []) => {
     let blockedDates = [];
   
@@ -109,8 +107,7 @@ export const Appointment = () => {
   });
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    console.log("user", user)
+    const user = JSON.parse(localStorage.getItem("user"));    
     let first_name = "";
     if (user.first_name) {
       first_name = user.first_name + " " + user.last_name;
@@ -202,7 +199,6 @@ export const Appointment = () => {
 
   const onAddress = (e) => {
     e.preventDefault();
-    console.log("guardar direccion");
     dispatch(setActiveModalAddress());
   };
   const blockedDates = getBlockedDates(unavailability || []);
@@ -296,7 +292,6 @@ export const Appointment = () => {
                           start: moment(start).hours() * 60 + moment(start).minutes(),
                           end: moment(end).hours() * 60 + moment(end).minutes(),
                         }));
-                      // console.log(busyPeriods)
                       let availableMinutes = new Set();
                       employeeAvailability.forEach(({ startHour, startMinute, endHour, endMinute }) => {
                         for (let i = startHour * 60 + startMinute; i < endHour * 60 + endMinute; i++) {

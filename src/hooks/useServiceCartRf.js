@@ -4,8 +4,7 @@ import { BOOKING_ADD_TO_CART, BOOKING_REMOVE_FROM_CART } from '../store'
 const useServiceCartRf = () => {
 	const dispatch = useDispatch()
 
-	const changeQuantity = (serviceOrder, qty) => {
-		console.log(serviceOrder);
+	const changeQuantity = (serviceOrder, qty) => {		
 		const serviceO= {
 			...serviceOrder,
 			quantity:qty

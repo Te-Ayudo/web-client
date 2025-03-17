@@ -51,7 +51,6 @@ export const ServModal = ({ _id, name, unitPrice, description = "", imageURL = "
   };
 
   const onCarrito = () => {
-    console.log("agregar al carrito");
     //dispatch( addNewItem( { _id,name,unitPrice,description,imageURL,cant } ) );
     if (cant < 1) {
       return setCant(1);

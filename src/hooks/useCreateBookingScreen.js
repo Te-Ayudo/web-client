@@ -12,8 +12,7 @@ export const useCreateBookingScreen = () => {
   const {providerid} = useParams();
  
 	const provider = useSelector((state) => state.proveedor.selected)
-	const booking = useSelector((state) => state.booking.selected)
-	console.log('RESERVA: !!',booking)
+	const booking = useSelector((state) => state.booking.selected)	
 	const {success} = useSelector((state) => state.booking)
     const dispatch = useDispatch()
 	const [valueFact, setValueFact] = useState({ razonSocial: '', nit: '' })
@@ -318,9 +317,7 @@ export const useCreateBookingScreen = () => {
 	const id = booking.employee?._id ?? 0;
 	const savedBooking = localStorage.getItem('bookingStorage');
 	const finalBooking = JSON.parse(savedBooking);
-	const providerId = localStorage.getItem('providerIdStorage');
-	// const finalProvider = JSON.parse(providerId);
-	console.log('PROVIDER',providerId)
+	const providerId = localStorage.getItem('providerIdStorage');	
     let response = await _fetch(
 		process.env.REACT_APP_API_URL  + "/dateAvailability/" + (id === 0 ? 0 : providerId),
       {

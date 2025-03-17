@@ -8,9 +8,7 @@ import Header from "../organisms/Header";
 import Footer from "../organisms/Footer";
 import Modal from '../molecules/Modal';
 import Service from '../organisms/Inicio';
-import Login from "../organisms/Login";
 import { useParams } from 'react-router-dom';
-import Landing from "../organisms/Landing";
 import LoginWhatsappPage from "../pages/LoginWhatsapp";
 import UpdateCustomerPage from "./UpdateCustomer";
 

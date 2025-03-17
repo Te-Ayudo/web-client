@@ -27,12 +27,10 @@ function handleResponse(response) {
   }
 
 export const startCreateBooking = (booking,onConfirmation) => {
-  return async(dispatch) => {
-    console.log(booking);
+  return async(dispatch) => {    
     dispatch(BOOKING_CREATE_REQUEST(booking));
     create(booking,'booking').then(
-      ()=>{
-        console.log('create booking successful');
+      ()=>{        
         dispatch( BOOKING_CLEAR() );
         onConfirmation();
       }
@@ -46,8 +44,7 @@ export const startCreateBooking = (booking,onConfirmation) => {
 }
 
 export const startVerifyCoupon = (booking) => {
-  const{code,services} = booking
-  console.log(booking);
+  const{code,services} = booking  
   return async(dispatch) => {
 
     dispatch(BOOKING_CREATE_REQUEST(booking));
@@ -71,19 +68,15 @@ export const startVerifyCoupon = (booking) => {
 }
 
 export const startCreateAddress = (nombre,coord) => {
-console.log(nombre,coord);
   return async(dispatch) => {
 
 		let user = JSON.parse(await localStorage.getItem('user'))
-    let	idUser = user._id
-    // console.log('guardar direccion');
+    let	idUser = user._id    
     const myResp = await registerApi(nombre,coord,idUser)
 
     if (myResp['error']) {
 				return setTimeout(
 					function () {
-						//Alert.alert(myResp['error'])
-            console.log(myResp['error']);
             dispatch(BOOKING_SET_ERROR(myResp['error']))
 					}.bind(this),
 					150

@@ -127,21 +127,18 @@ export const bookingSlice = createSlice({
 			let mserviceCart = []
 			let serviceOrder
 			mserviceCart = state.selected.serviceCart;
-			if(state.selected.serviceCart.length > 0){
-				console.log('buscar .... servicio');
+			if(state.selected.serviceCart.length > 0){				
 				serviceOrder = state.selected.serviceCart.find((e) =>
 					e.service._id == action.payload.service._id
 				 )
 			}
-			if (!!serviceOrder) {
-				console.log('update servicio add booking');
+			if (!!serviceOrder) {				
 				state.selected.serviceCart = state.selected.serviceCart.map((e) =>
 					e.service._id === action.payload.service._id
 						? action.payload
 						: e
 				)
-			} else {
-				console.log('nuevo servicio add booking');
+			} else {				
 				state.selected.serviceCart.push(action.payload)
 			}
 			//TODO: updateTotalEstimadoWorkMinutes and paymentInfo

@@ -3,8 +3,7 @@ export const providerApi = async(filter = {}) => {
   const urlApi = process.env.REACT_APP_API_URL;
   const urlPath = `${urlApi}/provider`;
 
-  try {
-    //console.log(urlPath);
+  try {    
     const resp = await fetch( urlPath , {
       method: 'GET'
     }).then( handleResponse );
