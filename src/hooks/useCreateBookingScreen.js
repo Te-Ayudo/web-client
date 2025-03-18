@@ -39,14 +39,16 @@ export const useCreateBookingScreen = () => {
 	const [hour, setHour] = useState(null)
 	const [maxAvailableAfterHours, setMaxAvailableAfterHours] = useState(1)
 	const [loading, setLoading] = useState(false);
-  const getAvailability = async () => {
+	console.log('booking', booking)
+	const getAvailability = async () => {
 		try {
 			const id = booking.employee?._id ?? 0;
-			let url = `${process.env.REACT_APP_API_URL}/availability/${id}`;
+			const providerId = localStorage.getItem('providerIdStorage');	
+			let url = `${process.env.REACT_APP_API_URL}/availability/${id}?idprovider=${providerId}`;
 			const savedBooking = localStorage.getItem('bookingStorage');
 			const finalBooking = JSON.parse(savedBooking);
 			if (finalBooking.branch?._id) {
-			  url += "?branch=" + finalBooking.branch?._id;
+			  url += "&branch=" + finalBooking.branch?._id;
 			}
 			let response = await _fetch(url, {
 				method: "GET",
@@ -319,7 +321,7 @@ export const useCreateBookingScreen = () => {
 	const finalBooking = JSON.parse(savedBooking);
 	const providerId = localStorage.getItem('providerIdStorage');	
     let response = await _fetch(
-		process.env.REACT_APP_API_URL  + "/dateAvailability/" + (id === 0 ? 0 : providerId),
+		process.env.REACT_APP_API_URL  + "/dateAvailability/" + (id === 0 ? 0 : providerId) + "?idprovider=" + providerId,
       {
         method: "POST",
         headers: {
