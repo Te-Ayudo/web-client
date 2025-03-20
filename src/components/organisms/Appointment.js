@@ -41,6 +41,7 @@ export const Appointment = () => {
     unavailability,
     dateBusy
   } = useCreateBookingScreen();
+  console.log(hourPicker)
   const getBlockedDates = (unavailablePeriods = []) => {
     let blockedDates = [];
   
@@ -148,7 +149,22 @@ export const Appointment = () => {
       }
     }
   }, [hourPicker]);
-
+  function updateBookingInLocalStorage(updates) {
+    // 1) Leer string del localStorage
+    const stored = localStorage.getItem("bookingStorage");
+    if (!stored) return;
+  
+    // 2) Parsear el JSON a objeto
+    const booking = JSON.parse(stored);
+  
+    // 3) Actualizar solo la parte que te interese
+    //    En este caso, "updates" es un objeto con las propiedades que quieras cambiar
+    //    por ejemplo { employee: { _id: '...', fullName: '...' } }
+    Object.assign(booking, updates);
+  
+    // 4) Volver a guardar en localStorage
+    localStorage.setItem("bookingStorage", JSON.stringify(booking));
+  }
   const onInputChanged = ({ target }) => {
     setFormValues({
       ...formValues,
@@ -173,6 +189,8 @@ export const Appointment = () => {
 
     if (target.name === "empleado") {
       const a = !!target.value ? JSON.parse(target.value) : "{}";
+      console.log('EMPLEADO!',a)
+      updateBookingInLocalStorage({ employee: a });
       dispatch(BOOKING_SET_EMPLOYEE(a));
     }
 

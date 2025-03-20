@@ -16,7 +16,8 @@ export const Cart = () => {
   const l_services = selected.serviceCart;
   // const servicios =[
   //   { id: 1, titulo: 'Servicio 1', precio: '80', image: 'https://placehold.co/200x200'} ]
-
+  // console.log('ENTREEE A SERVICIOS')
+	localStorage.removeItem('bookingStorage');
   const onServicio = () => {
 
     if(!!isInBranch){
