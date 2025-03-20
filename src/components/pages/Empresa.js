@@ -46,7 +46,7 @@ export const Empresa = (props) => {
 
   const servicesAvailableByBranch = (services) => {    
     
-    return services;
+    // return services;
     return services.filter((service) =>
       booking.isInBranch ? booking.branch.services.includes(service._id) : true
     );

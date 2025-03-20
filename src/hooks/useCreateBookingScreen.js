@@ -39,14 +39,15 @@ export const useCreateBookingScreen = () => {
 	const [hour, setHour] = useState(null)
 	const [maxAvailableAfterHours, setMaxAvailableAfterHours] = useState(1)
 	const [loading, setLoading] = useState(false);
-  const getAvailability = async () => {
+	const getAvailability = async () => {
 		try {
 			const id = booking.employee?._id ?? 0;
-			let url = `${process.env.REACT_APP_API_URL}/availability/${id}`;
+			const providerId = localStorage.getItem('providerIdStorage');	
+			let url = `${process.env.REACT_APP_API_URL}/availability/${id}?idprovider=${providerId}`;
 			const savedBooking = localStorage.getItem('bookingStorage');
 			const finalBooking = JSON.parse(savedBooking);
 			if (finalBooking.branch?._id) {
-			  url += "?branch=" + finalBooking.branch?._id;
+			  url += "&branch=" + finalBooking.branch?._id;
 			}
 			let response = await _fetch(url, {
 				method: "GET",
@@ -312,6 +313,7 @@ export const useCreateBookingScreen = () => {
 
   const _hourPicker = async (date) => {
     let array = [];
+	console.log('DATE!!: ', date)
     let today = moment();
     let isSameDay = moment(today).isSame(date, "day");
 	const id = booking.employee?._id ?? 0;
@@ -319,7 +321,7 @@ export const useCreateBookingScreen = () => {
 	const finalBooking = JSON.parse(savedBooking);
 	const providerId = localStorage.getItem('providerIdStorage');	
     let response = await _fetch(
-		process.env.REACT_APP_API_URL  + "/dateAvailability/" + (id === 0 ? 0 : providerId),
+		process.env.REACT_APP_API_URL  + "/dateAvailability/" + (id === 0 ? 0 : providerId) + "?idprovider=" + providerId,
       {
         method: "POST",
         headers: {
@@ -339,14 +341,16 @@ export const useCreateBookingScreen = () => {
     const responseJSON = await response.json();
     responseJSON.data.availability.map((e) => {
       const _date = moment(e);
-      if (
-        isSameDay &&
-        _date.hours() <= today.hours() + maxAvailableAfterHours
-      ) {
-        return;
-      }
-
-      array.push((new Date(e)).getTime());
+    //   if (
+	// 	isSameDay &&
+	// 	_date.isBefore(
+	// 	  moment().add(maxAvailableAfterHours, "hours"),
+	// 	  "minute"
+	// 	)
+	//   ) {
+	// 	return;
+	//   }
+	  array.push((new Date(e)).getTime());
     });
     setHourPicker(array);
   };
