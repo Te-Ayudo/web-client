@@ -41,7 +41,7 @@ export const Appointment = () => {
     unavailability,
     dateBusy
   } = useCreateBookingScreen();
-  // console.log(availability)
+  console.log(hourPicker)
   const getBlockedDates = (unavailablePeriods = []) => {
     let blockedDates = [];
   

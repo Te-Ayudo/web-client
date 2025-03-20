@@ -39,7 +39,6 @@ export const useCreateBookingScreen = () => {
 	const [hour, setHour] = useState(null)
 	const [maxAvailableAfterHours, setMaxAvailableAfterHours] = useState(1)
 	const [loading, setLoading] = useState(false);
-	console.log('booking', booking)
 	const getAvailability = async () => {
 		try {
 			const id = booking.employee?._id ?? 0;
@@ -314,6 +313,7 @@ export const useCreateBookingScreen = () => {
 
   const _hourPicker = async (date) => {
     let array = [];
+	console.log('DATE!!: ', date)
     let today = moment();
     let isSameDay = moment(today).isSame(date, "day");
 	const id = booking.employee?._id ?? 0;
@@ -341,14 +341,16 @@ export const useCreateBookingScreen = () => {
     const responseJSON = await response.json();
     responseJSON.data.availability.map((e) => {
       const _date = moment(e);
-      if (
-        isSameDay &&
-        _date.hours() <= today.hours() + maxAvailableAfterHours
-      ) {
-        return;
-      }
-
-      array.push((new Date(e)).getTime());
+    //   if (
+	// 	isSameDay &&
+	// 	_date.isBefore(
+	// 	  moment().add(maxAvailableAfterHours, "hours"),
+	// 	  "minute"
+	// 	)
+	//   ) {
+	// 	return;
+	//   }
+	  array.push((new Date(e)).getTime());
     });
     setHourPicker(array);
   };
