@@ -25,6 +25,7 @@ export const Appointment = () => {
   const booking = useSelector((state) => state.booking.selected);
   const dispatch = useDispatch();
   const [isBranch, setIsBranch] = useState( false )
+  const [dateForm, setDateForm] = useState("Pp");
   const isCheckingCouponBtn = useMemo(() => !!booking.coupon, [booking.coupon]);
   const {
     _hourPicker,
@@ -49,28 +50,25 @@ export const Appointment = () => {
       let start = moment(startDate);
       let end = moment(endDate);
   
-      let startDay = start.clone().startOf("day"); // Día de inicio (00:00)
-      let endDay = end.clone().startOf("day"); // Día de fin (00:00)
+      let startDay = start.clone().startOf("day"); 
+      let endDay = end.clone().startOf("day"); 
   
-      while (startDay.isSameOrBefore(endDay)) {
-        // Control del primer día
+      while (startDay.isSameOrBefore(endDay)) {        
         if (startDay.isSame(start, "day")) {
           if (start.hours() <= 8) {
-            blockedDates.push(startDay.clone()); // Bloquear completamente
+            blockedDates.push(startDay.clone()); 
           }
-        } 
-        // Control del último día
+        }         
         else if (startDay.isSame(end, "day")) {
           if (end.hours() >= 23) {
-            blockedDates.push(startDay.clone()); // Bloquear completamente
+            blockedDates.push(startDay.clone()); 
           }
-        } 
-        // Días intermedios siempre bloqueados
+        }         
         else {
           blockedDates.push(startDay.clone());
         }
   
-        startDay.add(1, "day"); // Avanzar un día
+        startDay.add(1, "day"); 
       }
     });
   
@@ -149,20 +147,11 @@ export const Appointment = () => {
       }
     }
   }, [hourPicker]);
-  function updateBookingInLocalStorage(updates) {
-    // 1) Leer string del localStorage
+  function updateBookingInLocalStorage(updates) {  
     const stored = localStorage.getItem("bookingStorage");
-    if (!stored) return;
-  
-    // 2) Parsear el JSON a objeto
+    if (!stored) return;    
     const booking = JSON.parse(stored);
-  
-    // 3) Actualizar solo la parte que te interese
-    //    En este caso, "updates" es un objeto con las propiedades que quieras cambiar
-    //    por ejemplo { employee: { _id: '...', fullName: '...' } }
-    Object.assign(booking, updates);
-  
-    // 4) Volver a guardar en localStorage
+    Object.assign(booking, updates);    
     localStorage.setItem("bookingStorage", JSON.stringify(booking));
   }
   const onInputChanged = ({ target }) => {
@@ -231,36 +220,14 @@ export const Appointment = () => {
       <form className="text-center" method="POST" onSubmit={onSubmit}>
         <div className="col-span-full">
           <div className="mb-3 sm:mb-6">
-            <Input
-              name="name"
-              type="text"
-              label="Nombre y Apellido"
-              value={formValues.name}
-              onChange={onInputChanged}
-            />
+            <Input name="name" type="text" label="Nombre y Apellido" value={formValues.name} onChange={onInputChanged} />
           </div>
         </div>
-        {/* <div className="col-span-full">
-          <div className="mb-3 sm:mb-6">
-            <Input
-              name="telefono"
-              type="text"
-              label="Telefono"
-              value={formValues.telefono}
-              onChange={onInputChanged}              
-            />
-          </div>
-        </div> */}
         <div className="col-span-full">
           <div className="mb-3 sm:mb-6">
-            <select
-              name="empleado"
-              className="rounded-2xl border-solid border border-primary w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary"
-              value={formValues.empleado}
-              onChange={onInputChanged}
-            >
+            <select name="empleado" className="rounded-2xl border-solid border border-primary w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary" value={formValues.empleado} onChange={onInputChanged}>
               <option value=""> Empleado (Opcional) ... </option>
-              { isBranch
+              {isBranch
                 ? employeeAvailableByBranch(employee).map((metodo) => {
                     return (
                       <option key={metodo._id} value={JSON.stringify(metodo)}>
@@ -288,24 +255,27 @@ export const Appointment = () => {
                 {hourPicker.length >= 0 && (
                   <DatePicker
                     selected={booking.startDate || formValues.start}
-                    onChange={(event) => onDateChange(event)}
-                    dateFormat="Pp"
+                    onChange={(event) => {
+                      const bookingDate = moment(event);
+                      if (bookingDate.hours() === 0 && bookingDate.minutes() === 0) {
+                        setDateForm("P");
+                      } else {
+                        setDateForm("Pp");
+                      }
+                      onDateChange(event);
+                    }}
+                    dateFormat={dateForm}
                     showTimeSelect
                     minDate={new Date()}
                     filterDate={(date) => {
                       const _date = moment(date);
-
-                      const isBlocked = blockedDates.some((blockedDate) =>
-                        _date.isSame(blockedDate, "day")
-                      );
-              
-                      // Verificar disponibilidad en `availability`
+                      const isBlocked = blockedDates.some((blockedDate) => _date.isSame(blockedDate, "day"));                      
                       const isAvailable = availability[_date.isoWeekday() - 1]?.length > 0;
                       const dayIndex = _date.isoWeekday() - 1;
                       const employeeAvailability = availability[dayIndex];
-                      if (employeeAvailability.length === 0) return false; 
+                      if (employeeAvailability.length === 0) return false;
                       const busyPeriods = dateBusy
-                        .filter(busy => moment(busy.start).isSame(_date, "day"))
+                        .filter((busy) => moment(busy.start).isSame(_date, "day"))
                         .map(({ start, end }) => ({
                           start: moment(start).hours() * 60 + moment(start).minutes(),
                           end: moment(end).hours() * 60 + moment(end).minutes(),
@@ -329,10 +299,13 @@ export const Appointment = () => {
                     className="rounded-2xl border w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary "
                     withPortal
                     placeholderText="Seleccionar una fecha"
-                    onCalendarOpen={() => {
-                      _hourPicker(new Date());
-                    }}
-                    // allowSameDay
+                    onCalendarOpen={() => {                      
+                      const selectedDate =
+                        formValues.start && moment(formValues.start).isValid()
+                          ? moment(formValues.start).toDate()
+                          : new Date();                      
+                      _hourPicker(selectedDate);
+                    }}                    
                     timeClassName={(time) => {
                       const _time = moment(time);
                       if (!hourPicker.includes(new Date(_time).getTime())) {
@@ -353,20 +326,10 @@ export const Appointment = () => {
           <div className="mb-3 sm:mb-6">
             <div className="flex flex-wrap gap-4">
               <div className="grow">
-                <Input
-                  name="descuento"
-                  type="text"
-                  label="Codigo de descuento"
-                  value={formValues.descuento}
-                  onChange={onInputChanged}
-                />
+                <Input name="descuento" type="text" label="Codigo de descuento" value={formValues.descuento} onChange={onInputChanged} />
               </div>
               <div className="grow">
-                <Button
-                  disabled={!isCheckingCouponBtn}
-                  onClick={onVerifyCoupon}
-                  className="sm:h-[48px] !text-[14px] w-full"
-                >
+                <Button disabled={!isCheckingCouponBtn} onClick={onVerifyCoupon} className="sm:h-[48px] !text-[14px] w-full">
                   Aplicar Cupon
                 </Button>
               </div>
@@ -375,12 +338,7 @@ export const Appointment = () => {
         </div>
         <div className="col-span-full">
           <div className="mb-3 sm:mb-6">
-            <select
-              name="metodopago"
-              className="rounded-2xl border-solid border border-primary w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary"
-              value={formValues.metodopago}
-              onChange={onInputChanged}
-            >
+            <select name="metodopago" className="rounded-2xl border-solid border border-primary w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary" value={formValues.metodopago} onChange={onInputChanged}>
               <option value=""> Metodo de Pago ... </option>
               {paymentMethods.map((metodo) => {
                 return (
@@ -397,9 +355,7 @@ export const Appointment = () => {
         {!booking.isInBranch && (
           <div className="col-span-full">
             <div className="mb-3 sm:mb-6 text-left">
-              <h2 className="text-primary font-[600] ">
-                Direccion (seleccionar direccion)
-              </h2>
+              <h2 className="text-primary font-[600] ">Direccion (seleccionar direccion)</h2>
             </div>
             <div className="mb-3 sm:mb-6">
               <div className="flex flex-wrap gap-4">
@@ -407,19 +363,11 @@ export const Appointment = () => {
                   {Object.keys(addresses).length === 0 ? (
                     "No tienes direccion"
                   ) : (
-                    <select
-                      name="direccion"
-                      className="rounded-2xl border-solid border border-primary w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary"
-                      value={formValues.direccion}
-                      onChange={onInputChanged}
-                    >
+                    <select name="direccion" className="rounded-2xl border-solid border border-primary w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary" value={formValues.direccion} onChange={onInputChanged}>
                       <option value=""> Seleccionar ... </option>
                       {addresses.map((metodo) => {
                         return (
-                          <option
-                            key={metodo.key}
-                            value={JSON.stringify(metodo)}
-                          >
+                          <option key={metodo.key} value={JSON.stringify(metodo)}>
                             {" "}
                             {metodo.direction}{" "}
                           </option>
@@ -429,11 +377,7 @@ export const Appointment = () => {
                   )}
                 </div>
                 <div className="grow">
-                  <Button
-                    href="#"
-                    onClick={onAddress}
-                    className="sm:h-[48px] !text-[14px] active:bg-opacity-80"
-                  >
+                  <Button href="#" onClick={onAddress} className="sm:h-[48px] !text-[14px] active:bg-opacity-80">
                     Añadir nueva dirección
                   </Button>
                 </div>
@@ -445,18 +389,7 @@ export const Appointment = () => {
 
         <div className="col-span-full">
           <div className="mb-3 sm:mb-6">
-            <div className="map">
-              {!!booking.customer.address._id ? (
-                <Maps
-                  address={booking.customer.address.street}
-                  lat={booking.customer.address.coordinates.latitude}
-                  lng={booking.customer.address.coordinates.longitude}
-                  drag={false}
-                />
-              ) : (
-                ""
-              )}
-            </div>
+            <div className="map">{!!booking.customer.address._id ? <Maps address={booking.customer.address.street} lat={booking.customer.address.coordinates.latitude} lng={booking.customer.address.coordinates.longitude} drag={false} /> : ""}</div>
           </div>
         </div>
 
@@ -469,7 +402,7 @@ export const Appointment = () => {
         <div className="col-span-full">
           <div className="mb-3 sm:mb-6">
             <Button type="submit" className="sm:h-[48px] !text-[14px]" disabled={loading}>
-              {loading? "Confirmando..." : "Confirmar servicio"}
+              {loading ? "Confirmando..." : "Confirmar servicio"}
             </Button>
           </div>
         </div>
