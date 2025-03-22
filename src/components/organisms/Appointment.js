@@ -41,7 +41,7 @@ export const Appointment = () => {
     unavailability,
     dateBusy
   } = useCreateBookingScreen();
-  console.log(hourPicker)
+  
   const getBlockedDates = (unavailablePeriods = []) => {
     let blockedDates = [];
   
@@ -106,7 +106,7 @@ export const Appointment = () => {
     descuento: "",
     metodopago: "",
   });
-
+  // console.log('FORMVALUES: ',formValues)
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));    
     let first_name = "";
@@ -214,7 +214,7 @@ export const Appointment = () => {
     );
     _hourPicker(event); // Actualiza las horas disponibles para la nueva fecha
   };
-
+  
   const onAddress = (e) => {
     e.preventDefault();
     dispatch(setActiveModalAddress());

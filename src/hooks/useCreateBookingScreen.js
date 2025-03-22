@@ -41,11 +41,11 @@ export const useCreateBookingScreen = () => {
 	const [loading, setLoading] = useState(false);
 	const getAvailability = async () => {
 		try {
-			const id = booking.employee?._id ?? 0;
-			const providerId = localStorage.getItem('providerIdStorage');	
-			let url = `${process.env.REACT_APP_API_URL}/availability/${id}?idprovider=${providerId}`;
 			const savedBooking = localStorage.getItem('bookingStorage');
 			const finalBooking = JSON.parse(savedBooking);
+			const id = finalBooking.employee?._id ?? 0;
+			const providerId = localStorage.getItem('providerIdStorage');	
+			let url = `${process.env.REACT_APP_API_URL}/availability/${id}?idprovider=${providerId}`;
 			if (finalBooking.branch?._id) {
 			  url += "&branch=" + finalBooking.branch?._id;
 			}
@@ -104,8 +104,10 @@ export const useCreateBookingScreen = () => {
    			return element.service._id;
 		})
 		if (employee && employee.length > 0) {
+			// booking.employee = "{}";
+			const newBooking = {...booking, employee: {}};
 			localStorage.setItem('employeeStorage', JSON.stringify(employee));
-			localStorage.setItem('bookingStorage', JSON.stringify(booking));
+			localStorage.setItem('bookingStorage', JSON.stringify(newBooking));
 			localStorage.setItem('providerIdStorage', provider._id); 
 		}
 		const savedEmployee = localStorage.getItem('employeeStorage');
@@ -313,12 +315,11 @@ export const useCreateBookingScreen = () => {
 
   const _hourPicker = async (date) => {
     let array = [];
-	console.log('DATE!!: ', date)
     let today = moment();
     let isSameDay = moment(today).isSame(date, "day");
-	const id = booking.employee?._id ?? 0;
 	const savedBooking = localStorage.getItem('bookingStorage');
 	const finalBooking = JSON.parse(savedBooking);
+	const id = finalBooking.employee?._id ?? 0;
 	const providerId = localStorage.getItem('providerIdStorage');	
     let response = await _fetch(
 		process.env.REACT_APP_API_URL  + "/dateAvailability/" + (id === 0 ? 0 : providerId) + "?idprovider=" + providerId,
@@ -333,7 +334,7 @@ export const useCreateBookingScreen = () => {
           estimatedTime: finalBooking.totalEstimatedWorkMinutes,
           isInBranch: finalBooking.isInBranch,
           branch: finalBooking.branch?._id,
-          employee: booking.employee?._id ?? null,
+          employee: finalBooking.employee?._id ?? null,
           serviceCart: finalBooking.serviceCart.map((e) => e.service?._id),
         }),
       }
