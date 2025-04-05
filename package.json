@@ -6,6 +6,8 @@
     "@googlemaps/react-wrapper": "^1.1.35",
     "@iconify/icons-mdi": "^1.2.48",
     "@iconify/react": "^4.1.1",
+    "@radix-ui/react-dialog": "^1.1.6",
+    "@radix-ui/react-select": "^2.1.6",
     "@react-google-maps/api": "^2.19.3",
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.2.3",
@@ -14,11 +16,14 @@
     "@testing-library/user-event": "^13.5.0",
     "@vis.gl/react-google-maps": "^1.0.0",
     "axios": "^1.6.8",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "fast-equals": "^5.0.1",
     "google-map-react": "^2.2.1",
     "google-maps-react-markers": "^2.0.9",
     "jwt-decode": "^4.0.0",
+    "lucide-react": "^0.483.0",
     "moment": "^2.30.1",
     "react": "^18.2.0",
     "react-datepicker": "^6.9.0",
@@ -32,12 +37,15 @@
     "react-scripts": "^5.0.1",
     "react-search-autocomplete": "^8.5.2",
     "sweetalert2": "^11.10.7",
+    "tailwind-merge": "^3.0.2",
+    "te-ayudo-services": "file:",
+    "tw-animate-css": "^1.2.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "set HTTPS=true&&react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "set HTTPS=true&&craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -60,6 +68,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@craco/craco": "^7.1.0",
     "react-router-dom": "^6.22.3",
     "tailwindcss": "^3.4.1"
   }
