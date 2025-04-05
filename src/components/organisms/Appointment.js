@@ -20,6 +20,8 @@ import { useCreateBookingScreen } from "./../../hooks";
 import { addDays, format } from "date-fns";
 import Maps from "../map/Map";
 import moment from "moment";
+import MyCalendar from "./Datepicker";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 
 export const Appointment = () => {
   const booking = useSelector((state) => state.booking.selected);
@@ -42,6 +44,23 @@ export const Appointment = () => {
     dateBusy
   } = useCreateBookingScreen();
   
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  // Estado para guardar la fecha/hora seleccionada
+  const [selectedDateTime, setSelectedDateTime] = useState(null);
+  console.log(selectedDateTime)
+  const handleTimeSelect = (time) => {
+    setSelectedDateTime(time);
+    dispatch(
+      BOOKING_SET({
+        bookingDate: format(
+          new Date(time),
+          "yyyy-MM-dd'T'HH:mm:ssxxx"
+        ),
+      })
+    );
+    setCalendarOpen(false); // Cierra el diálogo
+  };
+
   const getBlockedDates = (unavailablePeriods = []) => {
     let blockedDates = [];
   
@@ -205,14 +224,13 @@ export const Appointment = () => {
       ...formValues,
       start: event, // Actualiza directamente el valor seleccionado
     });
-  
-    const result = format(event, "yyyy-MM-dd'T'HH:mm:ssxxx");
-    dispatch(
-      BOOKING_SET({
-        bookingDate: result,
-      })
-    );
-    _hourPicker(event); // Actualiza las horas disponibles para la nueva fecha
+    // console.log('Evem', event)
+    // const result = format(event, "yyyy-MM-dd'T'HH:mm:ssxxx");
+    // dispatch(
+    //   BOOKING_SET({
+    //     bookingDate: result,
+    //   })
+    // );
   };
   
   const onAddress = (e) => {
@@ -285,7 +303,7 @@ export const Appointment = () => {
           <div className="mb-3 sm:mb-6">
             <div className="flex flex-wrap gap-4 w-full">
               <div className="datePicker flex justify-end flex-row-reverse flex-grow sm:w-2/3 rounded-2xl border-solid border border-primary mb-3 sm:mb-0 w-full">
-                {hourPicker.length >= 0 && (
+                {/* {hourPicker.length >= 0 && (
                   <DatePicker
                     selected={booking.startDate || formValues.start}
                     onChange={(event) => onDateChange(event)}
@@ -344,7 +362,27 @@ export const Appointment = () => {
                       }
                     }}
                   />
-                )}
+                )} */}
+                <Dialog open={calendarOpen} onOpenChange={setCalendarOpen}>
+                  <DialogTrigger asChild>
+                    <button className="rounded-2xl border w-full px-4 py-2 text-secondary text-left">
+                      {selectedDateTime
+                        ? format(selectedDateTime, "dd/MM/yyyy HH:mm")
+                        : "Seleccionar fecha personalizada"}
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="p-0 sm:max-w-[600px] [&_[data-dialog-close]]:hidden">
+                    <MyCalendar 
+                      availability={availability} 
+                      dateBusy={dateBusy} 
+                      blockedDates={blockedDates} 
+                      hourPicker={hourPicker} 
+                      _hourPicker={_hourPicker}
+                      onDateChange={onDateChange}
+                      onTimeSelect={handleTimeSelect}
+                    />
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
           </div>

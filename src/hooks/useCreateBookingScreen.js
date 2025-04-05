@@ -13,6 +13,7 @@ export const useCreateBookingScreen = () => {
  
 	const provider = useSelector((state) => state.proveedor.selected)
 	const booking = useSelector((state) => state.booking.selected)	
+	console.log(booking)
 	const {success} = useSelector((state) => state.booking)
     const dispatch = useDispatch()
 	const [valueFact, setValueFact] = useState({ razonSocial: '', nit: '' })
@@ -105,7 +106,7 @@ export const useCreateBookingScreen = () => {
 		})
 		if (employee && employee.length > 0) {
 			// booking.employee = "{}";
-			const newBooking = {...booking, employee: {}};
+			const newBooking = {...booking, employee: {}, bookingDate: null};
 			localStorage.setItem('employeeStorage', JSON.stringify(employee));
 			localStorage.setItem('bookingStorage', JSON.stringify(newBooking));
 			localStorage.setItem('providerIdStorage', provider._id); 
@@ -190,7 +191,7 @@ export const useCreateBookingScreen = () => {
 		}
 		setLoading(true);
 		dispatch(
-      startCreateBooking(
+      		startCreateBooking(
 				{
 					...booking,
 					paymentInfo: {
@@ -341,16 +342,6 @@ export const useCreateBookingScreen = () => {
     );
     const responseJSON = await response.json();
     responseJSON.data.availability.map((e) => {
-      const _date = moment(e);
-    //   if (
-	// 	isSameDay &&
-	// 	_date.isBefore(
-	// 	  moment().add(maxAvailableAfterHours, "hours"),
-	// 	  "minute"
-	// 	)
-	//   ) {
-	// 	return;
-	//   }
 	  array.push((new Date(e)).getTime());
     });
     setHourPicker(array);
@@ -390,7 +381,6 @@ export const useCreateBookingScreen = () => {
 		hourPicker,
 		discount,
 		paymentMethods,
-		// selectedValue,
 		onValueCh,
 		addresses,
 		employee,
