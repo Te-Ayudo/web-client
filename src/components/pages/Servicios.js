@@ -22,7 +22,8 @@ const Servicios = (props) => {
   }, [])
 
   const { services,isOpenModal,active } = useSelector( state => state.servicios );
-	const proveedor = useSelector((state) => state.proveedor.selected)
+	const proveedor = useSelector((state) => state.proveedor.selected)  
+  const filteredServices = services?.filter((service) => service.method === "Ambos" || service.method === "A domicilio");
 
   return (
     <Main
@@ -41,7 +42,7 @@ const Servicios = (props) => {
             puntaje= {proveedor.avgRating}
             image= {proveedor.picture}
             categoria = {null}
-            servicios= {services}
+            servicios= {filteredServices}
             recomendado={proveedor.recommendedServices}
           />
 
