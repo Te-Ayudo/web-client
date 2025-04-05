@@ -175,6 +175,18 @@ export const useCreateBookingScreen = () => {
 
 		event.preventDefault();
 
+		const bookingDate = new Date(booking.bookingDate);
+     	const isMidnight = bookingDate.getHours() === 0 && bookingDate.getMinutes() === 0;
+
+		 if (isMidnight) {
+			Swal.fire({
+				icon: "error",
+				title: "Error",
+				text: "No se seleccionó una hora",
+			});
+			return; // No continúa con el envío
+		}
+
 		if (
 			!booking.bookingDate ||
 			!booking.paymentInfo.paymentMethod ||
