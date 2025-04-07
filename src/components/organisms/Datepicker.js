@@ -85,7 +85,8 @@ export default function MyCalendar({
     };
   }, []);
   const dayIndex = moment(selectedDate).isoWeekday() - 1;
-  const availableSlots = generateTimeSlots(availability[dayIndex], selectedDate, 30);
+  // const availableSlots = generateTimeSlots(availability[dayIndex], selectedDate, 30);
+  const availableSlots = hourPicker.map((timestamp) => new Date(timestamp));
   return (
     // <div className="p-4 bg-white shadow-md rounded-xl max-w-full overflow-hidden">
     <Card className="sm:p-4 sm:pr-2 py-2 pl-0.5 pr-0 flex flex-row gap-2">
@@ -107,7 +108,7 @@ export default function MyCalendar({
           <CardHeader className="sm:pr-4 sm:pl-4 text-center p-0">
             <h4 className="font-semibold mb-2 text-base sm:text-xl text-primary">Seleccionar Hora</h4>
           </CardHeader>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-2"> */}
               {/* {availableSlots.map((time) => {
                 const label = moment(time).format("HH:mm A");
                 const isSelected = selectedTime && time.getTime() === selectedTime.getTime();
@@ -130,7 +131,7 @@ export default function MyCalendar({
                   </button>
                 );
               })} */}
-              {availableSlots
+              {/* {availableSlots
                 .filter((time) => hourPicker.includes(time.getTime())) // solo horarios habilitados
                 .map((time) => {
                   const label = moment(time).format("HH:mm A");
@@ -149,8 +150,33 @@ export default function MyCalendar({
                       {label}
                     </button>
                   );
-                })}
-          </div>
+                })} */}
+              {hourPicker.length === 0 ? (
+                <p className="text-gray-500 text-sm flex items-center justify-center">
+                  No hay horas disponibles
+                </p>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {availableSlots.map((time) => {
+                      const label = moment(time).format("hh:mm A");
+                      const isSelected = selectedTime && time.getTime() === selectedTime.getTime();
+                      return (
+                        <button
+                          key={time.getTime()}
+                          onClick={() => handleTimeClick(time)}
+                          className={`py-2 px-3 rounded-lg text-xs sm:text-sm border ${
+                            isSelected
+                              ? "border-[#FF770F] bg-[#fff7f1] text-[#FF770F] font-medium"
+                              : "border-gray-300 bg-white hover:bg-[#fff7f1]"
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      );
+                  })}  
+                </div>
+              )}
+          {/* </div> */}
         </div>
     </Card>
   );
