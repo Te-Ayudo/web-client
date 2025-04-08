@@ -47,7 +47,6 @@ export default function MyCalendar({
     
   };
   
-  // console.log(selectedDate)
   useEffect(() => {
     setLoadingHours(true);
     // Llama a _hourPicker y asume que es una función asíncrona que retorna una promesa
@@ -64,7 +63,6 @@ export default function MyCalendar({
     setSelectedTime(time);
     onDateChange(time);
     onTimeSelect && onTimeSelect(time);
-    console.log("Hora seleccionada:", time)
   };
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -87,6 +85,16 @@ export default function MyCalendar({
   const dayIndex = moment(selectedDate).isoWeekday() - 1;
   // const availableSlots = generateTimeSlots(availability[dayIndex], selectedDate, 30);
   const availableSlots = hourPicker.map((timestamp) => new Date(timestamp));
+  // 1) Determinar si la fecha seleccionada es “hoy”
+  const isToday = moment(selectedDate).isSame(moment(), 'day');
+  // 2) Convertir hourPicker (timestamps) a Date, y filtrar si es hoy 
+  const filteredSlots = hourPicker
+  .map((timestamp) => new Date(timestamp))
+  .filter((time) => {
+    if (!isToday) return true; 
+    // Si es hoy, solo mostrar si time > ahora
+    return time > new Date();
+  });
   return (
     // <div className="p-4 bg-white shadow-md rounded-xl max-w-full overflow-hidden">
     <Card className="sm:p-4 sm:pr-2 py-2 pl-0.5 pr-0 flex flex-row gap-2">
@@ -151,13 +159,13 @@ export default function MyCalendar({
                     </button>
                   );
                 })} */}
-              {hourPicker.length === 0 ? (
+              {filteredSlots.length === 0 ? (
                 <p className="text-gray-500 text-sm flex items-center justify-center">
                   No hay horas disponibles
                 </p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {availableSlots.map((time) => {
+                  {filteredSlots.map((time) => {
                       const label = moment(time).format("hh:mm A");
                       const isSelected = selectedTime && time.getTime() === selectedTime.getTime();
                       return (
