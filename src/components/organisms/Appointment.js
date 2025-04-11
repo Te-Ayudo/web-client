@@ -42,6 +42,7 @@ export const Appointment = () => {
     loading,
     onVerifyCoupon,
     unavailability,
+    fullDateBusy,
     dateBusy
   } = useCreateBookingScreen();
   
@@ -226,7 +227,11 @@ export const Appointment = () => {
     e.preventDefault();
     dispatch(setActiveModalAddress());
   };
-  const blockedDates = getBlockedDates(unavailability || []);
+  const [blockedDates, setBlockedDate] = useState([]);
+  useEffect(()=>{
+    setBlockedDate(getBlockedDates(unavailability || []));
+  }, [unavailability])
+  // const blockedDates = getBlockedDates(unavailability || []);
   return (
     <>
       <div className="col-span-full">
@@ -353,6 +358,7 @@ export const Appointment = () => {
                       _hourPicker={_hourPicker}
                       onDateChange={onDateChange}
                       onTimeSelect={handleTimeSelect}
+                      fullDateBusy={fullDateBusy}
                     />
                   </DialogContent>
                 </Dialog>

@@ -33,7 +33,8 @@ export default function MyCalendar({
   hourPicker, 
   _hourPicker, 
   onDateChange, 
-  onTimeSelect
+  onTimeSelect,
+  fullDateBusy
 }) {
   const [selectedTime, setSelectedTime] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -107,6 +108,7 @@ export default function MyCalendar({
           dateBusy={dateBusy}
           onDateChange={handleDateChange}
           _hourPicker={_hourPicker}
+          fullDateBusy={fullDateBusy}
         />
 
         {/* Sección de horas */}
