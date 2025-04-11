@@ -6,11 +6,10 @@ import { Calendar } from "lucide-react";
 import moment from "moment";
 // import "react-datepicker/dist/react-datepicker.css";
 
-export default function CustomDatepicker({calendarRef, blockedDates, availability, dateBusy, onDateChange, _hourPicker}) {
+export default function CustomDatepicker({calendarRef, blockedDates, availability, dateBusy, onDateChange, _hourPicker, fullDateBusy}) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  
   const renderHeader = ({
     date,
     changeYear,
@@ -23,7 +22,7 @@ export default function CustomDatepicker({calendarRef, blockedDates, availabilit
     const dayMonthYear = format(date, "dd/MM/yyyy");
     const currentMonthIndex = date.getMonth();
     const currentYear = date.getFullYear();
-  
+    // console.log('BLOCKDATES: ', blockedDates)
     const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                     "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
     const years = [2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032];
@@ -126,37 +125,59 @@ export default function CustomDatepicker({calendarRef, blockedDates, availabilit
         renderCustomHeader={renderHeader}
         dateFormat="Pp"
         filterDate={(date) => {
+          // const _date = moment(date);
+
+          // const isBlocked = blockedDates.some((blockedDate) =>
+          //   _date.isSame(blockedDate, "day")
+          // );
+  
+          // // Verificar disponibilidad en `availability`
+          // const isAvailable = availability[_date.isoWeekday() - 1]?.length > 0;
+          // const dayIndex = _date.isoWeekday() - 1;
+          // const employeeAvailability = availability[dayIndex];
+          // if (employeeAvailability.length === 0) return false; 
+          // const busyPeriods = dateBusy
+          //   .filter(busy => moment(busy.start).isSame(_date, "day"))
+          //   .map(({ start, end }) => ({
+          //     start: moment(start).hours() * 60 + moment(start).minutes(),
+          //     end: moment(end).hours() * 60 + moment(end).minutes(),
+          //   }));
+          // let availableMinutes = new Set();
+          // employeeAvailability.forEach(({ startHour, startMinute, endHour, endMinute }) => {
+          //   for (let i = startHour * 60 + startMinute; i < endHour * 60 + endMinute; i++) {
+          //     availableMinutes.add(i);
+          //   }
+          // });
+
+          // busyPeriods.forEach(({ start, end }) => {
+          //   for (let i = start; i < end; i++) {
+          //     availableMinutes.delete(i);
+          //   }
+          // });
+          // const allIntervalsBusy = availableMinutes.size === 0;
+          // return isAvailable && !isBlocked && !allIntervalsBusy;
           const _date = moment(date);
 
-          const isBlocked = blockedDates.some((blockedDate) =>
-            _date.isSame(blockedDate, "day")
-          );
-  
-          // Verificar disponibilidad en `availability`
-          const isAvailable = availability[_date.isoWeekday() - 1]?.length > 0;
-          const dayIndex = _date.isoWeekday() - 1;
-          const employeeAvailability = availability[dayIndex];
-          if (employeeAvailability.length === 0) return false; 
-          const busyPeriods = dateBusy
-            .filter(busy => moment(busy.start).isSame(_date, "day"))
-            .map(({ start, end }) => ({
-              start: moment(start).hours() * 60 + moment(start).minutes(),
-              end: moment(end).hours() * 60 + moment(end).minutes(),
-            }));
-          let availableMinutes = new Set();
-          employeeAvailability.forEach(({ startHour, startMinute, endHour, endMinute }) => {
-            for (let i = startHour * 60 + startMinute; i < endHour * 60 + endMinute; i++) {
-              availableMinutes.add(i);
-            }
-          });
+          // 1) Chequea si está en fullDateBusy
+          if (fullDateBusy.includes(_date.format("YYYY-MM-DD"))) {
+            return false;
+          }
 
-          busyPeriods.forEach(({ start, end }) => {
-            for (let i = start; i < end; i++) {
-              availableMinutes.delete(i);
-            }
-          });
-          const allIntervalsBusy = availableMinutes.size === 0;
-          return isAvailable && !isBlocked && !allIntervalsBusy;
+          // 2) Chequea si está en blockedDates
+          if (blockedDates.some((blockedDate) =>
+            _date.isSame(blockedDate, "day")
+          )) {
+            return false;
+          }
+
+          // 3) Chequea si no hay disponibilidad formal ese día
+          const dayIndex = _date.isoWeekday() - 1;
+          if (!availability[dayIndex] || availability[dayIndex].length === 0) {
+            return false;
+          }
+
+          // 4) Si pasó todos los checks, se considera día habilitado
+          return true;
         }}
         onCalendarOpen={() => {
           _hourPicker(new Date());
