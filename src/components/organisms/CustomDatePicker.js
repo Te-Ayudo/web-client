@@ -6,7 +6,16 @@ import { Calendar } from "lucide-react";
 import moment from "moment";
 // import "react-datepicker/dist/react-datepicker.css";
 
-export default function CustomDatepicker({calendarRef, blockedDates, availability, dateBusy, onDateChange, _hourPicker, fullDateBusy}) {
+export default function CustomDatepicker({
+  calendarRef, 
+  blockedDates, 
+  availability, 
+  dateBusy, 
+  onDateChange, 
+  _hourPicker, 
+  fullDateBusy,
+  maxAvailableAfterHours
+}) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
@@ -17,7 +26,7 @@ export default function CustomDatepicker({calendarRef, blockedDates, availabilit
     decreaseMonth,
     increaseMonth,
     prevMonthButtonDisabled,
-    nextMonthButtonDisabled
+    nextMonthButtonDisabled,
   }) => {
     const dayMonthYear = format(date, "dd/MM/yyyy");
     const currentMonthIndex = date.getMonth();
@@ -125,39 +134,15 @@ export default function CustomDatepicker({calendarRef, blockedDates, availabilit
         renderCustomHeader={renderHeader}
         dateFormat="Pp"
         filterDate={(date) => {
-          // const _date = moment(date);
-
-          // const isBlocked = blockedDates.some((blockedDate) =>
-          //   _date.isSame(blockedDate, "day")
-          // );
-  
-          // // Verificar disponibilidad en `availability`
-          // const isAvailable = availability[_date.isoWeekday() - 1]?.length > 0;
-          // const dayIndex = _date.isoWeekday() - 1;
-          // const employeeAvailability = availability[dayIndex];
-          // if (employeeAvailability.length === 0) return false; 
-          // const busyPeriods = dateBusy
-          //   .filter(busy => moment(busy.start).isSame(_date, "day"))
-          //   .map(({ start, end }) => ({
-          //     start: moment(start).hours() * 60 + moment(start).minutes(),
-          //     end: moment(end).hours() * 60 + moment(end).minutes(),
-          //   }));
-          // let availableMinutes = new Set();
-          // employeeAvailability.forEach(({ startHour, startMinute, endHour, endMinute }) => {
-          //   for (let i = startHour * 60 + startMinute; i < endHour * 60 + endMinute; i++) {
-          //     availableMinutes.add(i);
-          //   }
-          // });
-
-          // busyPeriods.forEach(({ start, end }) => {
-          //   for (let i = start; i < end; i++) {
-          //     availableMinutes.delete(i);
-          //   }
-          // });
-          // const allIntervalsBusy = availableMinutes.size === 0;
-          // return isAvailable && !isBlocked && !allIntervalsBusy;
+          
           const _date = moment(date);
+          const cutoff = moment().add(maxAvailableAfterHours, "hours");
 
+          // 2) Si dayMoment está por debajo de cutoff, se bloquea.
+          if (_date.isBefore(cutoff, "day")) {
+            return false;
+          }
+          
           // 1) Chequea si está en fullDateBusy
           if (fullDateBusy.includes(_date.format("YYYY-MM-DD"))) {
             return false;

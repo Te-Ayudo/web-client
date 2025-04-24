@@ -49,7 +49,6 @@ export const Appointment = () => {
   const [calendarOpen, setCalendarOpen] = useState(false);
   // Estado para guardar la fecha/hora seleccionada
   const [selectedDateTime, setSelectedDateTime] = useState(null);
-  console.log(selectedDateTime)
   const handleTimeSelect = (time) => {
     setSelectedDateTime(time);
     dispatch(
@@ -359,6 +358,7 @@ export const Appointment = () => {
                       onDateChange={onDateChange}
                       onTimeSelect={handleTimeSelect}
                       fullDateBusy={fullDateBusy}
+                      maxAvailableAfterHours={maxAvailableAfterHours}
                     />
                   </DialogContent>
                 </Dialog>

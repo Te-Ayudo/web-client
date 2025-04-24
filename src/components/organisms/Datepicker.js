@@ -34,7 +34,8 @@ export default function MyCalendar({
   _hourPicker, 
   onDateChange, 
   onTimeSelect,
-  fullDateBusy
+  fullDateBusy,
+  maxAvailableAfterHours
 }) {
   const [selectedTime, setSelectedTime] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -89,13 +90,48 @@ export default function MyCalendar({
   // 1) Determinar si la fecha seleccionada es “hoy”
   const isToday = moment(selectedDate).isSame(moment(), 'day');
   // 2) Convertir hourPicker (timestamps) a Date, y filtrar si es hoy 
-  const filteredSlots = hourPicker
-  .map((timestamp) => new Date(timestamp))
-  .filter((time) => {
-    if (!isToday) return true; 
-    // Si es hoy, solo mostrar si time > ahora
-    return time > new Date();
-  });
+  // const filteredSlots = hourPicker
+  // .map((timestamp) => new Date(timestamp))
+  // .filter((time) => {
+  //   if (!isToday) return true; 
+  //   // Si es hoy, solo mostrar si time > ahora
+  //   return time > new Date();
+  // });
+  console.log('max av',maxAvailableAfterHours)
+  let i = maxAvailableAfterHours * 2; // si tus intervalos de media hora
+  const now = new Date();
+
+  const sortedSlots = hourPicker
+    .map((timestamp) => new Date(timestamp))
+    .sort((a, b) => a - b); // para asegurarte de procesarlos en orden asc
+
+  const filteredSlots = [];
+
+  for (const time of sortedSlots) {
+    const slotMoment = moment(time);
+
+    // 1) si no es hoy, se añade
+    if (!isToday) {
+      filteredSlots.push(time);
+      continue;
+    }
+
+    // 2) si es hoy pero es anterior a 'ahora', se descarta
+    if (time <= now) {
+      continue;
+    }
+
+    // 3) si es hoy y está en el futuro, descartar 'i' intervalos primero
+    if(maxAvailableAfterHours < 24){
+      if (i > 0) {
+        i--;
+        continue;
+      }
+    }
+
+    // 4) si ya no hay que descartar más, se añade al array final
+    filteredSlots.push(time);
+  }
   return (
     // <div className="p-4 bg-white shadow-md rounded-xl max-w-full overflow-hidden">
     <Card className="sm:p-4 sm:pr-2 py-2 pl-0.5 pr-0 flex flex-row gap-2">
@@ -109,6 +145,7 @@ export default function MyCalendar({
           onDateChange={handleDateChange}
           _hourPicker={_hourPicker}
           fullDateBusy={fullDateBusy}
+          maxAvailableAfterHours={maxAvailableAfterHours}
         />
 
         {/* Sección de horas */}

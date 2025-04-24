@@ -14,6 +14,18 @@ export const useCreateBookingScreen = () => {
 	const provider = useSelector((state) => state.proveedor.selected)
 	const booking = useSelector((state) => state.booking.selected)	
 	console.log(booking)
+//   const [maxAvailableAfterHours, setMaxAvailableAfterHours] = useState(24);
+
+// 	setMaxAvailableAfterHours(
+// 		booking.serviceCart.reduce(
+// 		  (a, b) =>
+// 			Math.max(
+// 			  a?.service?.availableAfterHours ?? 0,
+// 			  b?.service?.availableAfterHours ?? 24
+// 			),
+// 		  -Infinity
+// 		)
+// 	  );
 	const {success} = useSelector((state) => state.booking)
     const dispatch = useDispatch()
 	const [valueFact, setValueFact] = useState({ razonSocial: '', nit: '' })
@@ -40,6 +52,7 @@ export const useCreateBookingScreen = () => {
 	const [employee, setEmployee] = useState([])
 	const [hour, setHour] = useState(null)
 	const [maxAvailableAfterHours, setMaxAvailableAfterHours] = useState(1)
+	console.log('Max', maxAvailableAfterHours)
 	const [loading, setLoading] = useState(false);
 	const getAvailability = async () => {
 		try {
