@@ -94,7 +94,7 @@ export const LoginWhatsapp = () => {
             <Logo className="h-8 sm:h-14 mb-6 sm:mb-14 " />
             <div className="col-span-full">
               <div className="mb-3 sm:mb-6">
-                <select className={`rounded-2xl bg-white border-solid border border-primary w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary ${error ? "border-red-700" : ""} `} defaultValue={codePhone} value={codePhone} name="codePhone" onChange={onInputChange}>
+                <select translate='no' className={`rounded-2xl bg-white border-solid border border-primary w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary ${error ? "border-red-700" : ""} `} defaultValue={codePhone} value={codePhone} name="codePhone" onChange={onInputChange}>
                   {phone_code.paises.map((pais) => (
                     <option key={pais.name} value={pais.dial_code}>
                       {pais.name + " ( +" + pais.dial_code + ")"}
@@ -123,9 +123,9 @@ export const LoginWhatsapp = () => {
                       <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></div>
                     </div>
                   ) : otpSent ? (
-                    "Verificar"
+                    <span translate="no">Verificar</span>
                   ) : (
-                    "Enviar código"
+                    <span translate="no">Enviar código</span>
                   )}
                 </Button>
               </div>

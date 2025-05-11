@@ -27,7 +27,6 @@ export const Appointment = () => {
   const booking = useSelector((state) => state.booking.selected);
   const dispatch = useDispatch();
   const [isBranch, setIsBranch] = useState( false )
-  const [dateForm, setDateForm] = useState("Pp");
   const isCheckingCouponBtn = useMemo(() => !!booking.coupon, [booking.coupon]);
   const {
     _hourPicker,
@@ -274,75 +273,9 @@ export const Appointment = () => {
           <div className="mb-3 sm:mb-6">
             <div className="flex flex-wrap gap-4 w-full">
               <div className="datePicker flex justify-end flex-row-reverse flex-grow sm:w-2/3 rounded-2xl border-solid border border-primary mb-3 sm:mb-0 w-full">
-                {/* {hourPicker.length >= 0 && (
-                  <DatePicker
-                    selected={booking.startDate || formValues.start}
-                    onChange={(event) => {
-                      const bookingDate = moment(event);
-                      if (bookingDate.hours() === 0 && bookingDate.minutes() === 0) {
-                        setDateForm("P");
-                      } else {
-                        setDateForm("Pp");
-                      }
-                      onDateChange(event);
-                    }}
-                    dateFormat={dateForm}
-                    showTimeSelect
-                    minDate={new Date()}
-                    filterDate={(date) => {
-                      const _date = moment(date);
-                      const isBlocked = blockedDates.some((blockedDate) => _date.isSame(blockedDate, "day"));                      
-                      const isAvailable = availability[_date.isoWeekday() - 1]?.length > 0;
-                      const dayIndex = _date.isoWeekday() - 1;
-                      const employeeAvailability = availability[dayIndex];
-                      if (employeeAvailability.length === 0) return false;
-                      const busyPeriods = dateBusy
-                        .filter((busy) => moment(busy.start).isSame(_date, "day"))
-                        .map(({ start, end }) => ({
-                          start: moment(start).hours() * 60 + moment(start).minutes(),
-                          end: moment(end).hours() * 60 + moment(end).minutes(),
-                        }));
-                      let availableMinutes = new Set();
-                      employeeAvailability.forEach(({ startHour, startMinute, endHour, endMinute }) => {
-                        for (let i = startHour * 60 + startMinute; i < endHour * 60 + endMinute; i++) {
-                          availableMinutes.add(i);
-                        }
-                      });
-
-                      busyPeriods.forEach(({ start, end }) => {
-                        for (let i = start; i < end; i++) {
-                          availableMinutes.delete(i);
-                        }
-                      });
-                      const allIntervalsBusy = availableMinutes.size === 0;
-                      return isAvailable && !isBlocked && !allIntervalsBusy;
-                    }}
-                    includeTimes={hourPicker}
-                    className="rounded-2xl border w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary "
-                    withPortal
-                    placeholderText="Seleccionar una fecha"
-                    onCalendarOpen={() => {                      
-                      const selectedDate =
-                        formValues.start && moment(formValues.start).isValid()
-                          ? moment(formValues.start).toDate()
-                          : new Date();                      
-                      _hourPicker(selectedDate);
-                    }}                    
-                    timeClassName={(time) => {
-                      const _time = moment(time);
-                      if (!hourPicker.includes(new Date(_time).getTime())) {
-                        return "hide";
-                      }
-                      const now = new moment();
-                      if (_time.isBefore(now, "minute")) {
-                        return "hide";
-                      }
-                    }}
-                  />
-                )} */}
                 <Dialog open={calendarOpen} onOpenChange={setCalendarOpen}>
                   <DialogTrigger asChild>
-                    <button className="rounded-2xl border w-full px-4 py-2 text-secondary text-left">
+                    <button translate="no" className="rounded-2xl border w-full px-4 py-2 text-secondary text-left">
                       {selectedDateTime
                         ? format(selectedDateTime, "dd/MM/yyyy HH:mm")
                         : "Seleccionar fecha personalizada"}
@@ -350,6 +283,7 @@ export const Appointment = () => {
                   </DialogTrigger>
                   <DialogContent className="p-0 sm:max-w-[600px] [&_[data-dialog-close]]:hidden">
                     <MyCalendar 
+                      translate="no"
                       availability={availability} 
                       dateBusy={dateBusy} 
                       blockedDates={blockedDates} 
@@ -357,7 +291,7 @@ export const Appointment = () => {
                       _hourPicker={_hourPicker}
                       onDateChange={onDateChange}
                       onTimeSelect={handleTimeSelect}
-                      fullDateBusy={fullDateBusy}
+                      fullDateBusy={fullDateBusy || []}
                       maxAvailableAfterHours={maxAvailableAfterHours}
                     />
                   </DialogContent>
