@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Calendar } from "lucide-react";
 import moment from "moment";
+import { es } from "date-fns/locale/es"; // Solo importa la localización directamente
 // import "react-datepicker/dist/react-datepicker.css";
 
 export default function CustomDatepicker({
@@ -133,6 +134,7 @@ export default function CustomDatepicker({
         minDate={new Date()}
         renderCustomHeader={renderHeader}
         dateFormat="Pp"
+        locale={es}
         filterDate={(date) => {
           
           const _date = moment(date);
