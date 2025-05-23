@@ -29,7 +29,7 @@ const Maps = ({ address="santa cruz, Bolivia, Av. cumavi", lat="-17.7917873", ln
       <div className="google-map"
         style={ divStyle }
       >
-      <Map center={location} zoom={16}
+      <Map center={location} zoom={15}
         gestureHandling={'greedy'}
         disableDefaultUI={true}
       >

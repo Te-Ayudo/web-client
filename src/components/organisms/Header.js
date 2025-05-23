@@ -1,13 +1,42 @@
+import { useNavigate } from 'react-router-dom';
 import Logo from '../atoms/Logo';
 import Navbar from './Navbar';
+import { useSelector } from "react-redux";
+import { BiArrowBack } from 'react-icons/bi';
+export const Header = ({onClick, isAuthentication = true, back = false}) => {
+  const { status } = useSelector((s) => s.auth);
+  const navigate = useNavigate();
+  const isAuth     = status === "authenticated";
+  const headerClass = isAuthentication
+     ? "sticky top-0 z-40 bg-white/95 backdrop-blur border-b-4 shadow-[0_6px_12px_-4px_rgba(0,0,0,0.15)] py-4 sm:py-6 flex justify-center"
+     : "";
+  return(
+    <header className={headerClass}>
+      <div className="container flexCenter flex-col">
 
-export const Header = ({onClick}) => (
-  <header className="flex justify-center shadowHeader py-4 sm:py-6">
-    <div className="container flexCenter flex-col">
-      <Logo className="h-12 sm:h-24" />
-      <Navbar onClick={onClick} />
-    </div>
-  </header>
-);
+        {/* ▲ BACK BUTTON ───────────────────────────────────────── */}
+        {back && (
+          <button
+            onClick={() => navigate(-1)}
+            className="
+              absolute left-6 sm:left-20 top-11 sm:top-20 -translate-y-1/2
+              bg-orange-500 hover:bg-orange-600
+              text-white rounded-xl p-1
+              shadow-md w-10 h-10 flex items-center justify-center
+              transition duration-200
+            "
+          >
+            <BiArrowBack size="1.3rem" />
+          </button>
+        )}
+
+        {/* LOGO solo si está logeado */}
+        {isAuth && <Logo className="h-12 sm:h-24" />}
+
+        {/* NAVBAR (se puede ocultar con hideUI) */}
+        <Navbar onClick={onClick} hideUI={!isAuth} />
+      </div>
+    </header>
+)};
 
 export default Header

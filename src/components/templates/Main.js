@@ -1,10 +1,18 @@
 
-const Main = ({header, children, footer}) => {
+const Main = ({header, children, footer, isSticky = false}) => {
 
   return (
     <>
       {header}
-      {children}
+      <main
+        className={
+          isSticky
+            ? "mt-[72px] sm:mt-[120px]"
+            : ""
+        }
+      >
+        {children}
+      </main>
       {footer}
     </>
   )
