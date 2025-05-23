@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { setNotActiveModal } from "../store/servicios";
 import { useNavigate, useParams } from "react-router-dom";
 import { BOOKING_ADD_TO_CART } from "../store";
+import CartSidebar from "./organisms/CartSidebar";
 
 const customStyles = {
   content: {
@@ -19,7 +20,7 @@ const customStyles = {
 
 Modal.setAppElement("#root");
 
-export const ServModal = ({ _id, name, unitPrice, description = "", imageURL = "", unitEstimatedWorkMinutes, variablePrice, isOpen = false, availableAfterHours }) => {
+export const ServModal = ({openCart, _id, name, unitPrice, description = "", imageURL = "", unitEstimatedWorkMinutes, variablePrice, isOpen = false, availableAfterHours }) => {
   const { providerid } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -70,7 +71,8 @@ export const ServModal = ({ _id, name, unitPrice, description = "", imageURL = "
     );
 
     dispatch(setNotActiveModal());
-    navigate(`/${providerid}/carrito`);
+    openCart(); 
+    // navigate(`/${providerid}/carrito`);
   };
 
   const toggleReadMore = () => {

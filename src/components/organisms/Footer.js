@@ -24,9 +24,11 @@ const Footer = ( { titulo="Ver Carrito",enlace="carrito" } ) =>  {
       {
         desabilitar
         ?(
-      <Button className="" disabled onClick={ onCarrito } >
-        { titulo }
-      </Button>
+          <>
+            <Button className="" disabled onClick={ onCarrito } >
+              { titulo }
+            </Button>
+          </>
         )
         :(
       <Button className="" onClick={ onCarrito } >

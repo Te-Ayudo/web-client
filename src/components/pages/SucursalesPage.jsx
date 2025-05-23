@@ -3,11 +3,11 @@ import Button from "../atoms/Button"
 import { SucursalesItem } from "../atoms/SucursalesItem"
 import List from "../molecules/List"
 import Footer from "../organisms/Footer"
-import Header from "../organisms/Header"
 import Main from "../templates/Main"
 import { useDispatch, useSelector } from 'react-redux';
 import { startListSucursales } from '../../store/branch';
 import { useEffect, useState } from 'react';
+import Header from '../organisms/HeaderInit';
 
 
 export const SucursalesPage = () => {
@@ -30,13 +30,17 @@ export const SucursalesPage = () => {
 
   return (
     <>
-      <Main header={<Header />} footer={<Footer />}>
+      <Main header={<Header isSticky={true} />} isSticky={true}>
         <List>
-          <Button  className="btn-auto font-normal mb-5" disabled={true} > Sucursales </Button>
-          <ul>
+          {/* <Button  className="btn-auto font-normal mb-5" disabled={true} > Sucursales </Button> */}
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-primary mb-1">Sucursales</h2>
+            <p className="text-sm text-gray-600">Elija la sucursal de su preferencia para continuar con su reserva</p>
+          </div>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             { listSucursales(branches).map((item) => (
-              <SucursalesItem key={item.id} {...item}  />
-           ))}
+              <SucursalesItem key={item.id} {...item} />
+            ))}
           </ul>
         </List>
       </Main>

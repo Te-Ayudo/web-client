@@ -39,7 +39,7 @@ navigate(`/${providerid}/servicios`)
       <List >
 
         <hr></hr>
-         <ul>
+        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
           {
             (l_services)?
               l_services.map(

@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { DistanceDisplay } from "../../api/DistanceDisplay";
 import { useParams } from "react-router-dom";
 import { startListProveedores } from "../../store";
+import CartSidebar from "../organisms/CartSidebar";
 
 export const Empresa = (props) => {
 
@@ -27,7 +28,7 @@ export const Empresa = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const params = useParams();
-
+  const { providerid } = useParams();
   const [ubicacion, setUbicacion] = useState({});
 
   useEffect(() => {
@@ -78,100 +79,58 @@ export const Empresa = (props) => {
     if (newWindow) newWindow.opener = null
 
   };
-
+  console.log('provider', providerid);
+  const [cartOpen, setCartOpen] = useState(false);
+  console.log('BOOKING_BRANCH', booking.branch);
+  const openCart  = () => setCartOpen(true);
+  const closeCart = () => setCartOpen(false);
   return (
-    <Main header={<Header />}
-    footer={<Footer />}
+    <Main header={<Header back={true}/>}
+    // footer={<Footer />}
     >
 
-      <ServModal isOpen={ isOpenModal } {...active} />
+      <ServModal isOpen={ isOpenModal } {...active} openCart={openCart}/>
       <List>
         <div className="grid grid-cols-1 gap-4">
-          {
-            provider && (
-              <article className="flex items-start space-x-6">
-                <img
-                  src={provider.picture}
-                  alt=""
-                  width="145"
-                  height="145"
-                  className="flex-none rounded-md bg-slate-100"
-                />
-                <div className="relative h-full flex flex-col justify-end">
-                  <h2 className="text-secondary">{ provider.first_name }</h2>
-                  <dl className="mt-2 flex text-sm leading-6 font-medium">
-                    <dt className="mr-3">
-                      <span className="sr-only">Star rating</span>
-
-                      <svg width="16" height="20" fill="#FF770F">
-                        <path d="M7.05 3.691c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.372 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.539 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.783.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.363-1.118L.98 9.483c-.784-.57-.381-1.81.587-1.81H5.03a1 1 0 00.95-.69L7.05 3.69z" />
-                      </svg>
-                    </dt>
-                    <dd className="font-semibold text-secondary"> { provider.avgRating } </dd>
-                  </dl>
-                </div>
-              </article>
-
-            )
-          }
-          <div className="col-span-full">
-            <div className="mb-3 sm:mb-6">
-            {booking.isInBranch && (
-              <>
-              <Maps
-                address={''}
-                lat={ booking.branch.addressInfo.coordinates.latitude }
-                lng={ booking.branch.addressInfo.coordinates.longitude }
-                drag={false}
-                altura={true}
+        {provider && booking.branch && (
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-6">
+            {/* Tarjeta del proveedor */}
+            <div className="flex-1 rounded-2xl border border-gray-200 bg-white shadow-md p-4 sm:p-6 flex items-start gap-4">
+              <img
+                src={provider.picture}
+                alt="Imagen del proveedor"
+                className="w-24 h-24 sm:w-32 sm:h-32 rounded-xl object-cover"
               />
-              </>
-            )
-
-            }
-
-            </div>
-          </div>
-
-          <div className="col-span-full">
-            <div className="mb-3 sm:mb-6">
-              <div className="flex justify-center">
-                <Button
-                 onClick={ () =>
-                  createRoute(
-                    booking.branch.addressInfo.coordinates.latitude,
-                    booking.branch.addressInfo.coordinates.longitude
-                  )}
-                 type="submit" className="sm:h-[48px] !text-[14px]">
-                  Como llegar
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {
-            booking.branch && (
-            <div className="col-span-full">
-              <div className="mb-3 sm:mb-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>{ booking.branch.name }</div>
-                  <div className="text-right text-primary">
-                {booking.customer.address.coordinates && (
-                  <>
-                <DistanceDisplay
-                    origin={ubicacion}
-                    destination={ booking.branch.addressInfo.coordinates}
-                />
-
-                  </>
-                )}
-                    {/* Distancia 2 KM */}
+              <div className="flex flex-col justify-between h-full w-full">
+                <div>
+                  <h2 className="text-lg sm:text-xl font-semibold text-secondary">{provider.first_name}</h2>
+                  <div className="flex items-center mt-1 text-sm text-gray-500">
+                    <svg width="16" height="20" fill="#FF770F" className="mr-1">
+                      <path d="M7.05 3.691c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.372 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.539 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.783.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.363-1.118L.98 9.483c-.784-.57-.381-1.81.587-1.81H5.03a1 1 0 00.95-.69L7.05 3.69z" />
+                    </svg>
+                    <span className="font-medium text-secondary">{provider.avgRating}</span>
                   </div>
                 </div>
               </div>
             </div>
-            )
-          }
+
+            {/* Tarjeta de sucursal */}
+            <div className="flex-1 bg-orange-50 border border-orange-200 rounded-2xl shadow-sm p-4 sm:p-6 flex flex-col justify-between">
+              <div>
+                <p className="text-sm text-gray-500 font-medium mb-1">Sucursal seleccionada:</p>
+                <h3 className="text-primary font-semibold text-lg">{booking.branch.name}</h3>
+              </div>
+              <div className="mt-4 sm:mt-auto">
+                <button
+                  onClick={() => navigate(`/${providerid}/sucursales/${booking.branch._id}`)}
+                  className="text-sm bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md font-semibold shadow"
+                >
+                  Ver ubicación
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
           { !!provider.recommendedServices?
           (
             
@@ -234,46 +193,44 @@ export const Empresa = (props) => {
           )
           }
           { }
-      <div className="" >
-      <Button className="" disabled  >
-        Servicios
-      </Button>
-      </div>
+        <div className="">
+          <h2 className="text-2xl font-bold text-primary mb-1">Servicios</h2>
+          <p className="text-sm text-gray-600">Elija el servicio de su preferencia para continuar con su reserva</p>
+        </div>
 
           <div className="col-span-full">
             <div className="mb-3 sm:mb-6">
-              <ul>
+              <ul className="">
                 {
-             (search.length > 0)
-            ?
-            (
-              search.map(
-                dato =>{
-                  return <li key={dato._id} >
-                    <Lista servicio={ dato } />
-                  </li>
-                }
-              )
-
-            )
-            :
-            (
-                services
-                  && servicesAvailableByBranch(services).map((servicio) => {
-                      return (
-                        <li key={servicio.id}>
-                          <Lista servicio={servicio} />
+                  (search.length > 0)
+                  ?
+                  (
+                    search.map(
+                      dato =>{
+                        return <li key={dato._id} >
+                          <Lista servicio={ dato } />
                         </li>
-                      );
-                    })
-            )
+                      }
+                    )
 
+                  )
+                  :
+                  (
+                      services
+                        && servicesAvailableByBranch(services).map((servicio) => {
+                            return (
+                              <li key={servicio.id}>
+                                <Lista servicio={servicio} />
+                              </li>
+                            );
+                          })
+                  )
 
-                  }
+                }
               </ul>
             </div>
           </div>
-
+          <CartSidebar visible={cartOpen} onClose={closeCart} />
         </div>
       </List>
     </Main>

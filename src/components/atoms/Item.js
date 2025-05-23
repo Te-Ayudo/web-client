@@ -89,13 +89,12 @@ const Item = (props) => {
         )}
 
 
-        <div className="" >
-          <Button className="pl-0" disabled  >
-            Servicios
-          </Button>
+        <div className="">
+          <h2 className="text-2xl font-bold text-primary mb-1">Servicios</h2>
+          <p className="text-sm text-gray-600">Elija el servicio de su preferencia para continuar con su reserva</p>
         </div>
 
-        <div className="py-4">
+        <div className="">
           {
             (!!categorias)?
               categorias.map(

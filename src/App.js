@@ -18,36 +18,47 @@ import { useCheckAuthToken } from "./hooks/useCheckAuthToken";
 import { ProveedoresPage } from "./components/pages/ProveedoresPage";
 import { Rating } from "./components/pages/Rating";
 import LoginWhatsapp from "./components/pages/LoginWhatsapp";
+import { Ubication } from "./components/pages/Ubication";
+import CartSidebar from "./components/organisms/CartSidebar";
+import PhoneInputPage from "./components/organisms/PhoneInputPage";
+import OtpInputPage from "./components/organisms/OtpInputPage";
+import OtpRegisterPage from "./components/organisms/OtpRegisterPage";
 
 function App() {
 
   // const { status } = useCheckAuthToken();
-  const { services,isLoading} = useSelector( state => state.carrito );
-  const { selected } = useSelector( state => state.booking );
-  const serviceCart = selected.serviceCart
-
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={ <Home /> } />
-        <Route path=":providerid" element={ <Home /> } />
-        {/* <Route path="/" element={<Home />} /> */}             
-        <Route path=":providerid/loginWhatsapp" element={<LoginWhatsapp />} />
-        <Route path=":providerid/login" element={<Login />} />
-        <Route path=":providerid/registrarse" element={<Registrarse />} />
-        <Route path=":providerid/rating" element={<Rating />} />
-        <Route path=":providerid/servicios" element={<Servicios />} />
-        <Route path=":providerid/programar" element={<ServiceAppointment />} />
-        <Route path=":providerid/gracias" element={<Thanks />} />
-        <Route path=":providerid/ubicacion" element={<RegistrarUbicacion />} />
-        <Route path="*" element={<NotFound />} />
-        <Route path=":providerid/carrito" element={<Cart />} />
-        <Route path=":providerid/empresa" element={<Empresa />} />
-        <Route path=":providerid/proveedores" element={<ProveedoresPage />} />
-        <Route path=":providerid/sucursales" element={<SucursalesPage />} />
-        <Route path=":providerid/confirmacion" element={<ConfirmacionPage />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={ <Home /> } />
+          <Route path=":providerid" element={ <Home /> } />
+          {/* <Route path="/" element={<Home />} /> */}
+          <Route path=":providerid/loginWhatsapp" element={<LoginWhatsapp />} />
+          <Route path=":providerid/login" element={<Login />} />
+          <Route path=":providerid/login/telefono" element={<PhoneInputPage />} />
+          <Route path=":providerid/login/codigo" element={<OtpInputPage />} />
+          <Route path=":providerid/registrarse/codigo" element={<OtpRegisterPage />} />
+          <Route path=":providerid/registrarse" element={<Registrarse />} />
+          <Route path=":providerid/rating" element={<Rating />} />
+          <Route path=":providerid/servicios" element={<Servicios />} />
+          <Route path=":providerid/programar" element={<ServiceAppointment />} />
+          <Route path=":providerid/gracias" element={<Thanks />} />
+          <Route path=":providerid/ubicacion" element={<RegistrarUbicacion />} />
+          <Route path="*" element={<NotFound />} />
+          <Route path=":providerid/carrito" element={<Cart />} />
+          <Route path=":providerid/empresa" element={<Empresa />} />
+          <Route path=":providerid/proveedores" element={<ProveedoresPage />} />
+          <Route path=":providerid/sucursales" element={<SucursalesPage />} />
+          <Route path=":providerid/sucursales/:sucursalid" element={<Ubication />} />
+          <Route path=":providerid/confirmacion" element={<ConfirmacionPage />} />
+        </Routes>
+      </BrowserRouter>
+      {/* <CartSidebar
+        visible={cartOpen}
+        onClose={() => setCartOpen(false)}
+      /> */}
+    </>
   )
 }
 

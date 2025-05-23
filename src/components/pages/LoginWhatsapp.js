@@ -6,10 +6,8 @@ import LoginWhatsapp from "../organisms/LoginWhatsapp";
 
 const LoginWhatsappPage = () => {  
   return (
-    <Main header={<Header />} footer={<Footer />}>
-      <Modal>
+    <Main header={<Header isAuthentication={false}/>} >
         <LoginWhatsapp />
-      </Modal>
     </Main>
   );
 };

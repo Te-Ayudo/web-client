@@ -212,13 +212,6 @@ export const Appointment = () => {
       ...formValues,
       start: event, // Actualiza directamente el valor seleccionado
     });
-    // console.log('Evem', event)
-    // const result = format(event, "yyyy-MM-dd'T'HH:mm:ssxxx");
-    // dispatch(
-    //   BOOKING_SET({
-    //     bookingDate: result,
-    //   })
-    // );
   };
   
   const onAddress = (e) => {
@@ -232,159 +225,160 @@ export const Appointment = () => {
   // const blockedDates = getBlockedDates(unavailability || []);
   return (
     <>
-      <div className="col-span-full">
-        <div className="mb-3 sm:mb-6 text-left">
-          <h2 className="text-primary font-[600] ">Programar el Servicio</h2>
-        </div>
-      </div>
-
-      <form className="text-center" method="POST" onSubmit={onSubmit}>
-        <div className="col-span-full">
-          <div className="mb-3 sm:mb-6">
-            <Input name="name" type="text" label="Nombre y Apellido" value={formValues.name} onChange={onInputChanged} />
-          </div>
-        </div>
-        <div className="col-span-full">
-          <div className="mb-3 sm:mb-6">
-            <select name="empleado" className="rounded-2xl border-solid border border-primary w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary" value={formValues.empleado} onChange={onInputChanged}>
-              <option value=""> Empleado (Opcional) ... </option>
-              {isBranch
-                ? employeeAvailableByBranch(employee).map((metodo) => {
-                    return (
-                      <option key={metodo._id} value={JSON.stringify(metodo)}>
-                        {" "}
-                        {metodo.fullName}{" "}
-                      </option>
-                    );
-                  })
-                : employee.map((metodo) => {
-                    return (
-                      <option key={metodo._id} value={JSON.stringify(metodo)}>
-                        {" "}
-                        {metodo.fullName}{" "}
-                      </option>
-                    );
-                  })}
-            </select>
-          </div>
-        </div>
-
-        <div className="col-span-full">
-          <div className="mb-3 sm:mb-6">
-            <div className="flex flex-wrap gap-4 w-full">
-              <div className="datePicker flex justify-end flex-row-reverse flex-grow sm:w-2/3 rounded-2xl border-solid border border-primary mb-3 sm:mb-0 w-full">
-                <Dialog open={calendarOpen} onOpenChange={setCalendarOpen}>
-                  <DialogTrigger asChild>
-                    <button translate="no" className="rounded-2xl border w-full px-4 py-2 text-secondary text-left">
-                      {selectedDateTime
-                        ? format(selectedDateTime, "dd/MM/yyyy HH:mm")
-                        : "Seleccionar fecha personalizada"}
-                    </button>
-                  </DialogTrigger>
-                  <DialogContent className="p-0 sm:max-w-[600px] [&_[data-dialog-close]]:hidden">
-                    <MyCalendar 
-                      translate="no"
-                      availability={availability} 
-                      dateBusy={dateBusy} 
-                      blockedDates={blockedDates} 
-                      hourPicker={hourPicker} 
-                      _hourPicker={_hourPicker}
-                      onDateChange={onDateChange}
-                      onTimeSelect={handleTimeSelect}
-                      fullDateBusy={fullDateBusy || []}
-                      maxAvailableAfterHours={maxAvailableAfterHours}
-                    />
-                  </DialogContent>
-                </Dialog>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-span-full">
-          <div className="mb-3 sm:mb-6">
-            <div className="flex flex-wrap gap-4">
-              <div className="grow">
-                <Input name="descuento" type="text" label="Codigo de descuento" value={formValues.descuento} onChange={onInputChanged} />
-              </div>
-              <div className="grow">
-                <Button disabled={!isCheckingCouponBtn} onClick={onVerifyCoupon} className="sm:h-[48px] !text-[14px] w-full">
-                  Aplicar Cupon
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-span-full">
-          <div className="mb-3 sm:mb-6">
-            <select name="metodopago" className="rounded-2xl border-solid border border-primary w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary" value={formValues.metodopago} onChange={onInputChanged}>
-              <option value=""> Metodo de Pago ... </option>
-              {paymentMethods.map((metodo) => {
-                return (
-                  <option key={metodo.value} value={metodo.value}>
-                    {" "}
-                    {metodo.label}{" "}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-        </div>
-
-        {!booking.isInBranch && (
-          <div className="col-span-full">
-            <div className="mb-3 sm:mb-6 text-left">
-              <h2 className="text-primary font-[600] ">Direccion (seleccionar direccion)</h2>
-            </div>
+      <div className="w-full">
+        <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-10 mx-auto">
             <div className="mb-3 sm:mb-6">
-              <div className="flex flex-wrap gap-4">
-                <div className="grow">
-                  {Object.keys(addresses).length === 0 ? (
-                    "No tienes direccion"
-                  ) : (
-                    <select name="direccion" className="rounded-2xl border-solid border border-primary w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary" value={formValues.direccion} onChange={onInputChanged}>
-                      <option value=""> Seleccionar ... </option>
-                      {addresses.map((metodo) => {
+              <h2 className="text-primary font-[600] text-xl sm:text-2xl">Programar el Servicio</h2>
+            </div>
+          <form className="text-center" method="POST" onSubmit={onSubmit}>
+            <div className="col-span-full">
+              <div className="mb-3 sm:mb-6">
+                <Input name="name" type="text" label="Nombre y Apellido" value={formValues.name} onChange={onInputChanged} />
+              </div>
+            </div>
+            <div className="col-span-full">
+              <div className="mb-3 sm:mb-6">
+                <select name="empleado" className="rounded-2xl border-solid border border-primary w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary" value={formValues.empleado} onChange={onInputChanged}>
+                  <option value=""> Empleado (Opcional) ... </option>
+                  {isBranch
+                    ? employeeAvailableByBranch(employee).map((metodo) => {
                         return (
-                          <option key={metodo.key} value={JSON.stringify(metodo)}>
+                          <option key={metodo._id} value={JSON.stringify(metodo)}>
                             {" "}
-                            {metodo.direction}{" "}
+                            {metodo.fullName}{" "}
+                          </option>
+                        );
+                      })
+                    : employee.map((metodo) => {
+                        return (
+                          <option key={metodo._id} value={JSON.stringify(metodo)}>
+                            {" "}
+                            {metodo.fullName}{" "}
                           </option>
                         );
                       })}
-                    </select>
-                  )}
-                </div>
-                <div className="grow">
-                  <Button href="#" onClick={onAddress} className="sm:h-[48px] !text-[14px] active:bg-opacity-80">
-                    Añadir nueva dirección
-                  </Button>
+                </select>
+              </div>
+            </div>
+
+            <div className="col-span-full">
+              <div className="mb-3 sm:mb-6">
+                <div className="flex flex-wrap gap-4 w-full">
+                  <div className="datePicker flex justify-end flex-row-reverse flex-grow sm:w-2/3 rounded-2xl border-solid border border-primary mb-3 sm:mb-0 w-full">
+                    <Dialog open={calendarOpen} onOpenChange={setCalendarOpen}>
+                      <DialogTrigger asChild>
+                        <button translate="no" className="rounded-2xl border w-full px-4 py-2 text-secondary text-left">
+                          {selectedDateTime
+                            ? format(selectedDateTime, "dd/MM/yyyy HH:mm")
+                            : "Seleccionar fecha personalizada"}
+                        </button>
+                      </DialogTrigger>
+                      <DialogContent className="p-0 sm:max-w-[600px] [&_[data-dialog-close]]:hidden">
+                        <MyCalendar 
+                          translate="no"
+                          availability={availability} 
+                          dateBusy={dateBusy} 
+                          blockedDates={blockedDates} 
+                          hourPicker={hourPicker} 
+                          _hourPicker={_hourPicker}
+                          onDateChange={onDateChange}
+                          onTimeSelect={handleTimeSelect}
+                          fullDateBusy={fullDateBusy || []}
+                          maxAvailableAfterHours={maxAvailableAfterHours}
+                        />
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="mb-3 sm:mb-6"></div>
-          </div>
-        )}
+            <div className="col-span-full">
+              <div className="mb-3 sm:mb-6">
+                <div className="flex flex-wrap gap-4">
+                  <div className="grow">
+                    <Input name="descuento" type="text" label="Codigo de descuento" value={formValues.descuento} onChange={onInputChanged} />
+                  </div>
+                  <div className="grow">
+                    <Button disabled={!isCheckingCouponBtn} onClick={onVerifyCoupon} className="sm:h-[48px] !text-[14px] w-full">
+                      Aplicar Cupon
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-span-full">
+              <div className="mb-3 sm:mb-6">
+                <select name="metodopago" className="rounded-2xl border-solid border border-primary w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary" value={formValues.metodopago} onChange={onInputChanged}>
+                  <option value=""> Metodo de Pago ... </option>
+                  {paymentMethods.map((metodo) => {
+                    return (
+                      <option key={metodo.value} value={metodo.value}>
+                        {" "}
+                        {metodo.label}{" "}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+            </div>
 
-        <div className="col-span-full">
-          <div className="mb-3 sm:mb-6">
-            <div className="map">{!!booking.customer.address._id ? <Maps address={booking.customer.address.street} lat={booking.customer.address.coordinates.latitude} lng={booking.customer.address.coordinates.longitude} drag={false} /> : ""}</div>
-          </div>
-        </div>
+            {!booking.isInBranch && (
+              <div className="col-span-full">
+                <div className="mb-3 sm:mb-6 text-left">
+                  <h2 className="text-primary font-[600] ">Direccion (seleccionar direccion)</h2>
+                </div>
+                <div className="mb-3 sm:mb-6">
+                  <div className="flex flex-wrap gap-4">
+                    <div className="grow">
+                      {Object.keys(addresses).length === 0 ? (
+                        "No tienes direccion"
+                      ) : (
+                        <select name="direccion" className="rounded-2xl border-solid border border-primary w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary" value={formValues.direccion} onChange={onInputChanged}>
+                          <option value=""> Seleccionar ... </option>
+                          {addresses.map((metodo) => {
+                            return (
+                              <option key={metodo.key} value={JSON.stringify(metodo)}>
+                                {" "}
+                                {metodo.direction}{" "}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      )}
+                    </div>
+                    <div className="grow">
+                      <Button href="#" onClick={onAddress} className="sm:h-[48px] !text-[14px] active:bg-opacity-80">
+                        Añadir nueva dirección
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+                <div className="mb-3 sm:mb-6"></div>
+              </div>
+            )}
 
-        <div className="col-span-full">
-          <div className="mb-3 sm:mb-6">
-            <TextArea name="nota" type="text" label="Notas" />
-          </div>
-        </div>
+            <div className="col-span-full">
+              <div className="mb-3 sm:mb-6">
+                <div className="map">{!!booking.customer.address._id ? <Maps address={booking.customer.address.street} lat={booking.customer.address.coordinates.latitude} lng={booking.customer.address.coordinates.longitude} altura={true} drag={false} /> : ""}</div>
+              </div>
+            </div>
 
-        <div className="col-span-full">
-          <div className="mb-3 sm:mb-6">
-            <Button type="submit" className="sm:h-[48px] !text-[14px]" disabled={loading}>
-              {loading ? "Confirmando..." : "Confirmar servicio"}
-            </Button>
-          </div>
+            <div className="col-span-full">
+              <div className="mb-3 sm:mb-6">
+                <TextArea name="nota" type="text" label="Notas" />
+              </div>
+            </div>
+
+            <div className="col-span-full">
+              <div className="mb-3 sm:mb-6">
+                <Button type="submit" className="sm:h-[48px] !text-[14px]" disabled={loading}>
+                  {loading ? "Confirmando..." : "Confirmar servicio"}
+                </Button>
+              </div>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </>
   );
 };

@@ -7,9 +7,10 @@ import Item from "../atoms/Item";
 import { ServModal } from "../ServModal";
 
 import { startListProveedores } from '../../store';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Button from "../atoms/Button";
+import CartSidebar from "../organisms/CartSidebar";
 
 const Servicios = (props) => {
 
@@ -24,32 +25,33 @@ const Servicios = (props) => {
   const { services,isOpenModal,active } = useSelector( state => state.servicios );
 	const proveedor = useSelector((state) => state.proveedor.selected)  
   const filteredServices = services?.filter((service) => service.method === "Ambos" || service.method === "A domicilio");
+  const [cartOpen, setCartOpen] = useState(false);
 
+  const openCart  = () => setCartOpen(true);
+  const closeCart = () => setCartOpen(false);
   return (
     <Main
-      header={<Header />}
-      footer={<Footer />}
+      header={<Header back={true}/>}
+      // footer={<Footer />}
     >
-      <ServModal isOpen={ isOpenModal } {...active} />
+      <ServModal isOpen={ isOpenModal } {...active} openCart={openCart}/>
     
       <List>
-        {
-        proveedor && (
-          <Item
-            key= {proveedor._id}
-            id= {proveedor._id}
-            empresa= {proveedor.first_name}
-            puntaje= {proveedor.avgRating}
-            image= {proveedor.picture}
-            categoria = {null}
-            servicios= {filteredServices}
-            recomendado={proveedor.recommendedServices}
-          />
-
+        {proveedor && (
+            <Item
+              key= {proveedor._id}
+              id= {proveedor._id}
+              empresa= {proveedor.first_name}
+              puntaje= {proveedor.avgRating}
+              image= {proveedor.picture}
+              categoria = {null}
+              servicios= {filteredServices}
+              recomendado={proveedor.recommendedServices}
+            />
         )
         }
       </List>
-
+      <CartSidebar visible={cartOpen} onClose={closeCart} />
     </Main>
   )
 }

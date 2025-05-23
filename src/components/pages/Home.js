@@ -4,13 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 
 import useModal from "../useModal";
 import Main from "../templates/Main";
-import Header from "../organisms/Header";
 import Footer from "../organisms/Footer";
 import Modal from '../molecules/Modal';
 import Service from '../organisms/Inicio';
 import { useParams } from 'react-router-dom';
 import LoginWhatsappPage from "../pages/LoginWhatsapp";
 import UpdateCustomerPage from "./UpdateCustomer";
+import Header from "../organisms/HeaderInit";
 
 const Home = () => {
   const {providerid} = useParams();
@@ -47,9 +47,8 @@ const Home = () => {
   return (
     <Main
       header={<Header/>}
-      footer={<Footer />}
     >
-      <Modal >
+      <Modal>
         {
           is_logeado
           ? ( !userJson?.status ? <UpdateCustomerPage /> : <Service /> )
