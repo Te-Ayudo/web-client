@@ -110,8 +110,11 @@ module.exports = {
 
       });
       addUtilities({
+        // ".news-modal-overlay": {
+        //   "@apply fixed right-0 left-0 top-[50%] flex items-center justify-center min-h-[550px] bg-white shadowModal mx-auto rounded-2xl w-[94%] sm:w-[550px] z-40": {},
+        // },
         ".news-modal-overlay": {
-          "@apply fixed right-0 left-0 top-[50%] flex items-center justify-center min-h-[550px] bg-white shadowModal mx-auto rounded-2xl w-[94%] sm:w-[550px] z-40": {},
+          "@apply fixed inset-x-0 top-[calc(50%+1rem)] sm:top-[calc(50%+3.5rem)] translate-y-[-50%] flex items-center justify-center min-h-[550px] bg-white shadowModal mx-auto rounded-2xl w-[94%] sm:w-[550px] z-40": {},
         },
         ".news-modal-body": {
           "@apply w-[90%] flex flex-col p-[20px]": {},

@@ -95,7 +95,7 @@ const PhoneInputPage = () => {
                     <div className="flex gap-2">
                     {/* selector país/código */}
                     <Select defaultValue={codePhone} onValueChange={setCodePhone}>
-                        <SelectTrigger className="w-24 bg-gray-100 rounded-xl px-3 py-5">
+                        <SelectTrigger className="w-24 bg-gray-100 rounded-xl px-3 py-5 [&>svg]:hidden">
                         <SelectValue placeholder="+591" />
                         </SelectTrigger>
 
