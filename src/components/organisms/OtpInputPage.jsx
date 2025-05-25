@@ -85,7 +85,7 @@ useEffect(() => {
                 <input
                 key={index}
                 id={`otp-${index}`}
-                type="text"
+                type="tel"
                 maxLength="1"
                 className="w-10 h-12 text-center border border-gray-300 rounded-md text-lg font-semibold"
                 value={digit}

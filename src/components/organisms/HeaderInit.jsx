@@ -17,7 +17,7 @@ export default function Header({ isSticky = false }) {
   const navigate       = useNavigate();
   const headerClass = isSticky
   ? "fixed top-0 inset-x-0 z-50 bg-white shadow-md bg-white/80 backdrop-blur-sm shadow"
-  : "w-full bg-white shadow-md";
+  : "sticky top-0 w-full bg-white shadow-md z-50";
   const isAuth = status === "authenticated";
   const [showCart, setShowCart] = useState(false);
   const handleAuth = (e) => {

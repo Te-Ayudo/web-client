@@ -145,21 +145,25 @@ export const Registro = () => {
                 <SelectValue placeholder="+591" />
               </SelectTrigger>
               <SelectContent className="max-h-60 overflow-y-auto z-[999]">
-                {paises.map((p) => (
-                  <SelectItem
-                    key={p.iso2}
-                    value={p.dial_code}
-                    className="flex items-center gap-2 py-2 cursor-pointer"
-                  >
-                    <CountryFlag
-                      countryCode={p.iso2}
-                      svg
-                      style={{ width: "1.2rem", height: "1.2rem" }}
-                    />
-                    <span className="text-gray-700 ml-auto"> {' '+ p.name + " ( +" + p.dial_code + ")"}</span>
-                    
-                  </SelectItem>
-                ))}
+                {paises.map(p => {
+                  const cleanName = p.name.replace(/^[\uD83C-\uDBFF\uDC00-\uDFFF]+/g, "");
+                  return (
+                    <SelectItem
+                      key={p.iso2}
+                      value={p.dial_code}
+                      className="flex items-center gap-2 py-2 cursor-pointer"
+                    >
+                      <CountryFlag
+                        countryCode={p.iso2}
+                        svg
+                        style={{ width: "1.2rem", height: "1.2rem" }}
+                      />
+                      <span className="text-gray-700 ml-auto">
+                        {cleanName} ( +{p.dial_code})
+                      </span>
+                    </SelectItem>
+                  );
+                })}
               </SelectContent>
             </Select>
           </div>
