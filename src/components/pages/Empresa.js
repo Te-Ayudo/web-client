@@ -1,15 +1,11 @@
 import Main from "../templates/Main";
 import Header from "../organisms/Header";
-import Footer from "../organisms/Footer";
 import List from "../molecules/List";
-import Button from "../atoms/Button";
 import { Lista } from "../atoms/Lista";
 import { useDispatch, useSelector } from "react-redux";
-import Maps from "../map/Map";
 import { ServModal } from "../ServModal";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { DistanceDisplay } from "../../api/DistanceDisplay";
 import { useParams } from "react-router-dom";
 import { startListProveedores } from "../../store";
 import CartSidebar from "../organisms/CartSidebar";
@@ -19,17 +15,15 @@ export const Empresa = (props) => {
   const { isOpenModal,active } = useSelector( state => state.servicios );
 
   const services = useSelector((state) => state.servicios.services);
-  const state = useSelector((state) => state);
   const booking = useSelector((state) => state.booking.selected);
   const provider = useSelector((state) => state.proveedor.selected);
   //const service = useSelector((state) => state.servicios.selected);
   const search = useSelector( state => state.servicios.search );
-  const [groupedServices, setGroupedServices] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const params = useParams();
   const { providerid } = useParams();
-  const [ubicacion, setUbicacion] = useState({});
+  const [, setUbicacion] = useState({});
 
   useEffect(() => {
     //dispatch(startListServiciosbyProvider(booking.provider._id));
@@ -79,9 +73,7 @@ export const Empresa = (props) => {
     if (newWindow) newWindow.opener = null
 
   };
-  console.log('provider', providerid);
   const [cartOpen, setCartOpen] = useState(false);
-  console.log('BOOKING_BRANCH', booking.branch);
   const openCart  = () => setCartOpen(true);
   const closeCart = () => setCartOpen(false);
   return (
@@ -198,37 +190,12 @@ export const Empresa = (props) => {
           <p className="text-sm text-gray-600">Elija el servicio de su preferencia para continuar con su reserva</p>
         </div>
 
-          <div className="col-span-full">
-            <div className="mb-3 sm:mb-6">
-              <ul className="">
-                {
-                  (search.length > 0)
-                  ?
-                  (
-                    search.map(
-                      dato =>{
-                        return <li key={dato._id} >
-                          <Lista servicio={ dato } />
-                        </li>
-                      }
-                    )
-
-                  )
-                  :
-                  (
-                      services
-                        && servicesAvailableByBranch(services).map((servicio) => {
-                            return (
-                              <li key={servicio.id}>
-                                <Lista servicio={servicio} />
-                              </li>
-                            );
-                          })
-                  )
-
-                }
-              </ul>
-            </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            {
+              (search.length > 0 ? search : servicesAvailableByBranch(services)).map(servicio => (
+                <Lista key={servicio._id} servicio={servicio} />
+              ))
+            }
           </div>
           <CartSidebar visible={cartOpen} onClose={closeCart} />
         </div>

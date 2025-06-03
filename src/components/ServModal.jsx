@@ -1,141 +1,159 @@
 import { useEffect, useState } from "react";
 import Modal from "react-modal";
-import Button from "./atoms/Button";
 import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 import { setNotActiveModal } from "../store/servicios";
-import { useNavigate, useParams } from "react-router-dom";
 import { BOOKING_ADD_TO_CART } from "../store";
-import CartSidebar from "./organisms/CartSidebar";
-
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    maxHeight: "80vh",
-    overflowY: "auto",
-  },
-};
+import Button from "./atoms/Button";
 
 Modal.setAppElement("#root");
+const overlayCls =
+  "fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[60]";
+const contentCls =
+   "relative w-[92%] sm:w-[450px] max-h-[85vh] overflow-y-auto \
+    bg-white rounded-3xl shadow-2xl animate-modal-pop py-6";
 
-export const ServModal = ({openCart, _id, name, unitPrice, description = "", imageURL = "", unitEstimatedWorkMinutes, variablePrice, isOpen = false, availableAfterHours }) => {
+export const ServModal = ({
+  openCart,
+  _id,
+  name,
+  unitPrice,
+  description = "",
+  imageURL = "",
+  unitEstimatedWorkMinutes,
+  variablePrice,
+  isOpen = false,
+  availableAfterHours,
+}) => {
   const { providerid } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const [cant, setCant] = useState(1);
-
   const [isReadMore, setIsReadMore] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setIsReadMore(false);
+      setCant(1);
     }
   }, [isOpen]);
 
-  const onCloseModal = () => {
-    setCant(1);
-    dispatch(setNotActiveModal());
-  };
+  const onCloseModal = () => dispatch(setNotActiveModal());
 
-  const onIncrement = () => {
-    const newvalor = cant + 1;
-    if (newvalor < 1) return;
-    setCant(cant + 1);
-  };
-  const onDecrement = () => {
-    const newvalor = cant - 1;
-    if (newvalor < 1) return;
-    setCant(cant - 1);
-  };
+  const handleQty = (delta) =>
+    setCant((prev) => Math.max(1, prev + delta));
 
   const onCarrito = () => {
-    //dispatch( addNewItem( { _id,name,unitPrice,description,imageURL,cant } ) );
-    if (cant < 1) {
-      return setCant(1);
-    }
-
     const price = cant * unitPrice;
     const quantity = cant;
     const estimatedWorkMinutes = cant * unitEstimatedWorkMinutes;
-    const serv = { _id, name, unitPrice, description, imageURL, unitEstimatedWorkMinutes, variablePrice, availableAfterHours };
+    const serv = {
+      _id,
+      name,
+      unitPrice,
+      description,
+      imageURL,
+      unitEstimatedWorkMinutes,
+      variablePrice,
+      availableAfterHours,
+    };
+
     dispatch(
-      BOOKING_ADD_TO_CART({
-        quantity,
-        service: serv,
-        price,
-        estimatedWorkMinutes,
-      })
+      BOOKING_ADD_TO_CART({ quantity, service: serv, price, estimatedWorkMinutes })
     );
-
     dispatch(setNotActiveModal());
-    openCart(); 
-    // navigate(`/${providerid}/carrito`);
+    openCart();           // abre sidebar carrito
   };
 
-  const toggleReadMore = () => {
-    setIsReadMore(!isReadMore);
-  };
-
-  const descriptionLines = description.split("\n");
-
+  /* --------- UI --------- */
   return (
-    <Modal isOpen={isOpen} onRequestClose={onCloseModal} style={customStyles} className="modal" overlayClassName="modal-fondo" closeTimeoutMS={200}>
-      <div className="container w-full">
-        <div className="flex flex-col">
-          <div className="flex flex-col sm:flex-row sm:items-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent mb-2">
-            <div className="w-full sm:w-2/3 bg-white flex flex-col basis-3/4 space-y-2 p-3 inline-flex items-start space-x-2 text-wrap">
-              <div className="text-slate-500 ">
-                {" "}
-                <strong>{name}</strong>{" "}
-              </div>
-              <div className={`text-slate-500 text-wrap break-words text-justify overflow-hidden ${isReadMore ? "" : "line-clamp-5"}`}>
-                {descriptionLines.map((line, index) => (
-                  <span key={index}>
-                    {line}
-                    <br />
-                  </span>
-                ))}
-              </div>
-              {descriptionLines.length > 5 && (
-                <button onClick={toggleReadMore} className="text-blue-500 cursor-pointer mt-0">
-                  {isReadMore ? "Leer menos" : "Leer más"}
-                </button>
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={onCloseModal}
+      overlayClassName={overlayCls}
+      className={contentCls}
+      closeTimeoutMS={200}
+    >
+      {/* ─── Botón cerrar ─── */}
+      <button
+        onClick={onCloseModal}
+        className="absolute top-3 right-3 text-gray-400 hover:text-gray-700"
+        aria-label="Cerrar"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
+          <path d="M18 6 6 18M6 6l12 12" strokeWidth="2" strokeLinecap="round" stroke="gray" />
+        </svg>
+      </button>
+
+      {/* ─── Contenido ─── */}
+      <div className="p-6 flex flex-col gap-5">
+        {/* Imagen + nombre + precio */}
+        <div className="flex items-center text-center gap-5 sm:flex-row">
+          {/* Imagen */}
+          <img
+            src={imageURL}
+            alt={name}
+            className="w-40 h-40 object-cover rounded-2xl shadow-md shrink-0"
+          />
+
+          {/* Nombre, precio, qty */}
+          <div className="flex flex-col flex-1 gap-3">
+            {/* Nombre */}
+            <h2 className="text-xl font-semibold text-gray-900">{name}</h2>
+
+            {/* Precio */}
+            <p className="text-primary font-bold text-lg">
+              {variablePrice && (
+                <span className="text-xs text-gray-400 font-normal mr-1">Desde</span>
               )}
-              <div className="text-slate-500">
-                {variablePrice ? <span className="text-primary">Desde</span> : ""}
-                <strong> Bs. {unitPrice} </strong>
-              </div>
-            </div>
-            <div className="w-full sm:w-auto flex flex-col basis-1/4 justify-center items-center mt-4 sm:mt-0">
-              <img src={imageURL} alt="" width="70" height="70" className="flex-col rounded-md bg-slate-100" />
+              Bs {unitPrice}
+            </p>
 
-              <div className="mt-2 flex flex-row items-center">
-                <button type="button" className={`btn-icon  `} onClick={onDecrement}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="0.8em" height="0.8em" viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M18 11H6a2 2 0 0 0 0 4h12a2 2 0 0 0 0-4" />
-                  </svg>
-                  <span className="sr-only">Icon description</span>
-                </button>
-                <span className={` mr-1.5  `}> {cant} </span>
-                <button type="button" className="btn-icon" onClick={onIncrement}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="0.8em" height="0.8em" viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M21 13h-8v8h-2v-8H3v-2h8V3h2v8h8z" />
-                  </svg>
-                  <span className="sr-only">Icon description</span>
-                </button>
-              </div>
+            {/* Selector de cantidad */}
+            <div className="flex items-center justify-center gap-4">
+              <button
+                onClick={() => handleQty(-1)}
+                className="qty-btn"
+                aria-label="Restar"
+              >
+                −
+              </button>
+              <span className="text-lg font-semibold min-w-[32px] text-center">
+                {cant}
+              </span>
+              <button
+                onClick={() => handleQty(1)}
+                className="qty-btn"
+                aria-label="Sumar"
+              >
+                +
+              </button>
             </div>
-          </div>
-
-          <div className="container flexCenter mx-auto my-auto sm:my-0">
-            <Button className="" onClick={onCarrito}>
-              Agregar
-            </Button>
           </div>
         </div>
+
+        {description && (
+          <div className="text-sm text-gray-600 leading-relaxed">
+            <p
+              className={`whitespace-pre-line ${
+                isReadMore ? "" : "line-clamp-[8]"
+              }`}
+            >
+              {description}
+            </p>
+            {description.split("\n").length > 8 && (
+              <button
+                onClick={() => setIsReadMore((v) => !v)}
+                className="text-primary font-medium mt-1"
+              >
+                {isReadMore ? "Leer menos" : "Leer más"}
+              </button>
+            )}
+          </div>
+        )}
+        <Button className="w-full" onClick={onCarrito}>
+          Añadir al carrito
+        </Button>
       </div>
     </Modal>
   );

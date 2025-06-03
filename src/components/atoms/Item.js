@@ -105,34 +105,13 @@ const Item = (props) => {
             : ''
           }
         </div>
-        <ul>
-          {
-            (search.length > 0)
-            ?
-            (
-              search.map(
-                dato =>{
-                  return <li key={dato._id} >
-                    <Lista servicio={ dato } />
-                  </li>
-                }
-              )
-
-            )
-            :
-            (
-            (servicios)?
-              servicios.map(
-                servicio =>{
-                  return <li key={servicio._id} >
-                    <Lista servicio={ servicio } />
-                  </li>
-                }
-              )
-              : ''
-            )
-          }
-        </ul>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+           {
+             (search.length > 0 ? search : servicios || []).map(servicio => (
+               <Lista key={servicio._id} servicio={servicio} />
+             ))
+           }
+         </div>
 
       </div>
 

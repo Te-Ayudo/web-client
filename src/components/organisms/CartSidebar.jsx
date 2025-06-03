@@ -15,6 +15,7 @@ import Button from "../atoms/Button"
 import { BiCart } from "react-icons/bi"
 import ButtonCustom from "./Button"
 import { AiOutlinePlus } from "react-icons/ai"
+import CartItem from "./CartItem"
 export default function CartSidebar({ visible, onClose }) {
   const { providerid } = useParams()
   const navigate       = useNavigate()
@@ -84,18 +85,11 @@ export default function CartSidebar({ visible, onClose }) {
             </SheetHeader>
             <div className="flex-1 overflow-y-auto px-6 py-6">
             {items.length > 0 ? (
-                <ul className="space-y-4">
-                {items.map(s => (
-                    <li key={s.service._id}>
-                    <Lista
-                        orden={s}
-                        servicio={s.service}
-                        showallicon
-                        quantity={s.quantity}
-                    />
-                    </li>
-                ))}
-                </ul>
+             <div className="space-y-6">
+               {items.map(orden => (
+                 <CartItem key={orden.service._id} orden={orden} />
+               ))}
+             </div>
             ) : (
                 <div className="flex h-full flex-col items-center justify-center gap-6 text-center">
                 <HiOutlineShoppingCart size={96} className="text-gray-400" />
