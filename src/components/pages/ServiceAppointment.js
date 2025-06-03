@@ -11,7 +11,7 @@ const ServiceAppointment = (props) => {
 
   return (
     <Main
-      header={<Header />}
+      header={<Header back={true} />}
 
     >
       <AddressModal isOpen={ isOpenModalAddress } />

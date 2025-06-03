@@ -1,12 +1,9 @@
-import {useNavigate} from 'react-router-dom';
-import Button from "../atoms/Button"
 import { SucursalesItem } from "../atoms/SucursalesItem"
 import List from "../molecules/List"
-import Footer from "../organisms/Footer"
 import Main from "../templates/Main"
 import { useDispatch, useSelector } from 'react-redux';
 import { startListSucursales } from '../../store/branch';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Header from '../organisms/HeaderInit';
 
 
@@ -30,7 +27,7 @@ export const SucursalesPage = () => {
 
   return (
     <>
-      <Main header={<Header isSticky={true} />} isSticky={true}>
+      <Main header={<Header isSticky={true} back={true}/>} isSticky={true}>
         <List>
           {/* <Button  className="btn-auto font-normal mb-5" disabled={true} > Sucursales </Button> */}
           <div className="mb-6">

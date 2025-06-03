@@ -20,6 +20,13 @@ footer{
 *:focus {
   outline: none;
 }
+@layer components {
+  .qty-btn {
+    @apply w-9 h-9 rounded-full bg-gray-100 text-gray-700
+           hover:bg-primary hover:text-white transition-colors
+           text-lg flex items-center justify-center select-none;
+  }
+}
 
 .pb-16{
   padding-bottom: 100px;

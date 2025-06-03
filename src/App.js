@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./components/pages/Login";
 import Registrarse from "./components/pages/Registrarse";
 import RegistrarUbicacion from "./components/pages/RegistrarUbicacion";
@@ -14,19 +12,17 @@ import { Cart } from "./components/pages/Cart";
 import { Empresa } from "./components/pages/Empresa";
 import { SucursalesPage } from "./components/pages/SucursalesPage";
 import { ConfirmacionPage } from "./components/pages/ConfirmacionPage";
-import { useCheckAuthToken } from "./hooks/useCheckAuthToken";
 import { ProveedoresPage } from "./components/pages/ProveedoresPage";
 import { Rating } from "./components/pages/Rating";
 import LoginWhatsapp from "./components/pages/LoginWhatsapp";
 import { Ubication } from "./components/pages/Ubication";
-import CartSidebar from "./components/organisms/CartSidebar";
 import PhoneInputPage from "./components/organisms/PhoneInputPage";
 import OtpInputPage from "./components/organisms/OtpInputPage";
 import OtpRegisterPage from "./components/organisms/OtpRegisterPage";
+import LoginHome from "./components/pages/LoginHome";
 
 function App() {
 
-  // const { status } = useCheckAuthToken();
   return (
     <>
       <BrowserRouter>
@@ -34,8 +30,8 @@ function App() {
           <Route path="/" element={ <Home /> } />
           <Route path=":providerid" element={ <Home /> } />
           {/* <Route path="/" element={<Home />} /> */}
-          <Route path=":providerid/loginWhatsapp" element={<LoginWhatsapp />} />
-          <Route path=":providerid/login" element={<Login />} />
+          <Route path=":providerid/loginWhatsapp" element={<LoginHome />} />
+          <Route path=":providerid/login" element={<LoginHome />} />
           <Route path=":providerid/login/telefono" element={<PhoneInputPage />} />
           <Route path=":providerid/login/codigo" element={<OtpInputPage />} />
           <Route path=":providerid/registrarse/codigo" element={<OtpRegisterPage />} />
@@ -54,10 +50,6 @@ function App() {
           <Route path=":providerid/confirmacion" element={<ConfirmacionPage />} />
         </Routes>
       </BrowserRouter>
-      {/* <CartSidebar
-        visible={cartOpen}
-        onClose={() => setCartOpen(false)}
-      /> */}
     </>
   )
 }
