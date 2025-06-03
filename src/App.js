@@ -43,7 +43,7 @@ function App() {
           <Route path=":providerid/rating" element={<Rating />} />
           <Route path=":providerid/servicios" element={<Servicios />} />
           <Route path=":providerid/programar" element={<ServiceAppointment />} />
-          <Route path=":providerid/gracias" element={<Thanks />} />
+          <Route path=":providerid/gracias/:bookingId" element={<Thanks />} />
           <Route path=":providerid/ubicacion" element={<RegistrarUbicacion />} />
           <Route path="*" element={<NotFound />} />
           <Route path=":providerid/carrito" element={<Cart />} />
