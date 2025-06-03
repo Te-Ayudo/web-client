@@ -15,6 +15,7 @@ import ButtonCarrito from "./Button";
 import { useForm } from "../../hooks/useForm";
 import { setEmptySearch, updateListService } from "../../store/servicios/serviciosSlice";
 import CartSidebar from "./CartSidebar";
+import { createPortal } from "react-dom";
 
   const formData = {
     search_head: '',
@@ -25,7 +26,7 @@ export const Navbar = ({ onClick, hideUI = false }) => {
   const { status } = useSelector( state => state.auth );
   const { services } = useSelector( state => state.servicios );
   const [showCart, setShowCart] = useState(false);
- 
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [online, setOnline] = useState(true)
   const [access, setAccess] = useState(true)
   const [token, setToken] = useState('')
@@ -69,6 +70,7 @@ export const Navbar = ({ onClick, hideUI = false }) => {
     dispatch( startLogout());
     googleLogout();
     navigate(`/${providerid}/`);
+    setShowLogoutConfirm(false);
   }
   const isProviedor=!!providerid;
 
@@ -184,13 +186,43 @@ export const Navbar = ({ onClick, hideUI = false }) => {
             <Button
               className = {`font-bold px-0 sm:pr-0 ${ !isCheckingAuthentication?"hidden":"" } `}
               href = {`/${providerid}/logout`}
-              onClick = {onLogout}
+              onClick={(e) => { e.preventDefault(); setShowLogoutConfirm(true); }}
               decoration={<BiUser size="2rem" className="text-primary" />}>
               Cerrar Sesión
             </Button>
           </div>
         ):''
       }
+      {showLogoutConfirm && createPortal(
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl max-w-sm w-[90%] p-6 shadow-xl animate-modal-pop">
+            <div className="flex flex-col justify-start">
+              <h3 className="text-lg flex flex-start font-semibold text-gray-900 mb-4">
+                ¿Cerrar sesión?
+              </h3>
+              <p className="text-sm flex flex-start text-gray-600 mb-6">
+                Se cerrará tu sesión actual y volverás al inicio.
+              </p>
+            </div>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="px-4 py-2 rounded-md border text-gray-700 hover:bg-gray-50"
+              >
+                Cancelar
+              </button>
+
+              <button
+                onClick={onLogout}
+                className="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary/90"
+              >
+                Sí, cerrar
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
       <CartSidebar visible={showCart} onClose={() => setShowCart(false)} />
     </div>
   </nav>

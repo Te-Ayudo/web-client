@@ -4,20 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 
 import useModal from "../useModal";
 import Main from "../templates/Main";
-import Footer from "../organisms/Footer";
 import Modal from '../molecules/Modal';
-import Service from '../organisms/Inicio';
 import { useParams } from 'react-router-dom';
-import LoginWhatsappPage from "../pages/LoginWhatsapp";
-import UpdateCustomerPage from "./UpdateCustomer";
+import LoginWhatsappPage from "./LoginWhatsapp";
 import Header from "../organisms/HeaderInit";
 
-const Home = () => {
+const LoginHome = () => {
   const {providerid} = useParams();
-  const estado = useSelector((state) => state.auth.status);  
-  const {isShowing, toggle} = useModal();
   
-  const is_logeado = (estado === "authenticated" )
 
   const user = localStorage.getItem("user");
 
@@ -49,14 +43,10 @@ const Home = () => {
       header={<Header/>}
     >
       <Modal>
-        {
-          is_logeado
-          ? ( !userJson?.status ? <Service /> : <Service /> )
-          : ( <LoginWhatsappPage /> )
-        }
+        <LoginWhatsappPage />
       </Modal>
     </Main>
   )
 }
 
-export default Home
+export default LoginHome

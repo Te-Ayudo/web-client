@@ -47,13 +47,16 @@ export const Ubication = () => {
                     onClick={() => navigate(-1)}
                     className="
                       absolute -left-5 sm:left-0 -top-3 sm:top-1
-                      bg-orange-500 hover:bg-orange-600
-                      text-white rounded-xl p-1
-                      shadow-md w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center
-                      transition duration-200
+                      bg-[#FF770F] hover:bg-orange-600
+                      text-white text-xl sm:text-2xl
+                      rounded-[12px] sm:rounded-[14px]
+                      w-9 h-9 sm:w-10 sm:h-10
+                      flex items-center justify-center
+                      shadow-[0_4px_12px_rgba(0,0,0,0.15)]
+                      transition duration-300
                     "
                   >
-                    <BiArrowBack size="1.2rem" />
+                    ❮
                   </button>
 
                   {/* Título y subtítulo centrados */}

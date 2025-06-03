@@ -20,17 +20,19 @@ export const Header = ({onClick, isAuthentication = true, back = false}) => {
             onClick={() => navigate(-1)}
             className="
               absolute left-6 sm:left-20 top-11 sm:top-20 -translate-y-1/2
-              bg-orange-500 hover:bg-orange-600
-              text-white rounded-xl p-1
-              shadow-md w-10 h-10 flex items-center justify-center
-              transition duration-200
+              bg-[#FF770F] hover:bg-orange-600
+              text-white text-xl sm:text-2xl
+              rounded-[12px] sm:rounded-[14px]
+              w-9 h-9 sm:w-10 sm:h-10
+              flex items-center justify-center
+              shadow-[0_4px_12px_rgba(0,0,0,0.15)]
+              transition duration-300
             "
           >
-            <BiArrowBack size="1.3rem" />
+            ❮
           </button>
         )}
-
-        {/* LOGO solo si está logeado */}
+                {/* LOGO solo si está logeado */}
         {isAuth && <Logo className="h-12 sm:h-24" />}
 
         {/* NAVBAR (se puede ocultar con hideUI) */}
