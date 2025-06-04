@@ -55,13 +55,13 @@ export default function CartItem({ orden }) {
           </div>
 
           {/* Eliminar */}
-          <button
+          {/* <button
             onClick={() => removeItem(_id)}
             className="text-gray-500 hover:text-red-600"
             aria-label="Eliminar"
           >
             🗑
-          </button>
+          </button> */}
         </div>
 
         {/* Sub-total */}

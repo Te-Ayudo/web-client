@@ -190,12 +190,37 @@ export const Empresa = (props) => {
           <p className="text-sm text-gray-600">Elija el servicio de su preferencia para continuar con su reserva</p>
         </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {
-              (search.length > 0 ? search : servicesAvailableByBranch(services)).map(servicio => (
-                <Lista key={servicio._id} servicio={servicio} />
-              ))
-            }
+          <div className="col-span-full">
+            <div className="mb-3 sm:mb-6">
+              <ul className="">
+                {
+                  (search.length > 0)
+                  ?
+                  (
+                    search.map(
+                      dato =>{
+                        return <li key={dato._id} >
+                          <Lista servicio={ dato } />
+                        </li>
+                      }
+                    )
+
+                  )
+                  :
+                  (
+                      services
+                        && servicesAvailableByBranch(services).map((servicio) => {
+                            return (
+                              <li key={servicio.id}>
+                                <Lista servicio={servicio} />
+                              </li>
+                            );
+                          })
+                  )
+
+                }
+              </ul>
+            </div>
           </div>
           <CartSidebar visible={cartOpen} onClose={closeCart} />
         </div>
