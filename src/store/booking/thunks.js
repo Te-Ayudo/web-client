@@ -14,34 +14,48 @@ function handleResponse(response) {
   });
 }
 
-  async function create(object, route) {
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(object)
-    };
+async function create(object, route) {
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(object),
+  };
 
-    return await _fetch(`${process.env.REACT_APP_API_URL}/${route}/`, requestOptions).then(
-      handleResponse
-    );
-  }
+  return await _fetch(`${process.env.REACT_APP_API_URL}/${route}/`, requestOptions).then(handleResponse);
+}
 
-export const startCreateBooking = (booking,onConfirmation) => {
-  return async(dispatch) => {    
+export const startCreateBooking = (booking, providerId, navigate) => {
+  return async (dispatch) => {
     dispatch(BOOKING_CREATE_REQUEST(booking));
-    create(booking,'booking').then(
-      ()=>{        
-        dispatch( BOOKING_CLEAR() );
-        onConfirmation();
+
+    create(booking, "booking").then(
+      (data) => {
+        // Al crear la reserva con éxito, redirigir al usuario usando el ID de la reserva
+        console.log("Reserva creada con éxito:", data);
+        const bookingId = data?.data._id; // Suponiendo que la respuesta tiene el ID de la reserva
+        if (bookingId) {
+          dispatch(BOOKING_CLEAR()); // Limpiar estado de la reserva
+          // Redirigir al usuario a la página de éxito con el ID de la reserva
+          navigate(`/${providerId}/gracias/${bookingId}`);
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Hubo un problema al procesar la reserva. Intenta nuevamente.",
+          });
+        }
+      },
+      (error) => {
+        // En caso de error, mostrar alerta
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error.message || "No se pudo crear la reserva.",
+        });
       }
     );
-
-    //TODO:slice
-    //TODO:api
-
-    return true;
-  }
-}
+  };
+};
 
 export const startVerifyCoupon = (booking) => {
   const{code,services} = booking  
