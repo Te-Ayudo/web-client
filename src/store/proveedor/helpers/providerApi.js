@@ -1,27 +1,31 @@
-export const providerApi = async(filter = {}) => {
-
+export const providerApi = async (filter = {}) => {
   const urlApi = process.env.REACT_APP_API_URL;
   const urlPath = `${urlApi}/provider`;
 
-  try {    
-    const resp = await fetch( urlPath , {
-      method: 'GET'
-    }).then( handleResponse );
+  try {
+    const resp = await fetch(urlPath, {
+      method: "GET",
+    }).then(handleResponse);
     return resp;
   } catch (error) {
-
-    console.log(error);
-    throw new Error( error.message );
+    console.error("API Request Failed:", error);
+    throw new Error(`API Request failed: ${error.message || "Unknown error"}`);
   }
-
-}
+};
 
 function handleResponse(response) {
   return response.text().then((text) => {
-    const data = text && JSON.parse(text);
+    let data;
+    try {
+      data = text && JSON.parse(text);
+    } catch (error) {
+      // Si no podemos parsear, devolvemos un error.
+      return Promise.reject("Error parsing JSON response");
+    }
+
     if (!response.ok) {
       if (response.status === 401) {
-        //  location.reload(true);
+        // Handle authentication error if necessary
       }
       const error = (data && data.message) || response.statusText;
       return Promise.reject(error);
