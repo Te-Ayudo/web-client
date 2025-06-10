@@ -418,7 +418,8 @@ export const useCreateBookingScreen = () => {
 		valueFact,
 		setValueFact,
 		onVerifyCoupon,
-		dateBusy
+		dateBusy,
+		getAddresses
 	}
 
 

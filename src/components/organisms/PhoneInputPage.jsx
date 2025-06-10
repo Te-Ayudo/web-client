@@ -64,7 +64,11 @@ const PhoneInputPage = () => {
         setLoading(true);
         setFormSubmitted(true);
         dispatch(startLoginWithWhatsapp({ phone, codePhone }, () =>
-        navigate(`/${providerid}/login/codigo`)
+        {
+            localStorage.setItem("otpPhone", phone);
+            localStorage.setItem("otpCodePhone", codePhone);
+            navigate(`/${providerid}/login/codigo`);
+        }
         )).finally(() => setLoading(false));
     };
   return (
