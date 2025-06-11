@@ -14,7 +14,7 @@ const OtpInputPage = () => {
   const [loading, setLoading] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const { error } = useSelector((state) => state.auth);
-  const [secondsLeft, setSecondsLeft] = useState(10); // 3 min
+  const [secondsLeft, setSecondsLeft] = useState(180); // 3 min
   const [canResend, setCanResend] = useState(false);
 useEffect(() => {
   if (formSubmitted && error) {
@@ -61,17 +61,25 @@ useEffect(() => {
   const resendCode = () => {
     setCanResend(false);
     setSecondsLeft(180);
-    // dispatch(startLoginWithWhatsapp({ 
-    //     phone: storedPhone, 
-    //     codePhone: storedCodePhone 
-    // })).finally(() => setLoading(false));
     dispatch(startLoginWithWhatsapp({ phone: storedPhone, codePhone: storedCodePhone }, () =>
         {
-            // localStorage.setItem("otpPhone", phone);
-            // localStorage.setItem("otpCodePhone", codePhone);
-            // navigate(`/${providerid}/login/codigo`);
         }
     )).finally(() => setLoading(false));
+    Swal.fire({
+      toast: true,
+      position: "bottom-end",
+      icon: "success",
+      title: "Código reenviado",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+      background: "#fff",
+      color: "#333",
+      didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -82,6 +90,34 @@ useEffect(() => {
       navigate(`/${providerid}/`)
     )).finally(() => setLoading(false));
   };
+
+  useEffect(() => {
+    const handleGlobalBackspace = (e) => {
+      if (e.key === "Backspace") {
+        setOtpCode((prevCode) => {
+          const lastFilledIndex = [...prevCode]
+            .map((digit, i) => ({ digit, i }))
+            .reverse()
+            .find(({ digit }) => digit !== "");
+
+          if (!lastFilledIndex) return prevCode;
+
+          const newCode = [...prevCode];
+          newCode[lastFilledIndex.i] = "";
+
+          setTimeout(() => {
+            const prevInput = document.getElementById(`otp-${lastFilledIndex.i}`);
+            if (prevInput) prevInput.focus();
+          }, 0);
+
+          return newCode;
+        });
+      }
+    };
+
+    window.addEventListener("keydown", handleGlobalBackspace);
+    return () => window.removeEventListener("keydown", handleGlobalBackspace);
+  }, []);
 
   return (
     <Main
@@ -107,31 +143,38 @@ useEffect(() => {
             <div className="flex justify-center gap-2 bg-white p-4 rounded-2xl mb-10">
             {otpCode.map((digit, index) => (
                 <input
-                key={index}
-                id={`otp-${index}`}
-                type="tel"
-                maxLength="1"
-                className="w-10 h-12 text-center border border-gray-300 rounded-md text-lg font-semibold"
-                value={digit}
-                onChange={(e) => handleInputChange(index, e.target.value)}
+                  key={index}
+                  id={`otp-${index}`}
+                  type="tel"
+                  onKeyDown={(e) => {
+                    if (e.key === "Backspace" && otpCode[index] === "") {
+                      if (index > 0) {
+                        document.getElementById(`otp-${index - 1}`)?.focus();
+                      }
+                    }
+                  }}
+                  maxLength="1"
+                  className="w-10 h-12 text-center border border-gray-300 rounded-md text-lg font-semibold"
+                  value={digit}
+                  onChange={(e) => handleInputChange(index, e.target.value)}
                 />
             ))}
             </div>
             <div className="mt-4">
-            {canResend ? (
-              <button
-                onClick={resendCode}
-                className="text-primary underline font-semibold"
-              >
-                Reenviar código
-              </button>
-            ) : (
-              <p className="text-sm text-gray-500">
-                Puedes reenviar el código en {Math.floor(secondsLeft / 60)}:
-                {(secondsLeft % 60).toString().padStart(2, "0")}
-              </p>
-            )}
-          </div>
+              {canResend ? (
+                <button
+                  onClick={resendCode}
+                  className="text-primary underline font-semibold"
+                >
+                  Reenviar código
+                </button>
+              ) : (
+                <p className="text-sm text-gray-500">
+                  Puedes reenviar el código en {Math.floor(secondsLeft / 60)}:
+                  {(secondsLeft % 60).toString().padStart(2, "0")}
+                </p>
+              )}
+            </div>
         </div>
 
         {loading && (

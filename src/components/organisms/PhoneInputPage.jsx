@@ -70,6 +70,21 @@ const PhoneInputPage = () => {
             navigate(`/${providerid}/login/codigo`);
         }
         )).finally(() => setLoading(false));
+        Swal.fire({
+            toast: true,
+            position: "bottom-end",
+            icon: "success",
+            title: "Código enviado",
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+            background: "#fff",
+            color: "#333",
+            didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+        });
     };
   return (
     <Main

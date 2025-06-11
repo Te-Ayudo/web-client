@@ -6,7 +6,7 @@ import Button from "../atoms/Button";
 import Main from "../templates/Main";
 import Header from "./HeaderInit";
 import Modal from "../molecules/Modal";
-import { startCreatingUserWithWhatsapp, startListServicios } from "../../store";
+import { startCreatingUserWithWhatsapp, startListServicios, startLoginWithWhatsapp } from "../../store";
 
 const OtpRegisterPage = () => {
   const { providerid } = useParams();
@@ -19,8 +19,9 @@ const OtpRegisterPage = () => {
   const [otpCode, setOtpCode] = useState(["", "", "", "", "", ""]);
   const [loading, setLoading] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [canResend, setCanResend] = useState(false);
+  const [secondsLeft, setSecondsLeft] = useState(180); // 3 min
 
-  /* ------ feedback de error -------- */
   useEffect(() => {
     if (formSubmitted && error) {
       Swal.fire("Código incorrecto", error, "error");
@@ -52,11 +53,70 @@ const OtpRegisterPage = () => {
     if (next.every((d) => d !== "") && i === 5) verificarOTP(next.join(""));
   };
 
-  /* ------ submit manual (por si presiona Enter) ------ */
   const handleSubmit = (e) => {
     e.preventDefault();
     verificarOTP(otpCode.join(""));
   };
+  const storedPhone = localStorage.getItem("otpPhone");
+  const storedCodePhone = localStorage.getItem("otpCodePhone");
+  useEffect(() => {
+    if (!secondsLeft) {
+      setCanResend(true);
+      return;
+    }
+    const id = setInterval(() => setSecondsLeft((s) => s - 1), 1000);
+    return () => clearInterval(id);
+  }, [secondsLeft]);
+  const resendCode = () => {
+    setCanResend(false);
+    setSecondsLeft(180);
+    dispatch(startLoginWithWhatsapp({ phone: storedPhone, codePhone: storedCodePhone }, () =>
+        {
+        }
+    )).finally(() => setLoading(false));
+    Swal.fire({
+      toast: true,
+      position: "bottom-end",
+      icon: "success",
+      title: "Código reenviado",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+      background: "#fff",
+      color: "#333",
+      didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    });
+  };
+  useEffect(() => {
+    const handleGlobalBackspace = (e) => {
+      if (e.key === "Backspace") {
+        setOtpCode((prevCode) => {
+          const lastFilledIndex = [...prevCode]
+            .map((digit, i) => ({ digit, i }))
+            .reverse()
+            .find(({ digit }) => digit !== "");
+
+          if (!lastFilledIndex) return prevCode;
+
+          const newCode = [...prevCode];
+          newCode[lastFilledIndex.i] = "";
+
+          setTimeout(() => {
+            const prevInput = document.getElementById(`otp-${lastFilledIndex.i}`);
+            if (prevInput) prevInput.focus();
+          }, 0);
+
+          return newCode;
+        });
+      }
+    };
+
+    window.addEventListener("keydown", handleGlobalBackspace);
+    return () => window.removeEventListener("keydown", handleGlobalBackspace);
+  }, []);
 
   return (
     <Main header={<Header />}>
@@ -91,9 +151,23 @@ const OtpRegisterPage = () => {
               />
             ))}
           </div>
-
+          <div className="mt-4">
+            {canResend ? (
+              <button
+                onClick={resendCode}
+                className="text-primary underline font-semibold"
+              >
+                Reenviar código
+              </button>
+            ) : (
+              <p className="text-sm text-gray-500">
+                Puedes reenviar el código en {Math.floor(secondsLeft / 60)}:
+                {(secondsLeft % 60).toString().padStart(2, "0")}
+              </p>
+            )}
+          </div>
           {loading && (
-            <div className="animate-spin rounded-full h-6 w-6 border-2 border-orange-500 border-t-transparent" />
+            <div className="animate-spin mt-2 rounded-full h-6 w-6 border-2 border-orange-500 border-t-transparent" />
           )}
         </form>
       </Modal>
