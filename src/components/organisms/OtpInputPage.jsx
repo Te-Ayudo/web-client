@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import Button from "../atoms/Button";
-import { startLoginWithWhatsappOTP } from "../../store/auth";
+import { startLoginWithWhatsapp, startLoginWithWhatsappOTP } from "../../store/auth";
 import Modal from "../molecules/Modal";
 import Main from "../templates/Main";
 import Header from "./HeaderInit";
@@ -15,7 +14,8 @@ const OtpInputPage = () => {
   const [loading, setLoading] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const { error } = useSelector((state) => state.auth);
-
+  const [secondsLeft, setSecondsLeft] = useState(180); // 3 min
+  const [canResend, setCanResend] = useState(false);
 useEffect(() => {
   if (formSubmitted && error) {
     Swal.fire("Código incorrecto", error, "error");
@@ -48,7 +48,39 @@ useEffect(() => {
       )).finally(() => setLoading(false));
     }
   };
-
+  const storedPhone = localStorage.getItem("otpPhone");
+  const storedCodePhone = localStorage.getItem("otpCodePhone");
+  useEffect(() => {
+    if (!secondsLeft) {
+      setCanResend(true);
+      return;
+    }
+    const id = setInterval(() => setSecondsLeft((s) => s - 1), 1000);
+    return () => clearInterval(id);
+  }, [secondsLeft]);
+  const resendCode = () => {
+    setCanResend(false);
+    setSecondsLeft(180);
+    dispatch(startLoginWithWhatsapp({ phone: storedPhone, codePhone: storedCodePhone }, () =>
+        {
+        }
+    )).finally(() => setLoading(false));
+    Swal.fire({
+      toast: true,
+      position: "bottom-end",
+      icon: "success",
+      title: "Código reenviado",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+      background: "#fff",
+      color: "#333",
+      didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    });
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     const code = otpCode.join("");
@@ -58,6 +90,34 @@ useEffect(() => {
       navigate(`/${providerid}/`)
     )).finally(() => setLoading(false));
   };
+
+  useEffect(() => {
+    const handleGlobalBackspace = (e) => {
+      if (e.key === "Backspace") {
+        setOtpCode((prevCode) => {
+          const lastFilledIndex = [...prevCode]
+            .map((digit, i) => ({ digit, i }))
+            .reverse()
+            .find(({ digit }) => digit !== "");
+
+          if (!lastFilledIndex) return prevCode;
+
+          const newCode = [...prevCode];
+          newCode[lastFilledIndex.i] = "";
+
+          setTimeout(() => {
+            const prevInput = document.getElementById(`otp-${lastFilledIndex.i}`);
+            if (prevInput) prevInput.focus();
+          }, 0);
+
+          return newCode;
+        });
+      }
+    };
+
+    window.addEventListener("keydown", handleGlobalBackspace);
+    return () => window.removeEventListener("keydown", handleGlobalBackspace);
+  }, []);
 
   return (
     <Main
@@ -76,22 +136,44 @@ useEffect(() => {
             Ingresa el código recibido en tu WhatsApp
             </h2>
             <p className="text-sm text-gray-600 mb-6">
-            Recibirás un código de 6 dígitos enviado.
-            Esto puede tardar 1 minuto
+              Recibirás un código de 6 dígitos enviado al número {storedPhone}.
+              Esto puede tardar 1 minuto
             </p>
 
             <div className="flex justify-center gap-2 bg-white p-4 rounded-2xl mb-10">
             {otpCode.map((digit, index) => (
                 <input
-                key={index}
-                id={`otp-${index}`}
-                type="tel"
-                maxLength="1"
-                className="w-10 h-12 text-center border border-gray-300 rounded-md text-lg font-semibold"
-                value={digit}
-                onChange={(e) => handleInputChange(index, e.target.value)}
+                  key={index}
+                  id={`otp-${index}`}
+                  type="tel"
+                  onKeyDown={(e) => {
+                    if (e.key === "Backspace" && otpCode[index] === "") {
+                      if (index > 0) {
+                        document.getElementById(`otp-${index - 1}`)?.focus();
+                      }
+                    }
+                  }}
+                  maxLength="1"
+                  className="w-10 h-12 text-center border border-gray-300 rounded-md text-lg font-semibold"
+                  value={digit}
+                  onChange={(e) => handleInputChange(index, e.target.value)}
                 />
             ))}
+            </div>
+            <div className="mt-4">
+              {canResend ? (
+                <button
+                  onClick={resendCode}
+                  className="text-primary underline font-semibold"
+                >
+                  Reenviar código
+                </button>
+              ) : (
+                <p className="text-sm text-gray-500">
+                  Puedes reenviar el código en {Math.floor(secondsLeft / 60)}:
+                  {(secondsLeft % 60).toString().padStart(2, "0")}
+                </p>
+              )}
             </div>
         </div>
 

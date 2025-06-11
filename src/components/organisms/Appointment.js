@@ -42,7 +42,8 @@ export const Appointment = () => {
     onVerifyCoupon,
     unavailability,
     fullDateBusy,
-    dateBusy
+    dateBusy,
+    getAddresses
   } = useCreateBookingScreen();
   
   const [calendarOpen, setCalendarOpen] = useState(false);
@@ -145,7 +146,9 @@ export const Appointment = () => {
 
     dispatch(BOOKING_CUSTOMER_PHONE({ phone })); 
   }, []);
-
+  const handleNewAddressAdded = () => {
+    getAddresses();  // <- esto recarga las direcciones del localStorage
+  };
   useEffect(() => {
     const now = new Date();
     if (hourPicker.length > 0 && !formValues.start) { 
