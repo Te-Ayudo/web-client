@@ -107,7 +107,7 @@ END:VCALENDAR`;
   const handleSelectChange = (event) => {
     const value = event.target.value;
     if (value === "google_calendar") {
-      window.open(googleCalendarUrl, "_blank");
+      window.location.href = googleCalendarUrl;
     } else if (value === "apple_calendar") {
       generateAppleCalendarICS();
     }
