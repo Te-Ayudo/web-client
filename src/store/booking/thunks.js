@@ -78,7 +78,7 @@ export const startCreateAddress = (nombre,coord) => {
 				return setTimeout(
 					function () {
             dispatch(BOOKING_SET_ERROR(myResp['error']))
-					}.bind(this),
+					},
 					150
 				)
 			} else {
@@ -86,7 +86,7 @@ export const startCreateAddress = (nombre,coord) => {
 				return setTimeout(
 					function () {
             dispatch(BOOKING_SET_SUCESS( 'Dirección registrada con éxito.' ));
-					}.bind(this),
+					},
 					150
 				)
 			}

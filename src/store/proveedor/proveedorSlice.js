@@ -30,11 +30,17 @@ export const proveedorSlice = createSlice({
       state.item = payload;
       state.loading = false;
     },
-    provider_getall_failure:(state, {payload}) => {
+    provider_getall_failure: (state, { payload }) => {
       state.loading = false;
-      state.error = {
-        message:payload.error?.message,
-        code:payload.error?.code,
+
+      // El payload puede ser un string o un objeto {message, code}
+      if (typeof payload === 'string') {
+        state.error = { message: payload, code: null };
+      } else {
+        state.error = {
+          message: payload?.message ?? 'Error desconocido',
+          code: payload?.code ?? null,
+        };
       }
     },
     provider_getone_request:(state) => {
