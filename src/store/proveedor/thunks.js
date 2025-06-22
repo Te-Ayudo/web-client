@@ -11,20 +11,30 @@ export const startListProveedores = (slug) => {
   return async (dispatch) => {
     dispatch(provider_getall_request());
 
-    const { data } = await providerApi();
-    let error = data.error;
-    if (error) {
-      dispatch(provider_getall_failure(error.toString()));
-      return;
-    }
+    try {
+      const { data } = await providerApi(slug);  // ← ya es un solo proveedor
 
-    dispatch(provider_getall_success(data));
+      if (!data || !data.slugUrl || data.slugUrl !== slug) {
+        // proveedor inválido o slug no coincide
+        dispatch(
+          provider_getall_failure({
+            message: 'Este proveedor aún no tiene activada su web para clientes',
+            code: 404,
+          })
+        );
+        return;
+      }
 
-    const myProvider = data.filter((e) => e.slugUrl === slug)[0];
-    if (!myProvider) {
-      dispatch(provider_getall_failure("Sin proveedor seleccionado"));
-      return;
+      dispatch(provider_getall_success([data])); // aún puedes guardar como array
+      dispatch(provider_set(data));              // este es el proveedor actual
+
+    } catch (error) {
+      dispatch(
+        provider_getall_failure({
+          message: error.message || 'Error al cargar el proveedor',
+          code: 500,
+        })
+      );
     }
-    dispatch(provider_set(myProvider));
   };
 };

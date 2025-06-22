@@ -20,6 +20,7 @@ import PhoneInputPage from "./components/organisms/PhoneInputPage";
 import OtpInputPage from "./components/organisms/OtpInputPage";
 import OtpRegisterPage from "./components/organisms/OtpRegisterPage";
 import LoginHome from "./components/pages/LoginHome";
+import { RutaProtegida } from "./utils/RutaProtegida";
 
 function App() {
 
@@ -30,24 +31,143 @@ function App() {
           <Route path="/" element={ <Home /> } />
           <Route path=":providerid" element={ <Home /> } />
           {/* <Route path="/" element={<Home />} /> */}
-          <Route path=":providerid/loginWhatsapp" element={<LoginHome />} />
-          <Route path=":providerid/login" element={<LoginHome />} />
-          <Route path=":providerid/login/telefono" element={<PhoneInputPage />} />
-          <Route path=":providerid/login/codigo" element={<OtpInputPage />} />
-          <Route path=":providerid/registrarse/codigo" element={<OtpRegisterPage />} />
-          <Route path=":providerid/registrarse" element={<Registrarse />} />
-          <Route path=":providerid/rating" element={<Rating />} />
-          <Route path=":providerid/servicios" element={<Servicios />} />
-          <Route path=":providerid/programar" element={<ServiceAppointment />} />
-          <Route path=":providerid/gracias/:bookingId" element={<Thanks />} />
-          <Route path=":providerid/ubicacion" element={<RegistrarUbicacion />} />
+          <Route
+            path=":providerid/loginWhatsapp"
+            element={
+              <RutaProtegida>
+                <LoginHome />
+              </RutaProtegida>
+            }
+          />
+          <Route
+            path=":providerid/login"
+            element={
+              <RutaProtegida>
+                <LoginHome />
+              </RutaProtegida>
+            }
+          />
+          <Route
+            path=":providerid/login/telefono"
+            element={
+              <RutaProtegida>
+                <PhoneInputPage />
+              </RutaProtegida>
+            }
+          />
+          <Route 
+            path=":providerid/login/codigo" 
+            element={
+              <RutaProtegida>
+                <OtpInputPage />
+              </RutaProtegida>
+            } 
+          />
+          <Route 
+            path=":providerid/registrarse/codigo" 
+            element={
+              <RutaProtegida>
+                <OtpRegisterPage />
+              </RutaProtegida>
+            } 
+          />
+          <Route 
+            path=":providerid/registrarse" 
+            element={
+              <RutaProtegida>
+                <Registrarse />
+              </RutaProtegida>
+            } 
+          />
+          <Route 
+            path=":providerid/rating" 
+            element={
+              <RutaProtegida>
+                <Rating />
+              </RutaProtegida>
+            } 
+          />
+          <Route 
+            path=":providerid/servicios" 
+            element={
+              <RutaProtegida>
+                <Servicios />
+              </RutaProtegida>
+            } 
+          />
+          <Route 
+            path=":providerid/programar" 
+            element={
+              <RutaProtegida>
+                <ServiceAppointment />
+              </RutaProtegida>
+            } 
+          />
+          <Route 
+            path=":providerid/gracias" 
+            element={
+              <RutaProtegida>
+                <Thanks />
+              </RutaProtegida>
+            }
+          />
+          <Route 
+            path=":providerid/ubicacion" 
+            element={
+              <RutaProtegida>
+                <RegistrarUbicacion />
+              </RutaProtegida>
+            } 
+          />
           <Route path="*" element={<NotFound />} />
-          <Route path=":providerid/carrito" element={<Cart />} />
-          <Route path=":providerid/empresa" element={<Empresa />} />
-          <Route path=":providerid/proveedores" element={<ProveedoresPage />} />
-          <Route path=":providerid/sucursales" element={<SucursalesPage />} />
-          <Route path=":providerid/sucursales/:sucursalid" element={<Ubication />} />
-          <Route path=":providerid/confirmacion" element={<ConfirmacionPage />} />
+          <Route 
+            path=":providerid/carrito" 
+            element={
+              <RutaProtegida>
+                <Cart />
+              </RutaProtegida>
+            }
+          />
+          <Route 
+            path=":providerid/empresa" 
+            element={
+              <RutaProtegida>
+                <Empresa />
+              </RutaProtegida>
+            }
+          />
+          <Route 
+            path=":providerid/proveedores" 
+            element={
+              <RutaProtegida>
+                <ProveedoresPage />
+              </RutaProtegida>
+            }
+          />
+          <Route 
+            path=":providerid/sucursales" 
+            element={
+              <RutaProtegida>
+                <SucursalesPage />
+              </RutaProtegida>
+            } 
+          />
+          <Route 
+            path=":providerid/sucursales/:sucursalid" 
+            element={
+              <RutaProtegida>
+                <Ubication />
+              </RutaProtegida>
+            }
+          />
+          <Route 
+            path=":providerid/confirmacion" 
+            element={
+              <RutaProtegida>
+                <ConfirmacionPage />
+              </RutaProtegida>
+            } 
+          />
         </Routes>
       </BrowserRouter>
     </>

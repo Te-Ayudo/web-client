@@ -1,6 +1,7 @@
-export const providerApi = async (filter = {}) => {
+export const providerApi = async(slug) => {
+
   const urlApi = process.env.REACT_APP_API_URL;
-  const urlPath = `${urlApi}/provider`;
+  const urlPath = `${urlApi}/providerweb/${slug}`;
 
   try {
     const resp = await fetch(urlPath, {

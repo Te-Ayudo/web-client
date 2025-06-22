@@ -1,21 +1,18 @@
 import { useEffect } from "react";
-import { startListProveedores, startListServicios } from '../../store';
+import { startListProveedores} from '../../store';
 import { useDispatch, useSelector } from "react-redux";
 
-import useModal from "../useModal";
 import Main from "../templates/Main";
-import Footer from "../organisms/Footer";
 import Modal from '../molecules/Modal';
 import Service from '../organisms/Inicio';
 import { useParams } from 'react-router-dom';
 import LoginWhatsappPage from "../pages/LoginWhatsapp";
-import UpdateCustomerPage from "./UpdateCustomer";
 import Header from "../organisms/HeaderInit";
 
 const Home = () => {
   const {providerid} = useParams();
   const estado = useSelector((state) => state.auth.status);  
-  const {isShowing, toggle} = useModal();
+  // const {isShowing, toggle} = useModal();
   
   const is_logeado = (estado === "authenticated" )
 
