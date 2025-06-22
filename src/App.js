@@ -104,7 +104,7 @@ function App() {
             } 
           />
           <Route 
-            path=":providerid/gracias" 
+            path=":providerid/gracias/:bookingId" 
             element={
               <RutaProtegida>
                 <Thanks />
