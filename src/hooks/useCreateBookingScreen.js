@@ -130,6 +130,7 @@ export const useCreateBookingScreen = () => {
 				'photoURL':element.picture,
 				'CI':element.CI_NIT,
 				'branch':element.branch?._id??0,
+				'pushToken':element.pushToken,
 			};
 		 })
 		 setEmployee(employeefilter);
