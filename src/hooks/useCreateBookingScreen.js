@@ -180,6 +180,9 @@ export const useCreateBookingScreen = () => {
 
 		event.preventDefault();
 
+		console.log("blok", booking);
+		
+
 		const bookingDate = new Date(booking.bookingDate);
      	const isMidnight = bookingDate.getHours() === 0 && bookingDate.getMinutes() === 0;
 
@@ -331,6 +334,7 @@ export const useCreateBookingScreen = () => {
     let isSameDay = moment(today).isSame(date, "day");
 	const savedBooking = localStorage.getItem('bookingStorage');
 	const finalBooking = JSON.parse(savedBooking);
+
 	const id = finalBooking.employee?._id ?? 0;
 	const providerId = localStorage.getItem('providerIdStorage');	
     let response = await _fetch(
