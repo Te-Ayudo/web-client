@@ -199,10 +199,19 @@ export const Appointment = () => {
 
     if (target.name === "empleado") {
       const a = !!target.value ? JSON.parse(target.value) : "{}";
-      console.log('EMPLEADO!',a)
-      updateBookingInLocalStorage({ employee: a });
+      console.log('EMPLEADO!', a);
+
+      updateBookingInLocalStorage({ employee: a, bookingDate: null });
       dispatch(BOOKING_SET_EMPLOYEE(a));
+      dispatch(BOOKING_SET({ bookingDate: null }));
+
+      setSelectedDateTime(null);
+      setFormValues((prev) => ({
+        ...prev,
+        start: null,
+      }));
     }
+
 
     if (target.name === "direccion") {
       const a = !!target.value ? JSON.parse(target.value) : "";
