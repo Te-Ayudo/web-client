@@ -1,56 +1,29 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const EMPTY_BOOKING = Object.freeze({
-	totalEstimatedWorkMinutes: null,
-	status: null,
-	bookingDate: null,
-	paymentInfo: {},
-	customer: {
-		_id: null,
-		fullName: '',
-		phone: '',
-		pushToken: null,
-		address: {
-			_id: null,
-			direction: '',
-			coordinates: {
-				latitude: null,
-				longitude: null,
-			},
-			street: '',
-			house: '',
-			reference: '',
-			phone: '',
-		},
-	},
-	provider: {
-		_id: null,
-		name: '',
-		email: '',
-		logoURL: '',
-	},
+// SOLO datos persistentes - estos son los únicos que se guardan
+const PERSISTENT_BOOKING = Object.freeze({
 	serviceCart: [],
-	employee: null,
-	feedbackInfo: {},
-	createdAt: null,
-	updatedAt: null,
-	billingInfo: {},
-	coupon: '',
-	couponData: {},
-	totalDiscount: 0,
 	isInBranch: false,
 	branch: null,
-})
+	serviceType: null, // 'local' o 'domicilio'
+	selectedServices: [], // IDs de servicios seleccionados
+	totalEstimatedWorkMinutes: null,
+	paymentInfo: {
+		totalPrice: 0
+	},
+	coupon: null, // Cupón aplicado
+	couponData: null // Respuesta completa del servidor
+});
 
 export const bookingSlice = createSlice({
   name: 'booking',
   initialState: {
     loading: false,
     error: null,
-		success:null,
+		success: null,
     items: [],
-    isOpenModalAddress:false,
-    selected: EMPTY_BOOKING,
+    isOpenModalAddress: false,
+    selected: PERSISTENT_BOOKING,
   },
   reducers: {
 		BOOKING_SET_ERROR:(state,{payload}) => {
@@ -59,29 +32,32 @@ export const bookingSlice = createSlice({
 		BOOKING_SET_SUCESS:(state,{payload}) => {
 			state.success=payload;
 		},
-		BOOKING_COUPON_SUCCESS:(state,{payload}) => {
-				state.selected.coupon=payload;
-				state.selected.couponData=payload;
-				state.loading= false;
-				state.error= null;
+		BOOKING_CLEAR_SUCCESS:(state) => {
+			state.success=null;
 		},
-		BOOKING_COUPON_FAILURE:(state,{payload}) => {
-			state.loading=false;
-			state.error=payload;
-
-		},
-		BOOKING_SET_COUPON:(state,{payload}) => {
-			state.selected.coupon=payload
+		BOOKING_CLEAR_ERROR:(state) => {
+			state.error=null;
 		},
 		BOOKING_SET_PROVIDER:(state,{payload}) => {
-      
 			state.selected.provider=payload;
 		},
 		BOOKING_ISINBRANCH:(state) => {
+			// Solo limpiar si estaba en modo domicilio antes
+			if (state.selected.serviceType === 'domicilio') {
+				state.selected.serviceCart = [];
+				state.selected.selectedServices = [];
+			}
 			state.selected.isInBranch = true;
+			state.selected.serviceType = 'local';
 		},
 		BOOKING_NOTISINBRANCH:(state) => {
+			// Solo limpiar si estaba en modo local antes
+			if (state.selected.serviceType === 'local') {
+				state.selected.serviceCart = [];
+				state.selected.selectedServices = [];
+			}
 			state.selected.isInBranch = false;
+			state.selected.serviceType = 'domicilio';
 		},
 		BOOKING_CREATE_REQUEST:(state ) => {
 			state.loading = true;
@@ -93,37 +69,14 @@ export const bookingSlice = createSlice({
     },
     BOOKING_CLEAR:(state) => {
       state.selected = {
-					...EMPTY_BOOKING,
+					...PERSISTENT_BOOKING,
           serviceCart: []
       } ;
     },
-		BOOKING_SET_CUSTOMER:(state, {payload}) => {
-			state.selected.customer = payload.customer;
-		},
-		BOOKING_SET:(state, {payload}) => {
-			state.selected.bookingDate=payload.bookingDate
-			//state.selected = payload
-		},
-		BOOKING_PAGO:(state, {payload}) => {
-			state.selected.paymentInfo.paymentMethod=payload.paymentMethod
-			//state.selected = payload
-		},
-		BOOKING_CUSTOMER_FULLNAME:(state, {payload}) => {
-			state.selected.customer.fullName =payload.fullName
-			//state.selected = payload
-		},
-		BOOKING_CUSTOMER_PHONE:(state, {payload}) => {
-			state.selected.customer.phone =payload.phone
-			//state.selected = payload
-		},
 		BOOKING_SET_CART:(state, {payload}) => {
 			state.selected.serviceCart = payload
 		},
-		BOOKING_SET_EMPLOYEE:(state, {payload}) => {
-			state.selected.employee = payload
-		},
 		BOOKING_ADD_TO_CART: (state, action) => {
-			//booking = state.selected
 			let mserviceCart = []
 			let serviceOrder
 			mserviceCart = state.selected.serviceCart;
@@ -141,16 +94,13 @@ export const bookingSlice = createSlice({
 			} else {				
 				state.selected.serviceCart.push(action.payload)
 			}
-			//TODO: updateTotalEstimadoWorkMinutes and paymentInfo
 
-			//state.selected.serviceCart=mserviceCart;
 			mserviceCart = state.selected.serviceCart;
 			state.selected.totalEstimatedWorkMinutes = mserviceCart.reduce(
 			 			(a, b) => a + b.estimatedWorkMinutes,
 			 			0
 			)
 			state.selected.paymentInfo.totalPrice = mserviceCart.reduce((a, b) => a + b.price, 0)
-
 		},
 		BOOKING_REMOVE_FROM_CART:(state, action) => {
 			let serviceOrder
@@ -163,9 +113,6 @@ export const bookingSlice = createSlice({
 			if (!!serviceOrder) {
 				state.selected.serviceCart = state.selected.serviceCart.filter((e) => e.service._id !== action.payload)
 			}
-
-			//TODO: updateTotalEstimadoWorkMinutes and paymentInfo
-
 		},
 		BOOKING_SET_BRANCH:(state,{payload}) => {
 			state.selected.branch=payload
@@ -175,35 +122,55 @@ export const bookingSlice = createSlice({
     },
     setNotActiveModalAddress:(state) => {
       state.isOpenModalAddress = false;
-    }
-
+    },
+		// Reducers para datos persistentes
+		BOOKING_SET_SERVICE_TYPE:(state, {payload}) => {
+			state.selected.serviceType = payload;
+			state.selected.isInBranch = payload === 'local';
+		},
+		BOOKING_SET_SELECTED_SERVICES:(state, {payload}) => {
+			state.selected.selectedServices = payload;
+		},
+		BOOKING_CLEAR_SERVICES:(state) => {
+			state.selected.serviceCart = [];
+			state.selected.selectedServices = [];
+			state.selected.totalEstimatedWorkMinutes = null;
+			state.selected.paymentInfo.totalPrice = 0;
+		},
+		BOOKING_RESET_TO_INITIAL:(state) => {
+			state.selected = { ...PERSISTENT_BOOKING };
+		},
+		BOOKING_SET_COUPON:(state, {payload}) => {
+			state.selected.coupon = payload;
+		},
+		BOOKING_SET_COUPON_DATA:(state, {payload}) => {
+			state.selected.couponData = payload;
+		}
   }
 });
 
-
-// Action creators are generated for each case reducer function
+// Action creators
 export const {
 	BOOKING_SET_ERROR,
 	BOOKING_SET_SUCESS,
-	BOOKING_COUPON_SUCCESS,
-	BOOKING_COUPON_FAILURE,
-	BOOKING_SET_COUPON,
+	BOOKING_CLEAR_SUCCESS,
+	BOOKING_CLEAR_ERROR,
 	BOOKING_SET_PROVIDER,
 	BOOKING_ISINBRANCH,
 	BOOKING_NOTISINBRANCH,
 	BOOKING_CREATE_REQUEST,
 	BOOKING_GET_BY_CUSTOMER_REQUEST,
 	BOOKING_CLEAR,
-	BOOKING_SET,
-	BOOKING_SET_CUSTOMER,
-	BOOKING_PAGO,
-	BOOKING_CUSTOMER_FULLNAME,
-	BOOKING_CUSTOMER_PHONE,
+	BOOKING_SET_CART,
 	BOOKING_ADD_TO_CART,
 	BOOKING_REMOVE_FROM_CART,
-	BOOKING_SET_CART,
-	BOOKING_SET_EMPLOYEE,
 	BOOKING_SET_BRANCH,
 	setActiveModalAddress,
-	setNotActiveModalAddress
+	setNotActiveModalAddress,
+	BOOKING_SET_SERVICE_TYPE,
+	BOOKING_SET_SELECTED_SERVICES,
+	BOOKING_CLEAR_SERVICES,
+	BOOKING_RESET_TO_INITIAL,
+	BOOKING_SET_COUPON,
+	BOOKING_SET_COUPON_DATA
 } = bookingSlice.actions;

@@ -35,24 +35,16 @@ export const NewMap = ( { searchEnabled, onCenter }) => {
   const mapRef = useRef(null);
 
   function onClick(...args) {
-    console.log("onClick args: ", args);
   }
 
   function setNewLocation() {
-    console.log(mapRef.current.getPlaces());
   }
 
   function onPlacesChanged(...args) {
-    console.log("onPlacesChanged args: ", args);
     //setNewLocation();
   }
 
   function onDragEnd(...args) {
-    console.log("onDragEnd args: ", args);
-    console.log(
-      markerRef.current.position.lat(),
-      markerRef.current.position.lng()
-    );
     setLocation({
       lat: markerRef.current.position.lat(),
       lng: markerRef.current.position.lng()
@@ -70,8 +62,6 @@ export const NewMap = ( { searchEnabled, onCenter }) => {
   const onMarkerLoad = useCallback(
     marker => {
       markerRef.current = marker;
-      // const path = marker.getPath();
-      console.log(marker);
     },
     [onDragEnd]
   );
@@ -80,8 +70,6 @@ export const NewMap = ( { searchEnabled, onCenter }) => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const { latitude, longitude } = position.coords;
-          console.log('centar', latitude,longitude);
         },
         (error) => {
           console.error('Error getting user location:', error);

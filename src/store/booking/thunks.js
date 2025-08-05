@@ -1,7 +1,8 @@
 import _fetch from "../../wrappers/_fetch";
-import { BOOKING_CLEAR, BOOKING_COUPON_FAILURE, BOOKING_COUPON_SUCCESS, BOOKING_CREATE_REQUEST, BOOKING_SET_ERROR, BOOKING_SET_SUCESS } from "./bookingSlice";
+import { BOOKING_CLEAR, BOOKING_CREATE_REQUEST, BOOKING_SET_ERROR, BOOKING_SET_SUCESS } from "./bookingSlice";
 import Swal from "sweetalert2";
 import { registerApi } from "./helpers/registerApi";
+import { BOOKING_SET_COUPON, BOOKING_SET_COUPON_DATA } from "./bookingSlice";
 
 function handleResponse(response) {
   return response.text().then((text) => {
@@ -57,53 +58,62 @@ export const startCreateBooking = (booking, providerId, navigate) => {
   };
 };
 
-export const startVerifyCoupon = (booking) => {
-  const{code,services} = booking  
+export const startVerifyCoupon = (couponData) => {
+  const{code,services} = couponData  
   return async(dispatch) => {
-
-    dispatch(BOOKING_CREATE_REQUEST(booking));
+    dispatch(BOOKING_CREATE_REQUEST(couponData));
     create({code,services},'coupon/verify').then(
       (response)=>{
-        dispatch( BOOKING_COUPON_SUCCESS(response) );
-				setTimeout(function () {
-          Swal.fire('Cupon Aplicado.',response?.reason,'success')
-				}, 500)
+        // Si el cupón es válido, actualizar el estado del booking
+        if (response.valid) {
+          // Guardar la respuesta completa del servidor como couponData
+          dispatch(BOOKING_SET_COUPON_DATA(response));
+          
+          // También guardar la información simplificada para compatibilidad
+          dispatch(BOOKING_SET_COUPON({
+            code: code,
+            coupon: response.coupon,
+            discount: response.coupon.discount,
+            discountType: response.coupon.discountType
+          }));
+        }
+        setTimeout(function () {
+          Swal.fire('Cupón Aplicado.',response?.reason,'success')
+        }, 500)
       },
       (error)=>{
-        dispatch( BOOKING_COUPON_FAILURE(error) );
-				setTimeout(function () {
-          Swal.fire('Cupon Inválido.',error?.message,'error')
-				}, 500)
-
+        setTimeout(function () {
+          Swal.fire('Cupón Inválido.',error?.message,'error')
+        }, 500)
       }
     );
-
   }
 }
 
 export const startCreateAddress = (nombre,coord) => {
   return async(dispatch) => {
-
-		let user = JSON.parse(await localStorage.getItem('user'))
-    let	idUser = user._id    
+    let user = JSON.parse(await localStorage.getItem('user'))
+    let idUser = user._id    
     const myResp = await registerApi(nombre,coord,idUser)
 
     if (myResp['error']) {
-				return setTimeout(
-					function () {
-            dispatch(BOOKING_SET_ERROR(myResp['error']))
-					},
-					150
-				)
-			} else {
-        await localStorage.setItem("user", JSON.stringify(myResp.data));
-				return setTimeout(
-					function () {
-            dispatch(BOOKING_SET_SUCESS( 'Dirección registrada con éxito.' ));
-					},
-					150
-				)
-			}
-
+      return setTimeout(
+        function () {
+          dispatch(BOOKING_SET_ERROR(myResp['error']))
+        },
+        150
+      )
+    } else {
+      // Actualizar el localStorage con el usuario actualizado que incluye la nueva dirección
+      await localStorage.setItem("user", JSON.stringify(myResp.data.user));
+      
+      // Disparar acción de éxito para que el hook sepa que debe actualizar las direcciones
+      return setTimeout(
+        function () {
+          dispatch(BOOKING_SET_SUCESS( 'Dirección registrada con éxito.' ));
+        },
+        150
+      )
+    }
   }
 }

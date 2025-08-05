@@ -44,10 +44,7 @@ export const ProveedoresPage = () => {
     : providers
 
 
-  const onLogin = (  ) => {
-    navigate('/login');
-  }
-
+ 
   return (
     <>
       <Main header={<Header />} footer={<Footer />}>

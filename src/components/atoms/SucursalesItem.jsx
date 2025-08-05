@@ -1,16 +1,14 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { BOOKING_SET_BRANCH } from "../../store";
 import { useNavigate, useParams } from "react-router-dom";
-import { DistanceDisplay } from "../../api/DistanceDisplay";
 import { useEffect, useState } from "react";
 
 export const SucursalesItem = (item) => {
   const { providerid } = useParams();
-  const booking = useSelector((state) => state.booking.selected);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [ubicacion, setUbicacion] = useState({});
+  const [, setUbicacion] = useState({});
 
   useEffect(() => {
     const position = {
@@ -20,20 +18,20 @@ export const SucursalesItem = (item) => {
     setUbicacion(position);
   }, []);
 
-  const { id, addressInfo, name } = item;
+  const { _id, addressInfo, name } = item;
 
   const onSelect = () => {
     dispatch(BOOKING_SET_BRANCH(item));
-    navigate(`/${providerid}/empresa`);
+    navigate(`/${providerid}/empresa/${item._id}`);
   };
 
-  const onUbicacion = () => {
-    window.open(`https://www.google.com/maps?q=${addressInfo.coordinates[1]},${addressInfo.coordinates[0]}`, "_blank");
-  };
+  // const onUbicacion = () => {
+  //   window.open(`https://www.google.com/maps?q=${addressInfo.coordinates[1]},${addressInfo.coordinates[0]}`, "_blank");
+  // };
 
   return (
-    <li key={id}>
-      <div className="bg-white rounded-2xl shadow-md p-4 mb-4">
+    <li key={_id}>
+      <div className="bg-white rounded-2xl shadow-md p-4 h-full">
         <div className="mb-2">
           <h2 className="text-lg font-semibold text-[#1E1E1E]">{name}</h2>
           <p className="text-sm text-[#6B7280]">
@@ -51,7 +49,7 @@ export const SucursalesItem = (item) => {
           </button>
 
           <button
-            onClick={() => navigate(`${window.location.pathname}/${id}`)}
+            onClick={() => navigate(`${window.location.pathname}/${_id}`)}
             className="border border-[#FF770F] text-[#FF770F] px-4 py-2 rounded-full w-full sm:w-auto text-sm font-semibold hover:bg-orange-100 transition"
           >
             Ubicación

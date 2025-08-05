@@ -1,23 +1,22 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useNavigation, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import _fetch from './../wrappers/_fetch'
 import { startCreateBooking, startVerifyCoupon } from '../store/booking/thunks'
+import { BOOKING_SET_COUPON, BOOKING_SET_COUPON_DATA, BOOKING_CLEAR_SUCCESS } from '../store/booking/bookingSlice'
 import Swal from "sweetalert2";
-import { BOOKING_SET, BOOKING_SET_ADDRESS, BOOKING_SET_CUSTOMER } from '../store'
 import { employeeApi } from '../store/booking/helpers/employeeApi'
 import moment from 'moment';
 
-export const useCreateBookingScreen = () => {
+export const useCreateBookingScreen = (selectedEmployee, selectedDate, selectedTime, formData, selectedAddress, updateFormData) => {
   const {providerid} = useParams();
   const navigate = useNavigate();
  
 	const provider = useSelector((state) => state.proveedor.selected)
 	const booking = useSelector((state) => state.booking.selected)	
-	console.log(booking)
-	const {success} = useSelector((state) => state.booking)
-    const dispatch = useDispatch()
-	const [valueFact, setValueFact] = useState({ razonSocial: '', nit: '' })
+	const {success, error} = useSelector((state) => state.booking)
+  const dispatch = useDispatch()
+	
 	const [availability, setAvailability] = useState({
 		0: [],
 		1: [],
@@ -41,17 +40,18 @@ export const useCreateBookingScreen = () => {
 	const [employee, setEmployee] = useState([])
 	const [hour, setHour] = useState(null)
 	const [maxAvailableAfterHours, setMaxAvailableAfterHours] = useState(1)
-	console.log('Max', maxAvailableAfterHours)
 	const [loading, setLoading] = useState(false);
+	const [loadingEmployees, setLoadingEmployees] = useState(false);
+	const [loadingHours, setLoadingHours] = useState(false);
+	
 	const getAvailability = async () => {
 		try {
-			const savedBooking = localStorage.getItem('bookingStorage');
-			const finalBooking = JSON.parse(savedBooking);
-			const id = finalBooking.employee?._id ?? 0;
-			const providerId = localStorage.getItem('providerIdStorage');	
+			// Usar el empleado seleccionado si existe, sino 0
+			const id = selectedEmployee?._id ?? 0;
+			const providerId = provider?._id || localStorage.getItem('providerIdStorage');	
 			let url = `${process.env.REACT_APP_API_URL}/availability/${id}?idprovider=${providerId}`;
-			if (finalBooking.branch?._id) {
-			  url += "&branch=" + finalBooking.branch?._id;
+			if (booking.branch?._id) {
+			  url += "&branch=" + booking.branch?._id;
 			}
 			let response = await _fetch(url, {
 				method: "GET",
@@ -85,6 +85,15 @@ export const useCreateBookingScreen = () => {
   const getAddresses = async () => {
 		let user = JSON.parse(await localStorage.getItem('user'))
 		setUser(user)
+		
+		// Inicializar el nombre del usuario si no está establecido
+		if (user && !formData.name) {
+			const fullName = (user.first_name + ' ' + user.last_name).trim();
+			if (fullName) {
+				updateFormData('name', fullName);
+			}
+		}
+		
 		if(user.directions){
 			const rawAddresses = user.directions.filter((e) => e.state)
 			const addressesPicker = rawAddresses.reduce(
@@ -93,7 +102,6 @@ export const useCreateBookingScreen = () => {
 					{
 						...element,
 						label: element.direction,
-						// value: JSON.stringify(element),
 						value: element,
 						key: element._id,
 					},
@@ -105,102 +113,101 @@ export const useCreateBookingScreen = () => {
 	}
 
 	const getListEmployee = async () => {
-		const employee = booking.serviceCart?.map(function(element){
-   			return element.service._id;
-		})
-		if (employee && employee.length > 0) {
-			// booking.employee = "{}";
-			const newBooking = {...booking, employee: {}, bookingDate: null};
-			localStorage.setItem('employeeStorage', JSON.stringify(employee));
-			localStorage.setItem('bookingStorage', JSON.stringify(newBooking));
-			localStorage.setItem('providerIdStorage', provider._id); 
+		setLoadingEmployees(true);
+		try {
+			const employee = booking.serviceCart?.map(function(element){ return element.service._id; });
+			if (employee && employee.length > 0) {
+				localStorage.setItem('providerIdStorage', provider._id);
+			}
+			const savedMetodo = booking.isInBranch?'En sucursal':'A domicilio';
+			const result = (await employeeApi(savedMetodo, employee, provider._id));
+			
+			// Transformar el formato de respuesta para que sea compatible
+			const employeefilter = result?.data?.map(function(element){
+				return {
+					'_id': element._id,
+					'fullName': element.first_name + ' ' + element.last_name,
+					'picture': element.picture,
+					'CI': element.CI_NIT,
+					'branch': element.branch?._id ?? 0,
+				};
+			});
+			setEmployee(employeefilter || []);
+		} catch (error) {
+			console.error('Error cargando empleados:', error);
+			setEmployee([]);
+		} finally {
+			setLoadingEmployees(false);
 		}
-		const savedEmployee = localStorage.getItem('employeeStorage');
-		const savedProviderId = localStorage.getItem('providerIdStorage');
-		const savedBooking = localStorage.getItem('bookingStorage');
-		const finalBooking = JSON.parse(savedBooking);
-		const savedMetodo = finalBooking.isInBranch?'En sucursal':'A domicilio'
-		const finalEmployee = savedEmployee ? JSON.parse(savedEmployee) : employee;
-		const result = (await employeeApi(savedMetodo, finalEmployee, savedProviderId))
-
-		 const employeefilter = result?.data.map(function(element){
-  	 	return {
-				'_id':element.id,
-				'fullName':element.first_name+' '+element.last_name,
-				'photoURL':element.picture,
-				'CI':element.CI_NIT,
-				'branch':element.branch?._id??0,
-			};
-		 })
-		 setEmployee(employeefilter);
-
 	}
 
 	const onVerifyCoupon = (event) => {
 		event.preventDefault();
-		const servicesIds = booking.serviceCart?.map((e) => e.service?._id)
-		 dispatch(
-			startVerifyCoupon({
-				code: booking.coupon,
-				services: servicesIds,
-			})
-		 )
-		getDiscount(booking?.couponData.coupon)
+		// Crear objeto con el código del cupón y los servicios para la validación
+		const couponData = {
+			code: formData.descuento,
+			services: booking.serviceCart?.map(service => service.service._id) || []
+		};
+		dispatch(startVerifyCoupon(couponData))
 	}
 
-	const getDiscount = (coupon) => {
-		if (!coupon) {
-			return 0
-		}
+	const onRemoveCoupon = () => {
+		dispatch(BOOKING_SET_COUPON(null));
+		dispatch(BOOKING_SET_COUPON_DATA(null));
+		// Limpiar el campo del formulario
+		updateFormData('descuento', '');
+		// Resetear el descuento
+		setDiscount(0);
+	}
 
-		let discount = 0
-
-		booking?.serviceCart?.forEach((service) => {
-			if (coupon?.validServices?.includes(service.service._id)) {
-				if (coupon.discountType === 'Porcentaje') {
-					discount += (coupon.discount / 100) * service.price
-					setDiscount(discount)
-				} else if (coupon.discountType === 'Monto') {
-					let discountAux = 0
-					discountAux += coupon.discount
-					setDiscount(discountAux)
+	const getDiscount = () => {
+		if (!booking.coupon) return 0;
+		
+		let totalDiscount = 0;
+		const couponData = booking.coupon;
+		
+		booking.serviceCart?.forEach((item) => {
+			// Verificar si el servicio es válido para este cupón
+			if (couponData.coupon.validServices.includes(item.service._id)) {
+				if (couponData.discountType === 'Porcentaje') {
+					const discountAmount = (item.price * couponData.discount) / 100;
+					totalDiscount += discountAmount;
+				} else {
+					// Descuento fijo - aplicar solo una vez por carrito
+					totalDiscount = couponData.discount;
+					return; // Salir del forEach ya que el descuento fijo se aplica una sola vez
 				}
 			}
-		})
-
-		return discount
+		});
+		
+		setDiscount(totalDiscount);
+		return totalDiscount;
 	}
 
 	useEffect(() => {
-		getDiscount(booking?.couponData?.coupon)
-	}, [booking.couponData])
+		getDiscount();
+	}, [booking.coupon])
 
 	const onSubmit = (event) => {
-
 		event.preventDefault();
 
-		console.log("blok", booking);
-		
-
-		const bookingDate = new Date(booking.bookingDate);
-     	const isMidnight = bookingDate.getHours() === 0 && bookingDate.getMinutes() === 0;
-
-		 if (isMidnight) {
+		// Validar que se haya seleccionado una hora
+		if (!selectedTime) {
 			Swal.fire({
 				icon: "error",
 				title: "Error",
 				text: "No se seleccionó una hora",
 			});
-			return; // No continúa con el envío
+			return;
 		}
 
+		// Validar campos obligatorios
 		if (
-			!booking.bookingDate ||
-			!booking.paymentInfo.paymentMethod ||
-			// (!booking.isInBranch && !booking.customer.address._id) ||
+			!selectedDate ||
+			!selectedTime ||
+			!formData.metodopago ||
 			booking.serviceCart.length === 0
 		) {
-			// setDialogVisible(true)
       Swal.fire({
 				icon:"error",
 				title:"Error",
@@ -208,38 +215,50 @@ export const useCreateBookingScreen = () => {
 			})
 			return
 		}
+
+		// Calcular el descuento actual
+		const currentDiscount = getDiscount();
+		const originalPrice = booking?.paymentInfo?.totalPrice || 0;
+		const finalPrice = originalPrice - currentDiscount;
+
+		// Crear objeto de reserva con datos temporales del formulario
+		const bookingData = {
+			...booking,
+			employee: selectedEmployee,
+			bookingDate: selectedTime,
+			paymentInfo: {
+				...booking?.paymentInfo,
+				paymentMethod: formData.metodopago,
+				totalPrice: finalPrice,
+				couponCode: booking.coupon?.code || null, // Incluir el código del cupón
+			},
+			totalDiscount: currentDiscount, // Agregar el descuento total
+			customer: {
+				_id: user._id,
+				fullName: formData.name || (user.first_name + ' ' + user.last_name).trim(),
+				phone: formData.telefono || user.phone,
+				pushToken: user.pushToken,
+				email: user.email,
+				address: selectedAddress, // Usar la dirección seleccionada del estado local
+			},
+			provider: {
+				_id: provider._id,
+				name: provider.first_name,
+				email: provider.email,
+				logoURL: provider.picture,
+				phone: provider.phone,
+			},
+			createdFrom: 'Web',
+			notes: formData.nota || '',
+		};
+
 		setLoading(true);
 		dispatch(
       		startCreateBooking(
-				{
-					...booking,
-					paymentInfo: {
-						...booking?.paymentInfo,
-						totalPrice: booking?.paymentInfo?.totalPrice - discount,
-						couponCode: booking?.coupon?.coupon?.code,
-					},
-					customer: {
-						...booking.customer,
-						_id: user._id,
-						fullName: (user.first_name + ' ' + user.last_name).trim(),
-						phone: booking.customer.phone,
-						pushToken: user.pushToken,
-						email: user.email,
-					},
-					provider: {
-						_id: provider._id,
-						name: provider.first_name,
-						email: provider.email,
-						logoURL: provider.picture,
-						phone: provider.phone,
-					},
-					createdFrom: 'Web',
-					notes: booking?.billingInfo?.notes || '',
-				},
+				bookingData,
 				providerid,
 				navigate
 			)
-			
 		)
 	}
 
@@ -279,86 +298,128 @@ export const useCreateBookingScreen = () => {
 	}, [booking.serviceCart])
 
 	useEffect(() => {
-		if (
-			!booking.bookingDate ||
-			!hour ||
-			!booking.paymentInfo.paymentMethod ||
-			(!booking.isInBranch && !booking.customer.address._id)
-		) {
-			setDialogVisible(true)
-			return
-		} else {
-			setDialogVisible(false)
-		}
-		setDialogVisible(false)
-	}, [
-		booking.bookingDate,
-		hour,
-		booking.paymentInfo.paymentMethod,
-		booking.customer.address._id,
-	])
-
-	useEffect(() => {
 		getAvailability()
 		getAddresses()
 		getListEmployee()
 	}, [])
+	
+	// Escuchar cambios en success para actualizar direcciones cuando se crea una nueva
 	useEffect(() => {
-		getAvailability()
-		getAddresses();
+		if (success) {
+			// Limpiar el mensaje de éxito después de un tiempo
+			setTimeout(() => {
+				dispatch(BOOKING_CLEAR_SUCCESS());
+			}, 3000);
+			
+			// Actualizar direcciones inmediatamente
+			getAddresses();
+		}
 	}, [success])
+	
+	// Escuchar cambios en error para manejar errores de creación de dirección
+	useEffect(() => {
+		if (error) {
+			// Si hay un error, también actualizar direcciones por si acaso
+			getAddresses();
+		}
+	}, [error])
+	
+	// Listener para cambios en localStorage (cuando se crea una nueva dirección)
+	useEffect(() => {
+		const handleStorageChange = (e) => {
+			if (e.key === 'user') {
+				// Actualizar direcciones cuando cambia el usuario en localStorage
+				getAddresses();
+			}
+		};
 
+		window.addEventListener('storage', handleStorageChange);
+		
+		// También escuchar cambios locales (mismo tab)
+		const originalSetItem = localStorage.setItem;
+		localStorage.setItem = function(key, value) {
+			if (key === 'user') {
+				// Disparar evento personalizado para cambios locales
+				window.dispatchEvent(new CustomEvent('localStorageChange', {
+					detail: { key, value }
+				}));
+			}
+			originalSetItem.apply(this, arguments);
+		};
+
+		window.addEventListener('localStorageChange', (e) => {
+			if (e.detail.key === 'user') {
+				getAddresses();
+			}
+		});
+
+		return () => {
+			window.removeEventListener('storage', handleStorageChange);
+			window.removeEventListener('localStorageChange', handleStorageChange);
+			localStorage.setItem = originalSetItem;
+		};
+	}, []);
+	
 	useEffect(() => {
 		getAvailability();
-	  }, [booking.employee]);
+	}, [selectedEmployee]);
+
+	// Llamar a _hourPicker cuando se selecciona una fecha o cambia el empleado
+	useEffect(() => {
+		if (selectedDate) {
+			_hourPicker(selectedDate);
+		}
+	}, [selectedDate, selectedEmployee?._id, booking.branch?._id, booking.serviceCart]);
 
 	const onValueCh = (value) => {
 		if (!value) {
 			return {}
 		}
-		dispatch(
-			BOOKING_SET_CUSTOMER({
-				customer: {
-					...booking.customer,
-					address: value,
-				},
-			})
-
-		)
+		// Aquí podrías manejar la dirección si es necesario
 	}
 
   const _hourPicker = async (date) => {
-    let array = [];
-    let today = moment();
-    let isSameDay = moment(today).isSame(date, "day");
-	const savedBooking = localStorage.getItem('bookingStorage');
-	const finalBooking = JSON.parse(savedBooking);
-
-	const id = finalBooking.employee?._id ?? 0;
-	const providerId = localStorage.getItem('providerIdStorage');	
-    let response = await _fetch(
-		process.env.REACT_APP_API_URL  + "/dateAvailability/" + (id === 0 ? 0 : providerId) + "?idprovider=" + providerId,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          date: moment(date).startOf("day").utc().format(),
-          estimatedTime: finalBooking.totalEstimatedWorkMinutes,
-          isInBranch: finalBooking.isInBranch,
-          branch: finalBooking.branch?._id,
-          employee: finalBooking.employee?._id ?? null,
-          serviceCart: finalBooking.serviceCart.map((e) => e.service?._id),
-        }),
-      }
-    );
-    const responseJSON = await response.json();
-    responseJSON.data.availability.map((e) => {
-	  array.push((new Date(e)).getTime());
-    });
-    setHourPicker(array);
+    setLoadingHours(true);
+    try {
+      let array = [];
+      let today = moment();
+      let isSameDay = moment(today).isSame(date, "day");
+      
+      // Usar el empleado seleccionado si existe, sino 0
+      const id = selectedEmployee?._id ?? 0;
+      const providerId = provider?._id || localStorage.getItem('providerIdStorage');
+      
+      let response = await _fetch(
+        process.env.REACT_APP_API_URL  + "/dateAvailability/" + (id === 0 ? 0 : providerId) + "?idprovider=" + providerId,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            date: moment(date).startOf("day").utc().format(),
+            estimatedTime: booking.totalEstimatedWorkMinutes,
+            isInBranch: booking.isInBranch,
+            branch: booking.branch?._id,
+            employee: id === 0 ? null : id, // Usar el ID del empleado si existe
+            serviceCart: booking.serviceCart.map((e) => e.service?._id),
+          }),
+        }
+      );
+      const responseJSON = await response.json();
+      
+      responseJSON.data.availability.map((e) => {
+        array.push((new Date(e)).getTime());
+      });
+      
+      setHourPicker(array);
+    } catch (error) {
+      console.error('Error cargando horas:', error);
+      setHourPicker([]);
+    } finally {
+      setLoadingHours(false);
+    }
   };
 
   const _setHour = (_hour) => {
@@ -366,30 +427,14 @@ export const useCreateBookingScreen = () => {
       return;
     }
     setHour(_hour);
-    dispatch(
-		BOOKING_SET.set({
-        bookingDate: _hour
-          ? moment(booking.bookingDate)
-              .hours(_hour)
-              .minutes((_hour % 1) * 60)
-              .format()
-          : booking.bookingDate,
-      })
-    );
   };
 
 	return {
-		// showCalendarModal,
-		// closeModal,
 		_hourPicker,
 		maxAvailableAfterHours,
 		availability,
 		unavailability,
-		// showCouponrModal,
-		// setShowCouponModal,
 		dialogVisible,
-		// onVerifyCoupon,
-		// setShowCalendarModal,
 		hour,
 		fullDateBusy,
 		_setHour,
@@ -402,13 +447,11 @@ export const useCreateBookingScreen = () => {
 		setDialogVisible,
 		onSubmit,
 		loading,
-		valueFact,
-		setValueFact,
+		loadingEmployees,
+		loadingHours,
 		onVerifyCoupon,
+		onRemoveCoupon,
 		dateBusy,
 		getAddresses
 	}
-
-
-
 }

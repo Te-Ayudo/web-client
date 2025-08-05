@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
-import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 
 import { useNavigate } from 'react-router-dom';
-import Maps from "../map/Map";
-import AutoComplete from "../map/Buscardor";
-import { NewMap } from "../map/NewMap";
 import { MapComponent } from "../map/MapComponent";
 
 
@@ -18,10 +14,6 @@ export const RegistroUbicacion = () => {
   };
   function success(pos) {
     var crd = pos.coords;
-    console.log("Your current position is:");
-    console.log(`Latitude : ${crd.latitude}`);
-    console.log(`Longitude: ${crd.longitude}`);
-    console.log(`More or less ${crd.accuracy} meters.`);
 
     const cordenada={
       'latitude':crd.latitude,
@@ -41,7 +33,6 @@ export const RegistroUbicacion = () => {
   const [ubication, setUbication] = useState({'coordinates':{'latitude':-17.8648362,'longitude':-63.1583475}})
   useEffect(() => {
     // getUserLocation();
-    console.log(ubication);
   }, [])
 
   const getUserLocation = (event) => {
