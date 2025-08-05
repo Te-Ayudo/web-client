@@ -50,7 +50,6 @@ export const GoogleMaps = ({ locations, className }) => {
   }, [clicks, current]);
 
   const onClick = (e) => {
-    console.log(e.latLng);
     setClicks([e.latLng]);
     setCurrent({});
   };
@@ -66,19 +65,18 @@ export const GoogleMaps = ({ locations, className }) => {
       coor = current;
     } else {
       clicks.map((latLng, i) => {
-        console.log(latLng.toJSON());
         coor = latLng.toJSON();
       });
     }
 
     dispatch(startCreateAddress(nombre, coor));
+    // Cerrar el modal inmediatamente después de crear la dirección
     setTimeout(() => {
       dispatch(setNotActiveModalAddress());
-    }, 5000);
+    }, 1000); // Reducir a 1 segundo para mejor UX
   };
 
   const onIdle = (m) => {
-    console.log("onIdle");
   };
 
   const form = (
@@ -153,7 +151,6 @@ export const GoogleMaps = ({ locations, className }) => {
         }
       );
     } else {
-      console.log("Geolocation is not supported by this browser.");
     }
   };
 

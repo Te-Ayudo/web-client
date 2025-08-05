@@ -14,6 +14,21 @@ export const providerApi = async(slug) => {
   }
 };
 
+export const getBranchById = async(branchId) => {
+  const urlApi = process.env.REACT_APP_API_URL;
+  const urlPath = `${urlApi}/enterprise/branches/${branchId}`;
+
+  try {
+    const resp = await fetch(urlPath, {
+      method: "GET",
+    }).then(handleResponse);
+    return resp;
+  } catch (error) {
+    console.error("API Request Failed:", error);
+    throw new Error(`API Request failed: ${error.message || "Unknown error"}`);
+  }
+};
+
 function handleResponse(response) {
   return response.text().then((text) => {
     let data;

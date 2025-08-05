@@ -9,11 +9,7 @@ export const proveedorSlice = createSlice({
       code:null
     },
     item:[],
-    selected:{
-        _id:'63aca8f96eeafc6f83a943f9',
-        name:'Armadillo',
-        logoURL:'https://te-ayudo-img.s3.us-east-2.amazonaws.com/production/users/63aca8f96eeafc6f83a943f9@1672259925112',
-      }
+    selected: null // Cambiamos de un objeto hardcodeado a null
   },
   reducers: {
     setGetProv:(state) => {

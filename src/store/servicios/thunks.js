@@ -1,6 +1,7 @@
 import { servicesApi } from "./helpers"
 import { setServices } from "./serviciosSlice";
 import Swal from "sweetalert2";
+import { getServicesByIds } from "../../wrappers/api";
 
 export const startListServicios = (idProveedor=null) => {
   return async (dispatch) => {
@@ -23,6 +24,14 @@ export const startListServiciosbyProvider = (idProveedor) => {
   };
 };
 
+export const startListServiciosByIds = (serviceIds=[]) => {
+  return async (dispatch) => {
+    if (serviceIds && serviceIds.length > 0) {
+      const services = await getServicesByIds(serviceIds);
+      dispatch(setServices(services.data));
+    }
+  };
+};
 
 export const startAddService = ({ _id,imageURL,unitPrice,name,description }) => {
 

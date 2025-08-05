@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 
@@ -6,7 +6,7 @@ import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 
 import { useNavigate, useParams } from "react-router-dom";
-import { sendCodeWithWhatsapp, startListServicios, startUserWithWhatsapp } from "../../store";
+import { sendCodeWithWhatsapp, startUserWithWhatsapp } from "../../store";
 import { useForm } from "../../hooks/useForm";
 import { Alert } from "../atoms/Alert";
 import phone_code from "../../assets/phone_code.json";
@@ -35,8 +35,7 @@ export const UpdateCustomer = () => {
   const [otpUpdateSent, setOtpUpdateSent] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { status, error } = useSelector((state) => state.auth);
-  const isCheckingAuthentication = useMemo(() => status === "checking", [status]);
+  const { error } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (error !== null && formSubmitedd) {
@@ -64,7 +63,8 @@ export const UpdateCustomer = () => {
     event.preventDefault();
     setFormSubmitedd(true);
     setLoading(true);
-    dispatch(startListServicios());
+    // Eliminamos la llamada innecesaria a startListServicios
+    // dispatch(startListServicios());
     dispatch(startUserWithWhatsapp({ code: otpCode }, onServicios)).finally(() => setLoading(false));
   };
   const isProviedor = !!providerid;

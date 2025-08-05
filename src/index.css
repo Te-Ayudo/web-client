@@ -222,7 +222,7 @@ div.react-datepicker {
   display: inline-block;
   /* Ajusta padding si gustas */
   padding: 0;
-  min-width: 300px;
+  min-width: 350px;
 }
 
 /* Cabecera personalizada que creaste con `renderCustomHeader` */
@@ -367,7 +367,7 @@ div.react-datepicker__day--selected {
 @media (max-width: 640px) {
   div.react-datepicker {
     font-size: 0.75rem !important; /* texto general más pequeño */
-    width: 250px !important; /* ancho más pequeño */
+    width: 320px !important; /* ancho más pequeño */
   }
 
   .header-selected-date {
@@ -394,8 +394,8 @@ div.react-datepicker__day--selected {
   }
 
   .react-datepicker__month-container {
-    min-width: 250px !important;
-    width: 250px !important;
+    min-width: 320px !important;
+    width: 320px !important;
   }
 }
 
@@ -405,6 +405,44 @@ div.react-datepicker__day--selected {
 
 @custom-variant dark (&:is(.dark *));
 
+/* Animaciones personalizadas para el carrito */
+@keyframes cart-bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -8px, 0);
+  }
+  70% {
+    transform: translate3d(0, -4px, 0);
+  }
+  90% {
+    transform: translate3d(0, -2px, 0);
+  }
+}
+
+@keyframes cart-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.cart-badge {
+  animation: cart-bounce 1s ease-in-out;
+}
+
+.cart-pulse {
+  animation: cart-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
 
 @layer base {
   :root {

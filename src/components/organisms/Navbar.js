@@ -1,11 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import { ReactSearchAutocomplete } from "react-search-autocomplete";
 import {BiCart, BiUser} from "react-icons/bi"
 import Button from "../atoms/Button";
 import { login, startLogout } from "../../store";
-import { startListServicios } from "../../store/servicios";
 import {  useNavigate, useParams } from "react-router-dom";
 import { googleLogout } from '@react-oauth/google';
 import Input from "../atoms/Input";
@@ -21,18 +19,18 @@ import { createPortal } from "react-dom";
     search_head: '',
   }
 
-export const Navbar = ({ onClick, hideUI = false }) => {
+export const Navbar = ({ onClick, hideUI = false, services = null }) => {
   const {providerid} = useParams();
   const { status } = useSelector( state => state.auth );
-  const { services } = useSelector( state => state.servicios );
+  const { selected } = useSelector( state => state.booking );
   const [showCart, setShowCart] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [online, setOnline] = useState(true)
-  const [access, setAccess] = useState(true)
+  const [, setAccess] = useState(true)
   const [token, setToken] = useState('')
+  const [, setFilteredServices] = useState([])
 
-
-  const { formState, search_head, onInputChange } =useForm(formData);
+  const { search_head, onInputChange } =useForm(formData);
 
   const dispatch = useDispatch();
 
@@ -52,13 +50,26 @@ export const Navbar = ({ onClick, hideUI = false }) => {
     setTimeout(async () => await autoLogin(), 0)
   }, [token])
   
-   useEffect(() => {
-      if(search_head.length > 2){
-        dispatch( updateListService(search_head) )
-      }else{
-        dispatch( setEmptySearch() )
+  // Nuevo useEffect para filtrar servicios locales cuando cambia el search_head
+  useEffect(() => {
+    if (search_head.length > 2) {
+      if (services) {
+        // Si hay servicios pasados como prop, filtrar esos servicios
+        const filtered = services.filter(service => 
+          service.name.toLowerCase().includes(search_head.toLowerCase())
+        );
+        setFilteredServices(filtered);
+        // Actualizar Redux con los servicios filtrados locales
+        dispatch(updateListService({ searchTerm: search_head, services: services }));
+      } else {
+        // Comportamiento original: usar servicios del Redux global
+        dispatch(updateListService(search_head));
       }
-   }, [formState])
+    } else if (search_head.length <= 2) {
+      setFilteredServices([]);
+      dispatch(setEmptySearch());
+    }
+  }, [search_head, services, dispatch]);
 
   //const
   const navigate = useNavigate();
@@ -73,6 +84,9 @@ export const Navbar = ({ onClick, hideUI = false }) => {
     setShowLogoutConfirm(false);
   }
   const isProviedor=!!providerid;
+  
+  // Calcular el número total de servicios en el carrito
+  const cartItemsCount = selected?.serviceCart?.reduce((total, item) => total + item.quantity, 0) || 0;
 
 
   const isAvailable = async () => {
@@ -166,13 +180,28 @@ export const Navbar = ({ onClick, hideUI = false }) => {
         </div>
 
     <div className="text-center flex justify-between gap-4 sm:text-right md:text-right">
-    <ButtonCarrito
-      onClick={() => setShowCart(true)}
-      className="font-bold px-0 sm:pr-0"
-      decoration={<BiCart size="2rem" className="text-primary" />}
-    >
-      <span className="inline">Carrito</span>
-    </ButtonCarrito>
+    <div className="relative">
+      <ButtonCarrito
+        onClick={() => setShowCart(true)}
+        className="font-bold px-0 sm:pr-0 relative group"
+        decoration={
+          <div className="relative">
+            <BiCart 
+              size="2rem" 
+              className="text-primary transition-all duration-300 group-hover:scale-110 group-hover:text-orange-600" 
+            />
+            {/* Contador de servicios */}
+            {cartItemsCount > 0 && (
+              <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center cart-badge shadow-lg">
+                {cartItemsCount > 99 ? '99+' : cartItemsCount}
+              </div>
+            )}
+          </div>
+        }
+      >
+        <span className="inline transition-all duration-300 group-hover:text-orange-600">Carrito</span>
+      </ButtonCarrito>
+    </div>
       {
         isProviedor?(
           <div>

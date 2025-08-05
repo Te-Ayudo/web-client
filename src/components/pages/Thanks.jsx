@@ -123,29 +123,48 @@ END:VCALENDAR`;
           </div>
 
           <div className="p-4 flex items-center justify-center bg-white text-primary w-full">
-            <select onChange={handleSelectChange} className="btn-base px-4 sm:px-6 py-2 sm:py-3 bg-white text-primary text-[16px] sm:text-[20px] lg:text-[24px] border-orange-500 border-2 rounded-lg shadow-lg hover:bg-orange-500 hover:text-white transition-all">
-              <option value="" disabled selected className="text-[16px] sm:text-[20px] lg:text-[24px] bg-white text-primary">
+            <select onChange={handleSelectChange} className="w-64 sm:w-80 md:w-96 px-4 py-3 bg-white text-primary text-base border-orange-500 border-2 rounded-lg shadow-md hover:bg-orange-50 hover:border-orange-600 transition-all duration-200">
+              <option value="" disabled selected className="text-base bg-white text-primary">
                 Agregar a mi calendario
               </option>
-              <option value="google_calendar" className="text-[16px] sm:text-[20px] lg:text-[24px] bg-white text-primary">
+              <option value="google_calendar" className="text-base bg-white text-primary">
                 Google Calendar
               </option>
-              <option value="apple_calendar" className="text-[16px] sm:text-[20px] lg:text-[24px] bg-white text-primary">
+              <option value="apple_calendar" className="text-base bg-white text-primary">
                 Apple Calendar
               </option>
             </select>
           </div>
 
           <div className="p-4 flex items-center justify-center bg-white text-primary w-full">
-            <Button bg="white" tc="orange" className="border-orange-500 border-2 py-2 px-6 rounded-lg shadow-lg hover:bg-orange-500 hover:text-white transition-all" onClick={onInicio}>
+            <Button bg="white" tc="orange" className="w-64 sm:w-80 md:w-96 border-orange-500 border-2 py-3 px-6 rounded-lg shadow-md hover:bg-orange-500 hover:text-white hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] text-base" onClick={onInicio}>
               Volver al Inicio
             </Button>
           </div>
 
           <div className="p-4 flex items-center justify-center bg-white text-primary w-full">
-            <Button bg="white" tc="orange" className="border-orange-500 border-2 py-2 px-6 rounded-lg shadow-lg hover:bg-orange-500 hover:text-white transition-all" onClick={() => window.open("http://onelink.to/teayudo", "_blank")}>
-              Descargar nuestra App
-            </Button>
+            <div className="relative group w-64 sm:w-80 md:w-96">
+              {/* Botón principal */}
+              <Button 
+                bg="white" 
+                tc="orange" 
+                className="w-full relative z-10 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] border-0 text-base" 
+                onClick={() => window.open("http://onelink.to/teayudo", "_blank")}
+              >
+                <span className="flex items-center justify-center gap-2 font-medium">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                  Descargar nuestra App
+                </span>
+              </Button>
+              
+              {/* Animación sutil de borde */}
+              <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-orange-400 via-orange-300 to-orange-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+              
+              {/* Efecto de brillo sutil */}
+              <div className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-orange-400 via-orange-300 to-orange-400 opacity-0 group-hover:opacity-15 blur-sm transition-opacity duration-400"></div>
+            </div>
           </div>
         </div>
       </div>

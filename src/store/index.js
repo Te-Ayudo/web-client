@@ -6,3 +6,4 @@ export * from './auth';
 export * from './store';
 export * from './branch';
 export * from './category';
+export { persistor } from './store';

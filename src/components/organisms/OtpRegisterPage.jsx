@@ -36,7 +36,8 @@ const OtpRegisterPage = () => {
   const verificarOTP = (code) => {
     setLoading(true);
     setFormSubmitted(true);
-    dispatch(startListServicios()); // si aún lo necesitas
+    // Eliminamos la llamada innecesaria a startListServicios
+    // dispatch(startListServicios()); // si aún lo necesitas
     dispatch(
       startCreatingUserWithWhatsapp({ code }, () =>
         navigate(`/${providerid}/`)

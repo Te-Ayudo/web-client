@@ -22,11 +22,9 @@ const calculateDistance = async (origin, destination) => {
       const distanceValue = responseJSON.rows[0].elements[0].distance.value;
       return distanceValue;
     } else {
-      console.log("Error al calcular la distancia");
       return null;
     }
   } catch (error) {
-    console.log("Error:", error);
     return null;
   }
 };
