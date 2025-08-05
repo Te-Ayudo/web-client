@@ -1,6 +1,6 @@
 // components/atoms/Button.jsx
 import React from "react";
-import { cn } from "@/lib/utils"; // o usa clsx si usas clsx
+import { cn } from "@/lib/utils"; // o usa clsx si 
 
 export default function Button({
   href,

@@ -121,27 +121,6 @@ END:VCALENDAR`;
           <div className="flex items-center justify-center w-full content-center mb-5">
             <Lottie animationData={thumbsUpAnimation} loop={true} autoplay={true} style={{ width: 300, height: 300 }} />
           </div>
-
-          <div className="p-4 flex items-center justify-center bg-white text-primary w-full">
-            <select onChange={handleSelectChange} className="w-64 sm:w-80 md:w-96 px-4 py-3 bg-white text-primary text-base border-orange-500 border-2 rounded-lg shadow-md hover:bg-orange-50 hover:border-orange-600 transition-all duration-200">
-              <option value="" disabled selected className="text-base bg-white text-primary">
-                Agregar a mi calendario
-              </option>
-              <option value="google_calendar" className="text-base bg-white text-primary">
-                Google Calendar
-              </option>
-              <option value="apple_calendar" className="text-base bg-white text-primary">
-                Apple Calendar
-              </option>
-            </select>
-          </div>
-
-          <div className="p-4 flex items-center justify-center bg-white text-primary w-full">
-            <Button bg="white" tc="orange" className="w-64 sm:w-80 md:w-96 border-orange-500 border-2 py-3 px-6 rounded-lg shadow-md hover:bg-orange-500 hover:text-white hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] text-base" onClick={onInicio}>
-              Volver al Inicio
-            </Button>
-          </div>
-
           <div className="p-4 flex items-center justify-center bg-white text-primary w-full">
             <div className="relative group w-64 sm:w-80 md:w-96">
               {/* Botón principal */}
@@ -166,6 +145,26 @@ END:VCALENDAR`;
               <div className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-orange-400 via-orange-300 to-orange-400 opacity-0 group-hover:opacity-15 blur-sm transition-opacity duration-400"></div>
             </div>
           </div>
+          <div className="p-4 flex items-center justify-center bg-white text-primary w-full">
+            <select onChange={handleSelectChange} className="w-64 sm:w-80 md:w-96 px-4 py-3 bg-white text-primary text-base border-orange-500 border-2 rounded-lg shadow-md hover:bg-orange-50 hover:border-orange-600 transition-all duration-200">
+              <option value="" disabled selected className="text-base bg-white text-primary">
+                Agregar a mi calendario
+              </option>
+              <option value="google_calendar" className="text-base bg-white text-primary">
+                Google Calendar
+              </option>
+              <option value="apple_calendar" className="text-base bg-white text-primary">
+                Apple Calendar
+              </option>
+            </select>
+          </div>
+
+          <div className="p-4 flex items-center justify-center bg-white text-primary w-full">
+            <Button bg="white" tc="orange" className="w-64 sm:w-80 md:w-96 border-orange-500 border-2 py-3 px-6 rounded-lg shadow-md hover:bg-orange-500 hover:text-white hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] text-base" onClick={onInicio}>
+              Volver al Inicio
+            </Button>
+          </div>
+
         </div>
       </div>
     </>
