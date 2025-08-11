@@ -139,6 +139,25 @@ export const useCreateBookingScreen = (selectedEmployee, selectedDate, selectedT
 		} finally {
 			setLoadingEmployees(false);
 		}
+		const savedEmployee = localStorage.getItem('employeeStorage');
+		const savedProviderId = localStorage.getItem('providerIdStorage');
+		const savedBooking = localStorage.getItem('bookingStorage');
+		const finalBooking = JSON.parse(savedBooking);
+		const savedMetodo = finalBooking.isInBranch?'En sucursal':'A domicilio'
+		const finalEmployee = savedEmployee ? JSON.parse(savedEmployee) : employee;
+		const result = (await employeeApi(savedMetodo, finalEmployee, savedProviderId))
+
+		 const employeefilter = result?.data.map(function(element){
+  	 	return {
+				'_id':element.id,
+				'fullName':element.first_name+' '+element.last_name,
+				'photoURL':element.picture,
+				'CI':element.CI_NIT,
+				'branch':element.branch?._id??0,
+				'pushToken':element.pushToken,
+			};
+		 })
+		 setEmployee(employeefilter);
 	}
 
 	const onVerifyCoupon = (event) => {
