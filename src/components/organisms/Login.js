@@ -76,7 +76,8 @@ export const Login = () => {
     event.preventDefault();
     setFormSubmitedd(true);
 
-    dispatch( startListServicios() );
+    // Eliminamos la llamada innecesaria a startListServicios
+    // dispatch( startListServicios() );
     dispatch(startLoginWithEmailPassword({email,password,role},onServicios));
   }
 
@@ -84,8 +85,15 @@ export const Login = () => {
 
   return (
     <>
-      {myprov === undefined ? (
-        "Error en el proveedor"
+      {!myprov ? (
+        <div className="flex flex-col items-center justify-center min-h-[200px]">
+          <div className="mb-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+          </div>
+          <h3 className="text-orange-500 text-lg font-semibold">
+            Cargando proveedor<span className="animate-pulse">...</span>
+          </h3>
+        </div>
       ) : (
         <div>
           <form className="text-center" method="POST" onSubmit={onSubmit}>

@@ -1,31 +1,30 @@
 import React, { useEffect, useRef, useState } from "react";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import CustomDatepicker from "./CustomDatePicker";
 import { Card, CardHeader } from "../ui/card";
 
 
-function generateTimeSlots(periodData, baseDate, interval = 30) {
-  if (!periodData || periodData.length === 0) return [];
-  const period = periodData[0];
-  let start = moment(baseDate)
-    .hour(period.startHour)
-    .minute(period.startMinute)
-    .second(0)
-    .millisecond(0);
-  let end = moment(baseDate)
-    .hour(period.endHour)
-    .minute(period.endMinute)
-    .second(0)
-    .millisecond(0);
-  let slots = [];
-  while (start.isBefore(end) || start.isSame(end)) {
-    slots.push(start.toDate());
-    start.add(interval, "minutes");
-  }
-  return slots;
-}
+// function generateTimeSlots(periodData, baseDate, interval = 30) {
+//   if (!periodData || periodData.length === 0) return [];
+//   const period = periodData[0];
+//   let start = moment(baseDate)
+//     .hour(period.startHour)
+//     .minute(period.startMinute)
+//     .second(0)
+//     .millisecond(0);
+//   let end = moment(baseDate)
+//     .hour(period.endHour)
+//     .minute(period.endMinute)
+//     .second(0)
+//     .millisecond(0);
+//   let slots = [];
+//   while (start.isBefore(end) || start.isSame(end)) {
+//     slots.push(start.toDate());
+//     start.add(interval, "minutes");
+//   }
+//   return slots;
+// }
 export default function MyCalendar({
   traductor,
   blockedDates, 
@@ -42,7 +41,7 @@ export default function MyCalendar({
   const [selectedDate, setSelectedDate] = useState(new Date());
   const calendarRef = useRef(null);
   const [calendarHeight, setCalendarHeight] = useState(380);
-  const [loadingHours, setLoadingHours] = useState(false);
+  const [, setLoadingHours] = useState(false);
   
   const handleDateChange = (date) => {
     setSelectedDate(date);

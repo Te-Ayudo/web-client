@@ -2,8 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import Logo from '../atoms/Logo';
 import Navbar from './Navbar';
 import { useSelector } from "react-redux";
-import { BiArrowBack } from 'react-icons/bi';
-export const Header = ({onClick, isAuthentication = true, back = false}) => {
+export const Header = ({onClick, isAuthentication = true, back = false, services = null}) => {
   const { status } = useSelector((s) => s.auth);
   const navigate = useNavigate();
   const isAuth     = status === "authenticated";
@@ -36,7 +35,7 @@ export const Header = ({onClick, isAuthentication = true, back = false}) => {
         {isAuth && <Logo className="h-12 sm:h-24" />}
 
         {/* NAVBAR (se puede ocultar con hideUI) */}
-        <Navbar onClick={onClick} hideUI={!isAuth} />
+        <Navbar onClick={onClick} hideUI={!isAuth} services={services} />
       </div>
     </header>
 )};

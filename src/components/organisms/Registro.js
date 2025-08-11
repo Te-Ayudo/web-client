@@ -98,7 +98,8 @@ export const Registro = () => {
     event.preventDefault();
     setFormSubmitedd(true);
     setLoading(true);
-    dispatch(startListServicios());
+    // Eliminamos la llamada innecesaria a startListServicios
+    // dispatch(startListServicios());
     dispatch(startCreatingUserWithWhatsapp({ code: otpCode }, onServicios)).finally(() => setLoading(false));
 
   }

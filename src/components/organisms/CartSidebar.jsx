@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useSelector }           from "react-redux"
 import { HiOutlineShoppingCart } from "react-icons/hi2"
 
-import { Lista }    from "@/components/atoms/Lista"
 import {
   Sheet,
   SheetContent,
@@ -12,7 +11,6 @@ import {
   SheetFooter,
 } from "@/components/ui/sheet"
 import Button from "../atoms/Button"
-import { BiCart } from "react-icons/bi"
 import ButtonCustom from "./Button"
 import { AiOutlinePlus } from "react-icons/ai"
 import CartItem from "./CartItem"
@@ -26,11 +24,20 @@ export default function CartSidebar({ visible, onClose }) {
   const carrito = useSelector((state) => state.booking.selected.serviceCart);
 
   const desabilitar = (carrito.length === 0 )
-  console.log('DESHABILITAR: ', desabilitar)	
-  /* ---------- helpers ---------- */
   const handleAddMore = () => {
-    navigate(`/${providerid}/${isInBranch ? "empresa" : "servicios"}`)
-    onClose(false)
+    if (isInBranch) {
+      // Para servicio local, necesitamos el ID de la sucursal
+      const branchId = selected.branch?._id;
+      if (branchId) {
+        navigate(`/${providerid}/empresa/${branchId}`);
+      } else {
+        // Si no hay sucursal seleccionada, ir a la lista de sucursales
+        navigate(`/${providerid}/sucursales`);
+      }
+    } else {
+      navigate(`/${providerid}/servicios`);
+    }
+    onClose(false);
   }
 
   /* ---------- UI ---------- */

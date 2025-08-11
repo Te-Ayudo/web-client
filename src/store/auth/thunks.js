@@ -201,7 +201,7 @@ export const startLoginGoogle = (user,navigation) => {
 					function () {
 						//Alert.alert('Debes ingresar con una cuenta de cliente.')
             dispatch( clearErrorMessage() );
-					}.bind(this),
+					},
 					150
 				)
 			}
@@ -213,7 +213,6 @@ export const startLoginWithEmailPassword = ({email, password,role},onServicios) 
   return async(dispatch) => {
     dispatch( checkingCredentials() );
     const { data } = await loginApi({email, password, role});
-    console.log('======================================');    
 		let responseJSON = data;
 		let error = data.error;
 
@@ -261,7 +260,7 @@ export const startLoginWithEmailPassword = ({email, password,role},onServicios) 
 					function () {
           //	Alert.alert('Tu cuenta está inhabilitada')
               dispatch( clearErrorMessage() );
-					}.bind(this),
+					},
 					150
 				)
 			} else if (!error) {
@@ -270,7 +269,7 @@ export const startLoginWithEmailPassword = ({email, password,role},onServicios) 
 					function () {
 						//Alert.alert('Debes ingresar con una cuenta de cliente.')
             dispatch( clearErrorMessage() );
-					}.bind(this),
+					},
 					150
 				)
 			}
@@ -284,7 +283,6 @@ export const startLoginWithWhatsapp = ({phone,codePhone}, onServicios) => {
   return async(dispatch) => {
     dispatch( checkingCredentials() );
     const { data } = await loginWhatsappApi({ phone, codePhone });
-    console.log('======================================');    
 		let error = data.error;
 
     if( error ) {
@@ -310,7 +308,6 @@ export const startLoginWithWhatsappOTP = ({otpCode}, onServicios) => {
     const phone = localStorage.getItem('phone');
     const codePhone = localStorage.getItem('codePhone');
     const { data } = await loginWhatsappOTPApi({ phone, codePhone, code: otpCode });
-    console.log('======================================');    
 		let responseJSON = data;    
     let error = data.error;
     if( error ) {

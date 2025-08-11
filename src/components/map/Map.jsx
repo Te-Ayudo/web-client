@@ -13,7 +13,6 @@ const Maps = ({ address="santa cruz, Bolivia, Av. cumavi", lat="-17.7917873", ln
   }, [lat,lng])
 
   useEffect(() => {
-    console.log(address,lat,lng);
   }, [])
 
 

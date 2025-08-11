@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { startListProveedores, startListServicios } from '../../store';
+import { startListProveedores } from '../../store';
 import { useDispatch, useSelector } from "react-redux";
 
 import useModal from "../useModal";

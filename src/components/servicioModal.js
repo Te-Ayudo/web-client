@@ -17,7 +17,6 @@ Modal.setAppElement('#root');
 export const servicioModal = () => {
 
   const onCloseModal = () => {
-    console.log('cerrar modal');
   }
 
   return (

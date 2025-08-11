@@ -1,6 +1,5 @@
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./components/pages/Login";
 import Registrarse from "./components/pages/Registrarse";
 import RegistrarUbicacion from "./components/pages/RegistrarUbicacion";
 import Home from "./components/pages/Home";
@@ -8,13 +7,11 @@ import Servicios from "./components/pages/Servicios";
 import NotFound from "./components/pages/NotFound"
 import ServiceAppointment from "./components/pages/ServiceAppointment";
 import { Thanks } from "./components/pages/Thanks";
-import { Cart } from "./components/pages/Cart";
 import { Empresa } from "./components/pages/Empresa";
 import { SucursalesPage } from "./components/pages/SucursalesPage";
 import { ConfirmacionPage } from "./components/pages/ConfirmacionPage";
 import { ProveedoresPage } from "./components/pages/ProveedoresPage";
 import { Rating } from "./components/pages/Rating";
-import LoginWhatsapp from "./components/pages/LoginWhatsapp";
 import { Ubication } from "./components/pages/Ubication";
 import PhoneInputPage from "./components/organisms/PhoneInputPage";
 import OtpInputPage from "./components/organisms/OtpInputPage";
@@ -120,16 +117,17 @@ function App() {
             } 
           />
           <Route path="*" element={<NotFound />} />
+         
           <Route 
-            path=":providerid/carrito" 
+            path=":providerid/empresa" 
             element={
               <RutaProtegida>
-                <Cart />
+                <Empresa />
               </RutaProtegida>
             }
           />
           <Route 
-            path=":providerid/empresa" 
+            path=":providerid/empresa/:branchid" 
             element={
               <RutaProtegida>
                 <Empresa />
@@ -170,6 +168,7 @@ function App() {
           />
         </Routes>
       </BrowserRouter>
+      {/* <BookingDebugInfo /> */}
     </>
   )
 }

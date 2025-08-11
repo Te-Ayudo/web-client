@@ -13,11 +13,20 @@ export const serviciosSlice = createSlice({
   reducers: {
     updateListService: ( state, action ) => {
       state.isSaving = false;
+      
+      // Si se pasa un array de servicios específicos, usarlos para filtrar
+      if (action.payload.services) {
+        state.search = action.payload.services.filter(service => 
+          service.name.toLowerCase().includes(action.payload.searchTerm.toLowerCase())
+        );
+      } else {
+        // Comportamiento original: filtrar desde state.services
+        state.search = state.services.filter(dato => 
+          dato.name.toLowerCase().includes(action.payload.toLowerCase())
+        );
+      }
 
-      state.search = state.services.filter(dato =>dato.name.toLowerCase().includes(action.payload.toLowerCase())  );
-
-      state.messageSaved = `${ action.payload }, actualizada correctamente`;
-
+      state.messageSaved = `${ action.payload.searchTerm || action.payload }, actualizada correctamente`;
     },
     setEmptySearch: ( state ) => {
       state.isSaving =false;

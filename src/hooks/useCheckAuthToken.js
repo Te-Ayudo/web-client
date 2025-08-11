@@ -41,7 +41,6 @@ export const useCheckAuthToken = () => {
           }
         });
     } else {
-      console.log("Geolocation is not supported by this browser.");
     }
 
   }
@@ -102,7 +101,8 @@ export const useCheckAuthToken = () => {
         return;
       }
       dispatch( provider_set(myProvider));
-      dispatch( startListServicios(providerSelect) );
+      // Eliminamos la llamada innecesaria a startListServicios
+      // dispatch( startListServicios(providerSelect) );
 
   /* fin loading proveedores y servicios*/
 

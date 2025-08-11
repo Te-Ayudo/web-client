@@ -4,8 +4,7 @@ import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Calendar } from "lucide-react";
 import moment from "moment";
-import { es } from "date-fns/locale/es"; // Solo importa la localización directamente
-// import "react-datepicker/dist/react-datepicker.css";
+import { es } from "date-fns/locale/es"; 
 
 export default function CustomDatepicker({
   calendarRef, 
@@ -13,13 +12,13 @@ export default function CustomDatepicker({
   availability, 
   dateBusy, 
   onDateChange, 
-  _hourPicker, 
   fullDateBusy,
   maxAvailableAfterHours
 }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [, setCurrentYear] = useState(new Date().getFullYear());
+
   const renderHeader = ({
     date,
     changeYear,
@@ -30,9 +29,8 @@ export default function CustomDatepicker({
     nextMonthButtonDisabled,
   }) => {
     const dayMonthYear = format(date, "dd/MM/yyyy");
-    const currentMonthIndex = date.getMonth();
     const currentYear = date.getFullYear();
-    // console.log('BLOCKDATES: ', blockedDates)
+    
     const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                     "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
     const years = [2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032];
@@ -116,19 +114,18 @@ export default function CustomDatepicker({
               </SelectContent>
             </Select>
           </div>
-
         </div>
       </div>
     );
   };
+
   return (
     <div ref={calendarRef} className="my-datepicker-container w-full max-w-[340px] sm:max-w-[400px] md:max-w-[500px]">
-      
       <DatePicker
         selected={selectedDate}
         onChange={(date) => {
-          setSelectedDate(date)
-          onDateChange(date)
+          setSelectedDate(date);
+          onDateChange(date);
         }}
         inline
         minDate={new Date()}
@@ -136,7 +133,6 @@ export default function CustomDatepicker({
         dateFormat="Pp"
         locale={es}
         filterDate={(date) => {
-          
           const _date = moment(date);
           const cutoff = moment().add(maxAvailableAfterHours, "hours");
 
@@ -165,9 +161,6 @@ export default function CustomDatepicker({
 
           // 4) Si pasó todos los checks, se considera día habilitado
           return true;
-        }}
-        onCalendarOpen={() => {
-          _hourPicker(new Date());
         }}
       />
     </div>
