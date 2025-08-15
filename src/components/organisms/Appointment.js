@@ -225,7 +225,7 @@ export const Appointment = () => {
   const employeeOptions = (isBranch ? employeeAvailableByBranch(employee) : employee).map((emp) => ({
     value: JSON.stringify(emp),
     label: emp.fullName,
-    picture: emp.picture // Incluir la imagen del empleado
+    picture: emp.photoURL, // Incluir la imagen del empleado
   }));
 
   const paymentMethodOptions = paymentMethods.map((method) => ({
