@@ -41,6 +41,7 @@ export const useCreateBookingScreen = (selectedEmployee, selectedDate, selectedT
   const [loading, setLoading] = useState(false);
   const [loadingEmployees, setLoadingEmployees] = useState(false);
   const [loadingHours, setLoadingHours] = useState(false);
+  const bookingSelected = useSelector((state) => state.booking.selected);
 
   const getAvailability = async () => {
     try {
@@ -116,10 +117,12 @@ export const useCreateBookingScreen = (selectedEmployee, selectedDate, selectedT
       const employee = booking.serviceCart?.map(function (element) {
         return element.service._id;
       });
+      
       if (employee && employee.length > 0) {
         localStorage.setItem("providerIdStorage", provider._id);
       }
-      const savedMetodo = booking?.isInBranch ? "En sucursal" : "A domicilio";
+      
+      const savedMetodo = bookingSelected?.isInBranch ? "En sucursal" : "A domicilio";
       const result = await employeeApi(savedMetodo, employee, provider._id);
 
       // Transformar el formato de respuesta para que sea compatible
@@ -139,25 +142,6 @@ export const useCreateBookingScreen = (selectedEmployee, selectedDate, selectedT
     } finally {
       setLoadingEmployees(false);
     }
-    const savedEmployee = localStorage.getItem("employeeStorage");
-    const savedProviderId = localStorage.getItem("providerIdStorage");
-    const savedBooking = localStorage.getItem("bookingStorage");
-    const finalBooking = JSON.parse(savedBooking);
-    const savedMetodo = finalBooking?.isInBranch ? "En sucursal" : "A domicilio";
-    const finalEmployee = savedEmployee ? JSON.parse(savedEmployee) : employee;
-    const result = await employeeApi(savedMetodo, finalEmployee, savedProviderId);
-
-    const employeefilter = result?.data.map(function (element) {
-      return {
-        _id: element.id,
-        fullName: element.first_name + " " + element.last_name,
-        photoURL: element.picture,
-        CI: element.CI_NIT,
-        branch: element.branch?._id ?? 0,
-        pushToken: element.pushToken,
-      };
-    });
-    setEmployee(employeefilter);
   };
 
   const onVerifyCoupon = (event) => {
@@ -397,7 +381,7 @@ export const useCreateBookingScreen = (selectedEmployee, selectedDate, selectedT
         body: JSON.stringify({
           date: moment(date).startOf("day").utc().format(),
           estimatedTime: booking.totalEstimatedWorkMinutes,
-          isInBranch: booking.isInBranch,
+          isInBranch: bookingSelected.isInBranch,
           branch: booking.branch?._id,
           employee: id === 0 ? null : id, // Usar el ID del empleado si existe
           serviceCart: booking.serviceCart.map((e) => e.service?._id),
