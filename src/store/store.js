@@ -8,6 +8,7 @@ import { proveedorSlice } from './proveedor';
 import { bookingSlice } from './booking';
 import { branchSlice } from './branch/branchSlice';
 import { categorySlice } from './category';
+import { tourSlice } from './tour';
 
 // Configuración de persistencia para booking - SOLO datos persistentes
 const bookingPersistConfig = {
@@ -44,6 +45,13 @@ const branchPersistConfig = {
   whitelist: ['selected'], // Persistir sucursal seleccionada
 };
 
+// Configuración de persistencia para tour
+const tourPersistConfig = {
+  key: 'tour',
+  storage,
+  whitelist: ['isActive', 'currentPage', 'continueTour'], // Persistir estado activo, página actual y flag de continuación
+};
+
 export const store = configureStore({
   reducer: {
     auth: authSlice.reducer,
@@ -53,6 +61,7 @@ export const store = configureStore({
     booking: persistReducer(bookingPersistConfig, bookingSlice.reducer),
     branch: persistReducer(branchPersistConfig, branchSlice.reducer),
     category: categorySlice.reducer,
+    tour: persistReducer(tourPersistConfig, tourSlice.reducer),
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

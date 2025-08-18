@@ -111,9 +111,9 @@ const Item = (props) => {
             ?
             (
               search.map(
-                dato =>{
+                (dato, index) =>{
                   return <li key={dato._id} >
-                    <Lista servicio={ dato } />
+                    <Lista servicio={ dato } index={index} />
                   </li>
                 }
               )
@@ -123,9 +123,9 @@ const Item = (props) => {
             (
             (servicios)?
               servicios.map(
-                servicio =>{
+                (servicio, index) =>{
                   return <li key={servicio._id} >
-                    <Lista servicio={ servicio } />
+                    <Lista servicio={ servicio } index={index} />
                   </li>
                 }
               )

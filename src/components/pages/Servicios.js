@@ -10,6 +10,9 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import CartSidebar from "../organisms/CartSidebar";
 import { getServicesFilteredByMethod } from '../../wrappers/api';
+import { BOOKING_SET_SERVICE_TYPE } from "../../store/booking";
+import TourFloatingButton from "../TourFloatingButton";
+import useTour from "../../hooks/useTour";
 
 // Componente Skeleton para el header (título y subtítulo)
 const ServiciosHeaderSkeleton = () => (
@@ -98,6 +101,16 @@ const Servicios = (props) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const proveedor = useSelector((state) => state.proveedor.selected);
+
+  // Hook del tour
+  const { startServiciosTour, checkAndStartTour, cleanupCurrentInstance } = useTour();
+
+  // Cleanup al desmontar el componente
+  useEffect(() => {
+    return () => {
+      cleanupCurrentInstance();
+    };
+  }, [cleanupCurrentInstance]);
   
 
   // Efecto único para cargar proveedor y servicios
@@ -106,6 +119,9 @@ const Servicios = (props) => {
       try {
         setLoading(true);
         setError(null);
+        
+        // Configurar el tipo de servicio como "A domicilio"
+        dispatch(BOOKING_SET_SERVICE_TYPE('home'));
         
         // Cargar proveedor si no está cargado o es diferente
         if (!proveedor || proveedor.slugUrl !== params.providerid) {
@@ -129,7 +145,16 @@ const Servicios = (props) => {
     };
 
     loadProviderAndServices();
-  }, [params.providerid, proveedor?._id, proveedor?.slugUrl]); // Dependencias actualizadas
+  }, [dispatch, params.providerid, proveedor?.slugUrl, proveedor?._id, proveedor]);
+
+  // Efecto para iniciar automáticamente el tour si está activo
+  useEffect(() => {
+    if (!loading && services.length > 0 && proveedor) {
+      setTimeout(() => {
+        checkAndStartTour('servicios', services);
+      }, 100);
+    }
+  }, [loading, services.length, proveedor, checkAndStartTour, services]);
 
   const { isOpenModal, active } = useSelector( state => state.servicios );
   const [cartOpen, setCartOpen] = useState(false);
@@ -213,6 +238,9 @@ const Servicios = (props) => {
         )}
       </List>
       <CartSidebar visible={cartOpen} onClose={closeCart} />
+      
+      {/* Botón flotante del tour - solo cuando el usuario tenga servicios disponibles */}
+      {!loading && services.length > 0 && <TourFloatingButton onClick={() => startServiciosTour(services)} />}
     </Main>
   )
 }

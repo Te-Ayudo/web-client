@@ -1,8 +1,143 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap");
+@import "driver.js/dist/driver.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Estilos específicos para el tour del modal - z-index muy alto para estar sobre modales */
+.driver-popover,
+.driver-popover-modal {
+  z-index: 9999 !important;
+}
+
+.driver-overlay {
+  z-index: 9998 !important;
+}
+
+.driver-stage {
+  z-index: 9997 !important;
+}
+
+/* Cuando hay un tour activo en el modal, asegurar que esté por encima */
+.driver-active-element,
+.driver-highlighted {
+  z-index: 9996 !important;
+}
+
+/* Estilos específicos cuando hay tour activo sobre modal */
+body.modal-tour-active .driver-popover,
+body.modal-tour-active .driver-popover-modal {
+  z-index: 9999 !important;
+}
+
+body.modal-tour-active .driver-overlay {
+  z-index: 9998 !important;
+}
+
+body.modal-tour-active .driver-stage {
+  z-index: 9997 !important;
+}
+
+/* Estilos específicos cuando hay tour activo sobre el carrito (Sheet) */
+body.cart-tour-active .driver-popover,
+body.cart-tour-active .driver-popover-cart {
+  z-index: 10000 !important;
+}
+
+body.cart-tour-active .driver-overlay {
+  z-index: 9999 !important;
+}
+
+body.cart-tour-active .driver-stage {
+  z-index: 9998 !important;
+}
+
+/* Estilos específicos cuando hay tour activo sobre el formulario */
+body.appointment-tour-active .driver-popover,
+body.appointment-tour-active .driver-popover-appointment {
+  z-index: 9999 !important;
+}
+
+body.appointment-tour-active .driver-overlay {
+  z-index: 9998 !important;
+}
+
+body.appointment-tour-active .driver-stage {
+  z-index: 9997 !important;
+}
+
+/* PRIORIDAD ALTA: Drawers y Dialogs sobre el tour */
+/* Drawers de vaul (SelectDrawer) */
+[role="dialog"][data-vaul-drawer],
+[role="dialog"][data-slot="drawer-content"],
+[data-vaul-drawer-visible="true"] {
+  z-index: 99999 !important;
+}
+
+/* Overlay de los drawers de vaul */
+[data-vaul-overlay],
+[data-slot="drawer-overlay"] {
+  z-index: 99998 !important;
+}
+
+/* Dialogs de radix (DateSelect) - EXCLUIR carrito (sheet-content) en todos los casos */
+body:not(.cart-tour-active) [role="dialog"][data-slot="dialog-content"],
+body:not(.cart-tour-active) [role="dialog"][id^="radix-"]:not([data-slot="sheet-content"]) {
+  z-index: 99999 !important;
+}
+
+/* Overlay de dialogs de radix */
+[data-slot="dialog-overlay"],
+[data-radix-dialog-overlay] {
+  z-index: 99998 !important;
+}
+
+/* React DatePicker cuando está dentro de un dialog */
+.react-datepicker,
+.react-datepicker-popper {
+  z-index: 99999 !important;
+}
+
+/* Selectores de radix dentro de calendarios */
+[role="dialog"] [data-slot="select-trigger"],
+[role="dialog"] [data-radix-select-content] {
+  z-index: 100000 !important;
+}
+
+/* Asegurar que TODO el contenido dentro de drawers/dialogs sea interactivo */
+[role="dialog"][data-vaul-drawer] *,
+[role="dialog"][data-slot="drawer-content"] *,
+[role="dialog"][data-slot="dialog-content"] *,
+[role="dialog"][id^="radix-"] * {
+  pointer-events: auto !important;
+}
+
+/* Específicamente para botones dentro de drawers/dialogs */
+[role="dialog"] button,
+[role="dialog"] [role="option"],
+[role="dialog"] .react-datepicker__day {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+/* Portales de radix */
+[data-radix-portal] {
+  z-index: 99999 !important;
+}
+
+/* Portales de radix - asegurar interactividad completa */
+[data-radix-portal] *,
+[data-radix-portal] button,
+[data-radix-portal] [role="option"] {
+  pointer-events: auto !important;
+}
+
+/* SOLO los contenidos de drawers y dialogs deben tener prioridad sobre el tour */
+/* NO los elementos trigger/input que están siendo destacados por el tour */
+
+/* SOLO los contenidos de drawers y dialogs deben tener prioridad sobre el tour */
+/* NO los elementos trigger/input que están siendo destacados por el tour */
 
 body {
   margin: 0;
@@ -404,6 +539,60 @@ div.react-datepicker__day--selected {
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+
+/* Personalización de estilos para Driver.js */
+.driver-popover {
+  background: white !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+  border: none !important;
+}
+
+.driver-popover-title {
+  color: #FF770F !important;
+  font-weight: 700 !important;
+  font-size: 1.1rem !important;
+  margin-bottom: 8px !important;
+}
+
+.driver-popover-description {
+  color: #374151 !important;
+  font-size: 0.95rem !important;
+  line-height: 1.5 !important;
+}
+
+.driver-popover-next-btn {
+  background-color: #FF770F !important;
+  color: transparent !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  font-weight: 600 !important;
+  transition: background-color 0.2s !important;
+}
+
+.driver-popover-next-btn:hover {
+  background-color: #e6690c !important;
+}
+
+.driver-popover-prev-btn {
+  background-color: #f3f4f6 !important;
+  color: #374151 !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  font-weight: 500 !important;
+}
+
+.driver-popover-close-btn {
+  color: #6b7280 !important;
+  font-size: 1.2rem !important;
+}
+
+.driver-popover-progress-text {
+  color: #9ca3af !important;
+  font-size: 0.85rem !important;
+}
 
 /* Animaciones personalizadas para el carrito */
 @keyframes cart-bounce {
