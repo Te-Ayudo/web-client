@@ -1,6 +1,7 @@
 // components/cart/CartSidebar.jsx
 import { useNavigate, useParams } from "react-router-dom"
 import { useSelector }           from "react-redux"
+import { useEffect, useRef }     from "react"
 import { HiOutlineShoppingCart } from "react-icons/hi2"
 
 import {
@@ -14,16 +15,41 @@ import Button from "../atoms/Button"
 import ButtonCustom from "./Button"
 import { AiOutlinePlus } from "react-icons/ai"
 import CartItem from "./CartItem"
+import useTour from "../../hooks/useTour"
 export default function CartSidebar({ visible, onClose }) {
   const { providerid } = useParams()
   const navigate       = useNavigate()
   const { selected }   = useSelector(s => s.booking)
+  const { startCartTour, isActive } = useTour()
+  const tourState = useSelector((state) => state.tour)
+  
+  const tourStartedRef = useRef(false) // Flag para evitar múltiples inicios
 
   const items      = selected?.serviceCart ?? []
   const isInBranch = selected?.isInBranch
   const carrito = useSelector((state) => state.booking.selected.serviceCart);
 
   const desabilitar = (carrito.length === 0 )
+
+  // Detectar cuando se abre el carrito y si hay un tour activo (patrón optimizado)
+  useEffect(() => {
+    if (visible && isActive && tourState.currentPage === 'carrito' && items.length > 0 && !tourStartedRef.current) {
+      tourStartedRef.current = true;
+      
+      // Timeout optimizado similar a otros componentes exitosos
+      const timer = setTimeout(() => {
+        startCartTour();
+      }, 200);
+      
+      return () => clearTimeout(timer);
+    }
+    
+    // Reset flag cuando se cierra el carrito
+    if (!visible) {
+      tourStartedRef.current = false;
+    }
+  }, [visible, isActive, tourState.currentPage, items.length, startCartTour]);
+
   const handleAddMore = () => {
     if (isInBranch) {
       // Para servicio local, necesitamos el ID de la sucursal
@@ -73,6 +99,7 @@ export default function CartSidebar({ visible, onClose }) {
                         decoration={
                             <AiOutlinePlus size="1.5rem" className="text-white" />
                         }
+                        data-tour="btn-agregar"
                     >
                         <span className="text-white pr-2">Agregar</span>
                     </ButtonCustom>
@@ -92,7 +119,7 @@ export default function CartSidebar({ visible, onClose }) {
             </SheetHeader>
             <div className="flex-1 overflow-y-auto px-6 py-6">
             {items.length > 0 ? (
-             <div className="space-y-6">
+             <div className="space-y-6" data-tour="lista-servicios">
                {items.map(orden => (
                  <CartItem key={orden.service._id} orden={orden} />
                ))}
@@ -126,13 +153,24 @@ export default function CartSidebar({ visible, onClose }) {
                     "
                 >
                     <Button
-                        onClick={() => navigate(`/${providerid}/programar`)}
+                        onClick={() => {
+                          // Si hay tour activo, preparar la transición al formulario
+                          if (isActive) {
+                            // La transición se manejará automáticamente cuando llegue a ServiceAppointment
+                            console.log('🚀 Navegando a formulario con tour activo');
+                            
+                            // Limpiar el estado del carrito y preparar transición
+                            document.body.classList.remove('cart-tour-active');
+                          }
+                          navigate(`/${providerid}/programar`)
+                        }}
                         className="
                             w-full sm:w-auto min-w-[200px] text-lg
                             bg-primary/90 text-white hover:bg-primary
                             rounded-lg py-3 px-6 shadow-md
                             whitespace-nowrap
                         "
+                        data-tour="btn-solicitar"
                     >
                         Solicitar servicio
                     </Button>

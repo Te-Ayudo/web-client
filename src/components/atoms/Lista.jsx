@@ -5,13 +5,11 @@ import { setActiveModal, setActiveService } from '../../store/servicios';
 import { setActiveItem, updateItem } from '../../store';
 import useServiceCartRf from '../../hooks/useServiceCartRf';
 
-export const Lista = ( { servicio, showallicon = false, quantity = 0, orden = '' } ) => {
+export const Lista = ( { servicio, showallicon = false, quantity = 0, orden = '', index = 0 } ) => {
   // const [cantidad, setCantidad] = useState(cant);
   const { changeQuantity } = useServiceCartRf();
-  const { _id, imageURL, unitPrice, name, description = "", variablePrice } = servicio;
-  const showicon = showallicon ? '' : 'hidden';
+  const { imageURL, unitPrice, name, description = "", variablePrice } = servicio;
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const [ textLonger, setTextLonger ] = useState( description );
   useEffect( () => {
@@ -27,7 +25,7 @@ export const Lista = ( { servicio, showallicon = false, quantity = 0, orden = ''
   };
   return (
     <>
-      <div onClick={onAddCart} className="flex justify-between items-center border-b border-slate-200 py-3 px-2 border-l-4 cursor-pointer  border-l-transparent mb-5">
+      <div onClick={onAddCart} className="flex justify-between items-center border-b border-slate-200 py-3 px-2 border-l-4 cursor-pointer  border-l-transparent mb-5" data-tour="servicio-item" data-service-name={name} data-index={index}>
         <div className="w-2/3 bg-white flex flex-col space-y-2 p-3  inline-flex items-start space-x-2 text-wrap break-all ">
           {
             showallicon ? (

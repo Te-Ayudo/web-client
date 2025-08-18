@@ -7,6 +7,7 @@ export const SucursalesItem = (item) => {
   const { providerid } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { index = 0 } = item;
 
   const [, setUbicacion] = useState({});
 
@@ -21,6 +22,7 @@ export const SucursalesItem = (item) => {
   const { _id, addressInfo, name } = item;
 
   const onSelect = () => {
+    console.log('🏢 Seleccionando sucursal:', { name, _id });
     dispatch(BOOKING_SET_BRANCH(item));
     navigate(`/${providerid}/empresa/${item._id}`);
   };
@@ -44,6 +46,9 @@ export const SucursalesItem = (item) => {
           <button
             onClick={onSelect}
             className="bg-[#FF770F] text-white px-4 py-2 rounded-full w-full sm:w-auto text-sm font-semibold hover:bg-orange-600 transition"
+            data-tour="seleccionar-sucursal"
+            data-sucursal-name={name}
+            data-index={index}
           >
             Seleccionar sucursal
           </button>
@@ -51,6 +56,9 @@ export const SucursalesItem = (item) => {
           <button
             onClick={() => navigate(`${window.location.pathname}/${_id}`)}
             className="border border-[#FF770F] text-[#FF770F] px-4 py-2 rounded-full w-full sm:w-auto text-sm font-semibold hover:bg-orange-100 transition"
+            data-tour="ver-ubicacion"
+            data-sucursal-name={name}
+            data-index={index}
           >
             Ubicación
           </button>

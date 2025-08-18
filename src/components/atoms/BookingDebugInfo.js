@@ -3,17 +3,28 @@ import { useSelector } from 'react-redux';
 
 export const BookingDebugInfo = () => {
   const booking = useSelector((state) => state.booking.selected);
+  const tour = useSelector((state) => state.tour);
   
   if (process.env.NODE_ENV !== 'development') {
     return null;
   }
 
   return (
-    <div className="fixed bottom-4 right-4 bg-black bg-opacity-75 text-white p-4 rounded-lg text-xs max-w-xs z-50">
-      <h4 className="font-bold mb-2">Booking Debug Info</h4>
+    <div className="fixed bottom-4 bg-black bg-opacity-75 text-white p-4 rounded-lg text-xs max-w-xs z-50">
+      <h4 className="font-bold mb-2">Debug Info</h4>
       
+      {/* Información del Tour */}
+      <div className="mb-3 border-b border-gray-600 pb-2">
+        <h5 className="font-semibold text-blue-300 mb-1">Tour Status:</h5>
+        <div className="space-y-1 text-blue-200">
+          <div><strong>Activo:</strong> {tour.isActive ? 'SÍ' : 'NO'}</div>
+          <div><strong>Página actual:</strong> {tour.currentPage || 'Ninguna'}</div>
+        </div>
+      </div>
+
       {/* Datos Persistentes */}
       <div className="mb-3">
+        <h5 className="font-semibold text-green-300 mb-1">Booking Data:</h5>
         <div className="space-y-1 text-green-200">
           <div><strong>Tipo:</strong> {booking.serviceType || 'No definido'}</div>
           <div><strong>En sucursal:</strong> {booking.isInBranch ? 'Sí' : 'No'}</div>
