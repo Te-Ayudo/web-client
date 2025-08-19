@@ -13,11 +13,16 @@ import moment from "moment";
 import DateSelect from "./DateSelect";
 import TimeSelectDrawer from "./TimeSelectDrawer";
 import SelectDrawer from "./SelectDrawer";
+import { useTour } from "../../hooks/useTour";
+import TourFloatingButton from "../TourFloatingButton";
 
 export const Appointment = () => {
   const booking = useSelector((state) => state.booking.selected);
   const dispatch = useDispatch();
   const [isBranch, setIsBranch] = useState(false);
+  
+  // Hook del tour
+  const { startAppointmentTour, checkAndStartTour } = useTour();
   
   // Hook para manejar datos temporales del formulario
   const {
@@ -217,6 +222,16 @@ export const Appointment = () => {
     setFormErrors(validateForm());
   }, [formData.name, formData.metodopago, selectedDate, selectedTime, selectedAddress, booking.isInBranch]);
 
+  // Detectar si necesitamos iniciar el tour del formulario (usando el patrón estándar)
+  useEffect(() => {
+    // Solo iniciar el tour cuando los datos estén listos (siguiendo el patrón de otros componentes)
+    if (!loading && booking.serviceCart && booking.serviceCart.length > 0 && paymentMethods.length > 0) {
+      setTimeout(() => {
+        checkAndStartTour('formulario');
+      }, 100);
+    }
+  }, [loading, booking.serviceCart, paymentMethods.length, checkAndStartTour]);
+
   // Estados de focus para floating label
   const [, setFocusName] = useState(false);
   const [, setFocusDescuento] = useState(false);
@@ -225,7 +240,7 @@ export const Appointment = () => {
   const employeeOptions = (isBranch ? employeeAvailableByBranch(employee) : employee).map((emp) => ({
     value: JSON.stringify(emp),
     label: emp.fullName,
-    picture: emp.photoURL, // Incluir la imagen del empleado
+    picture: emp.picture
   }));
 
   const paymentMethodOptions = paymentMethods.map((method) => ({
@@ -240,6 +255,13 @@ export const Appointment = () => {
 
   return (
     <>
+      {/* Botón flotante para el tour */}
+      <TourFloatingButton 
+        onClick={() => {
+          startAppointmentTour();
+        }}
+      />
+      
       <div className="w-full">
         <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-10 mx-auto">
           <div className="mb-3 sm:mb-6 flex items-center justify-between">
@@ -272,7 +294,7 @@ export const Appointment = () => {
           </div>
           <form className="text-center" method="POST" onSubmit={onSubmit}>
             {/* Nombre y Apellido */}
-            <div className="col-span-full mb-4 text-left">
+            <div className="col-span-full mb-4 text-left" data-tour="appointment-name">
               <div className="relative">
                 <input
                   name="name"
@@ -295,7 +317,7 @@ export const Appointment = () => {
             </div>
 
             {/* Empleado (opcional) */}
-            <div className="col-span-full mb-4 text-left">
+            <div className="col-span-full mb-4 text-left" data-tour="appointment-employee">
               <SelectDrawer
                 value={formData.empleado}
                 onChange={(value) => {
@@ -318,7 +340,7 @@ export const Appointment = () => {
             </div>
 
             {/* Fecha */}
-            <div className="col-span-full mb-4 text-left">
+            <div className="col-span-full mb-4 text-left" data-tour="appointment-date">
               <DateSelect
                 selectedDate={selectedDate}
                 onDateChange={onDateChange}
@@ -332,7 +354,7 @@ export const Appointment = () => {
             </div>
 
             {/* Hora */}
-            <div className="col-span-full mb-4 text-left">
+            <div className="col-span-full mb-4 text-left" data-tour="appointment-time">
               <TimeSelectDrawer
                 selectedDate={selectedDate}
                 onTimeSelect={handleTimeSelect}
@@ -347,7 +369,7 @@ export const Appointment = () => {
             </div>
 
             {/* Método de pago */}
-            <div className="col-span-full mb-4 text-left">
+            <div className="col-span-full mb-4 text-left" data-tour="appointment-payment">
               <SelectDrawer
                 value={formData.metodopago}
                 onChange={(value) => {
@@ -362,7 +384,7 @@ export const Appointment = () => {
 
             {/* Dirección (si aplica) */}
             {!booking.isInBranch && (
-              <div className="col-span-full mb-4 text-left">
+              <div className="col-span-full mb-4 text-left" data-tour="appointment-address">
                 <div className="flex flex-col sm:flex-row gap-2 items-center">
                   <div className="relative flex-1 w-full">
                     <SelectDrawer
@@ -501,7 +523,7 @@ export const Appointment = () => {
             </div>
 
             {/* Botón de confirmar */}
-            <div className="col-span-full">
+            <div className="col-span-full" data-tour="appointment-submit">
               <div className="mb-3 sm:mb-6">
                 <Button type="submit" className="sm:h-[48px] !text-[14px]" disabled={!isFormValid() || loading}>
                   {loading ? "Confirmando..." : "Confirmar servicio"}

@@ -8,14 +8,19 @@ import Service from '../organisms/Inicio';
 import { useParams } from 'react-router-dom';
 import LoginWhatsappPage from "../pages/LoginWhatsapp";
 import Header from "../organisms/HeaderInit";
-
+import TourFloatingButton from "../TourFloatingButton";
+import useTour from "../../hooks/useTour";
 const Home = () => {
   const {providerid} = useParams();
   const estado = useSelector((state) => state.auth.status);  
   const proveedor = useSelector((state) => state.proveedor.selected);
   const proveedorLoading = useSelector((state) => state.proveedor.loading);
-  // const {isShowing, toggle} = useModal();
-  
+  const { startHomeTour, checkAndStartTour, isActive, cleanupCurrentInstance } = useTour();
+  useEffect(() => {
+    return () => {
+      cleanupCurrentInstance();
+    };
+  }, [cleanupCurrentInstance]);
   const is_logeado = (estado === "authenticated" )
 
   const user = localStorage.getItem("user");
@@ -41,7 +46,16 @@ const Home = () => {
 
   useEffect(() => {
      dispatch( startListProveedores(providerid) )
-  }, [])
+  }, [dispatch, providerid])
+
+  // Efecto para iniciar automáticamente el tour si está activo y el usuario está logueado
+  useEffect(() => {
+    if (is_logeado && !proveedorLoading && proveedor && isActive) {
+      setTimeout(() => {
+        checkAndStartTour('home');
+      }, 100);
+    }
+  }, [is_logeado, proveedorLoading, proveedor, isActive, checkAndStartTour]);
   
   // Mostrar loading mientras se carga el proveedor
   if (proveedorLoading || !proveedor) {
@@ -65,17 +79,21 @@ const Home = () => {
   }
   
   return (
-    <Main
-      header={<Header/>}
-    >
-      <Modal>
-        {
-          is_logeado
-          ? ( !userJson?.status ? <Service /> : <Service /> )
-          : ( <LoginWhatsappPage /> )
-        }
-      </Modal>
-    </Main>
+    <>
+      <Main
+        header={<Header/>}
+      >
+        <Modal>
+          {
+            is_logeado
+            ? ( !userJson?.status ? <Service /> : <Service /> )
+            : ( <LoginWhatsappPage /> )
+          }
+        </Modal>
+      </Main>
+      
+      {is_logeado && <TourFloatingButton onClick={startHomeTour} />}
+    </>
   )
 }
 

@@ -237,7 +237,7 @@ export const Service = () => {
         </>
         : 
         <>
-          <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-2 text-center">
+          <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-2 text-center" data-tour="bienvenida">
             <div className="flex items-center justify-center gap-2 flex-wrap">
               Hola,&nbsp;
               <span className="text-orange-500">{storageUser.first_name}</span>
@@ -258,6 +258,7 @@ export const Service = () => {
                 tc="text-secondary hover:text-white" 
                 onClick={onServicioDomicilio} 
                 className="sm:h-[80px] lg-text-[26px] sm bordered"
+                data-tour="servicio-domicilio"
               >
                 Servicio a domicilio
                 {!actDomicilio && actDomicilio !== undefined && (
@@ -274,6 +275,7 @@ export const Service = () => {
                 tc="text-secondary hover:text-white" 
                 onClick={onServicioLocal} 
                 className="sm:h-[80px] lg-text-[26px] bordered"
+                data-tour="servicio-local"
               >
                 Servicio en el local
                 {(!actLocal || providerBranches.length === 0) && (actLocal !== undefined || providerBranches.length !== undefined) && (

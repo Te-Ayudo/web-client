@@ -176,6 +176,7 @@ export const Navbar = ({ onClick, hideUI = false, services = null }) => {
             value={ search_head }
             className="w-full rounded-2xl text-secondary search"
              onChange={ onInputChange }
+             data-tour="buscador-servicio"
           />
         </div>
 

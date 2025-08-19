@@ -11,6 +11,8 @@ import { startListProveedores } from "../../store";
 import { BOOKING_SET_BRANCH, BOOKING_SET_SERVICE_TYPE } from "../../store/booking";
 import { getBranchById, getServicesByIds } from "../../wrappers/api";
 import CartSidebar from "../organisms/CartSidebar";
+import TourFloatingButton from "../TourFloatingButton";
+import useTour from "../../hooks/useTour";
 
 // Componente Skeleton profesional para servicios de sucursal
 const BranchServiceSkeleton = () => (
@@ -98,6 +100,16 @@ export const Empresa = (props) => {
   const { providerid, branchid } = useParams();
   const [, setUbicacion] = useState({});
 
+  // Hook del tour
+  const { startServiciosTour, checkAndStartTour, cleanupCurrentInstance } = useTour();
+
+  // Cleanup al desmontar el componente
+  useEffect(() => {
+    return () => {
+      cleanupCurrentInstance();
+    };
+  }, [cleanupCurrentInstance]);
+
 
   useEffect(() => {
     
@@ -150,6 +162,16 @@ export const Empresa = (props) => {
 
   }, [branchid, providerid, provider?.slugUrl]);
 
+  // Efecto para iniciar automáticamente el tour si está activo
+  useEffect(() => {
+    if (!loading && services.length > 0 && provider && booking.branch) {
+      const servicesForTour = search.length > 0 ? search : servicesAvailableByBranch(services);
+      setTimeout(() => {
+        checkAndStartTour('servicios', servicesForTour);
+      }, 100);
+    }
+  }, [loading, services.length, provider, booking.branch, checkAndStartTour, search]);
+
   const servicesAvailableByBranch = (services) => {    
     // Si estamos en modo sucursal y hay servicios de la sucursal, mostrarlos
     if (booking.isInBranch && booking.branch && booking.branch.services) {
@@ -163,6 +185,9 @@ export const Empresa = (props) => {
   const [cartOpen, setCartOpen] = useState(false);
   const openCart  = () => setCartOpen(true);
   const closeCart = () => setCartOpen(false);
+  
+  // Obtener los servicios filtrados para pasarlos al tour
+  const filteredServices = search.length > 0 ? search : (services ? servicesAvailableByBranch(services) : []);
   return (
     <Main header={<Header back={true} services={services}/>}
     // footer={<Footer />}
@@ -345,9 +370,9 @@ export const Empresa = (props) => {
                     ?
                     (
                       search.map(
-                        dato =>{
+                        (dato, index) =>{
                           return <li key={dato._id} >
-                            <Lista servicio={ dato } />
+                            <Lista servicio={ dato } index={index} />
                           </li>
                         }
                       )
@@ -355,10 +380,10 @@ export const Empresa = (props) => {
                     :
                     (
                       services && services.length > 0 ? (
-                        servicesAvailableByBranch(services).map((servicio) => {
+                        servicesAvailableByBranch(services).map((servicio, index) => {
                           return (
                             <li key={servicio._id || servicio.id}>
-                              <Lista servicio={servicio} />
+                              <Lista servicio={servicio} index={index} />
                             </li>
                           );
                         })
@@ -389,6 +414,8 @@ export const Empresa = (props) => {
           <CartSidebar visible={cartOpen} onClose={closeCart} />
         </div>
       </List>
+      
+      {!loading && services.length > 0 && <TourFloatingButton onClick={() => startServiciosTour(filteredServices)} />}
     </Main>
   );
 }

@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
 import { setNotActiveModal } from "../store/servicios";
+import { setCurrentPage } from "../store/tour";
 import { BOOKING_ADD_TO_CART } from "../store";
 import Button from "./atoms/Button";
+import useTour from "../hooks/useTour";
 
 Modal.setAppElement("#root");
 const overlayCls =
-  "fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[60]";
+  "fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[50]";
 const contentCls =
-   "relative w-[92%] sm:w-[450px] max-h-[85vh] overflow-y-auto \
-    bg-white rounded-3xl shadow-2xl animate-modal-pop py-6";
+   "relative w-[92%] sm:w-[450px] max-h-[85vh] overflow-y-auto " +
+   "bg-white rounded-3xl shadow-2xl animate-modal-pop py-6";
 
 export const ServModal = ({
   openCart,
@@ -25,8 +26,8 @@ export const ServModal = ({
   isOpen = false,
   availableAfterHours,
 }) => {
-  const { providerid } = useParams();
   const dispatch = useDispatch();
+  const { startServiceModalTour, cleanupCurrentInstance, stopServicesTour, isActive } = useTour();
 
   const [cant, setCant] = useState(1);
   const [isReadMore, setIsReadMore] = useState(false);
@@ -35,10 +36,41 @@ export const ServModal = ({
     if (isOpen) {
       setIsReadMore(false);
       setCant(1);
+      
+      // Si hay un tour activo, detener completamente el tour de servicios
+      if (isActive) {
+        // Usar la función específica para detener el tour de servicios
+        stopServicesTour();
+        
+        // Cambiar el currentPage manualmente después de detener el tour
+        dispatch(setCurrentPage('modal-servicio'));
+        
+        // Luego esperar un momento antes de iniciar el tour del modal
+        setTimeout(() => {
+          startServiceModalTour(name);
+        }, 200);
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, name, isActive, stopServicesTour, startServiceModalTour, dispatch]);
 
-  const onCloseModal = () => dispatch(setNotActiveModal());
+  // Cleanup al desmontar el modal
+  useEffect(() => {
+    return () => {
+      cleanupCurrentInstance();
+    };
+  }, [cleanupCurrentInstance]);
+
+  const onCloseModal = () => {
+    // Limpiar tour del modal al cerrar
+    cleanupCurrentInstance();
+    
+    // Cambiar de vuelta el currentPage a servicios si hay un tour activo
+    if (isActive) {
+      dispatch(setCurrentPage('servicios'));
+    }
+    
+    dispatch(setNotActiveModal());
+  };
 
   const handleQty = (delta) =>
     setCant((prev) => Math.max(1, prev + delta));
@@ -61,8 +93,26 @@ export const ServModal = ({
     dispatch(
       BOOKING_ADD_TO_CART({ quantity, service: serv, price, estimatedWorkMinutes })
     );
-    dispatch(setNotActiveModal());
-    openCart();           // abre sidebar carrito
+
+    // Si hay un tour activo, hacer la transición al tour del carrito
+    if (isActive) {
+      
+      // 1. Limpiar completamente el tour del modal
+      cleanupCurrentInstance();
+      
+      // 2. Cerrar el modal primero
+      dispatch(setNotActiveModal());
+      
+      // 3. Pequeña pausa optimizada para que el modal se cierre
+      setTimeout(() => {
+        dispatch(setCurrentPage('carrito'));
+        
+        openCart();
+      }, 200);
+    } else {
+      dispatch(setNotActiveModal());
+      openCart();
+    }
   };
 
   /* --------- UI --------- */
@@ -115,6 +165,7 @@ export const ServModal = ({
                 onClick={() => handleQty(-1)}
                 className="qty-btn"
                 aria-label="Restar"
+                data-tour="btn-restar"
               >
                 −
               </button>
@@ -125,6 +176,7 @@ export const ServModal = ({
                 onClick={() => handleQty(1)}
                 className="qty-btn"
                 aria-label="Sumar"
+                data-tour="btn-sumar"
               >
                 +
               </button>
@@ -151,7 +203,7 @@ export const ServModal = ({
             )}
           </div>
         )}
-        <Button className="w-full" onClick={onCarrito}>
+        <Button className="w-full" onClick={onCarrito} data-tour="btn-añadir-carrito">
           Añadir al carrito
         </Button>
       </div>

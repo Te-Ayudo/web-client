@@ -5,13 +5,22 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import Header from '../organisms/HeaderInit';
 import { getBranchesByProvider } from '../../wrappers/api';
+import TourFloatingButton from "../TourFloatingButton";
+import useTour from "../../hooks/useTour";
 
 export const SucursalesPage = () => {
   const proveedor = useSelector((state) => state.proveedor.selected);
+  const { startSucursalesTour, checkAndStartTour, cleanupCurrentInstance } = useTour();
   const [branches, setBranches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Cleanup al desmontar el componente
+  useEffect(() => {
+    return () => {
+      cleanupCurrentInstance();
+    };
+  }, [cleanupCurrentInstance]);
 
   useEffect(() => {
     const loadBranches = async () => {
@@ -37,6 +46,13 @@ export const SucursalesPage = () => {
 
     loadBranches();
   }, [proveedor?._id]);
+
+  // Efecto para iniciar automáticamente el tour si está activo
+  useEffect(() => {
+    if (!loading && branches.length > 0) {
+      checkAndStartTour('sucursales', branches);
+    }
+  }, [loading, branches.length, checkAndStartTour, branches]);
 
   // Mostrar loading mientras se cargan las sucursales
   if (loading) {
@@ -127,12 +143,15 @@ export const SucursalesPage = () => {
             <p className="text-sm text-gray-600">Elija la sucursal de su preferencia para continuar con su reserva</p>
           </div>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            { branches.map((item) => (
-              <SucursalesItem key={item._id} {...item} />
+            { branches.map((item, index) => (
+              <SucursalesItem key={item._id} {...item} index={index} />
             ))}
           </ul>
         </List>
       </Main>
+      
+      {/* Botón flotante del tour */}
+      <TourFloatingButton onClick={() => startSucursalesTour(branches)} />
     </>
   );
 }
