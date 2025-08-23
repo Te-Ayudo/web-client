@@ -1,2 +1,2 @@
-export * from './carritoSlice';
-export * from './thunks';
+export * from "./carritoSlice";
+export * from "./thunks";

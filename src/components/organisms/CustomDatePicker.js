@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
-import { format } from "date-fns"; 
+import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Calendar } from "lucide-react";
 import moment from "moment";
-import { es } from "date-fns/locale/es"; 
+import { es } from "date-fns/locale/es";
 
 export default function CustomDatepicker({
-  calendarRef, 
-  blockedDates, 
-  availability, 
-  dateBusy, 
-  onDateChange, 
+  calendarRef,
+  blockedDates,
+  availability,
+  dateBusy,
+  onDateChange,
   fullDateBusy,
-  maxAvailableAfterHours
+  maxAvailableAfterHours,
 }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
@@ -30,13 +30,25 @@ export default function CustomDatepicker({
   }) => {
     const dayMonthYear = format(date, "dd/MM/yyyy");
     const currentYear = date.getFullYear();
-    
-    const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-                    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+    const months = [
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre",
+    ];
     const years = [2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032];
-  
+
     return (
-      <div className="my-datepicker-header">      
+      <div className="my-datepicker-header">
         <div className="header-top" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span className="header-selected-date flex">
             <Calendar className="w-[18px] h-[18px] sm:w-[22px] sm:h-[22px] mr-2 flex justify-center " />
@@ -71,17 +83,17 @@ export default function CustomDatepicker({
             </button>
           </div>
         </div>
-  
+
         <div className="header-navigation" style={{ display: "flex" }}>
           <div className="header-navigation-mes">
-            <Select 
+            <Select
               onValueChange={(val) => {
                 changeMonth(Number(val));
                 setCurrentMonth(Number(val));
               }}
               value={String(currentMonth)}
             >
-              <SelectTrigger className="w-full rounded-none text-sm sm:text-base"> 
+              <SelectTrigger className="w-full rounded-none text-sm sm:text-base">
                 <SelectValue placeholder="Seleccionar mes" />
               </SelectTrigger>
               <SelectContent>
@@ -95,7 +107,7 @@ export default function CustomDatepicker({
           </div>
 
           <div className="header-navigation-year">
-            <Select 
+            <Select
               onValueChange={(val) => {
                 changeYear(Number(val));
                 setCurrentYear(Number(val));
@@ -140,16 +152,14 @@ export default function CustomDatepicker({
           if (_date.isBefore(cutoff, "day")) {
             return false;
           }
-          
+
           // 1) Chequea si está en fullDateBusy
           if (fullDateBusy.includes(_date.format("YYYY-MM-DD"))) {
             return false;
           }
 
           // 2) Chequea si está en blockedDates
-          if (blockedDates.some((blockedDate) =>
-            _date.isSame(blockedDate, "day")
-          )) {
+          if (blockedDates.some((blockedDate) => _date.isSame(blockedDate, "day"))) {
             return false;
           }
 

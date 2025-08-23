@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export const useFormData = () => {
   // Datos temporales del formulario - NUNCA se persisten
   const [formData, setFormData] = useState({
-    name: '',
-    telefono: '',
-    empleado: '',
-    descuento: '',
-    metodopago: '',
-    nota: '',
-    direccion: '',
+    name: "",
+    telefono: "",
+    empleado: "",
+    descuento: "",
+    metodopago: "",
+    nota: "",
+    direccion: "",
   });
 
   const [selectedDate, setSelectedDate] = useState(null);
@@ -22,20 +22,20 @@ export const useFormData = () => {
   useEffect(() => {
     const initializeUserData = async () => {
       try {
-        const userStr = localStorage.getItem('user');
+        const userStr = localStorage.getItem("user");
         if (userStr) {
           const user = JSON.parse(userStr);
-          const fullName = (user.first_name + ' ' + user.last_name).trim();
+          const fullName = (user.first_name + " " + user.last_name).trim();
           if (fullName) {
-            setFormData(prev => ({
+            setFormData((prev) => ({
               ...prev,
               name: fullName,
-              telefono: user.phone || ''
+              telefono: user.phone || "",
             }));
           }
         }
       } catch (error) {
-        console.error('Error initializing user data:', error);
+        console.error("Error initializing user data:", error);
       }
     };
 
@@ -45,58 +45,60 @@ export const useFormData = () => {
   // Listener para cambios en localStorage (cuando se actualiza el usuario)
   useEffect(() => {
     const handleStorageChange = (e) => {
-      if (e.key === 'user') {
+      if (e.key === "user") {
         try {
           const user = JSON.parse(e.newValue);
-          const fullName = (user.first_name + ' ' + user.last_name).trim();
+          const fullName = (user.first_name + " " + user.last_name).trim();
           if (fullName) {
-            setFormData(prev => ({
+            setFormData((prev) => ({
               ...prev,
               name: fullName,
-              telefono: user.phone || ''
+              telefono: user.phone || "",
             }));
           }
         } catch (error) {
-          console.error('Error updating user data from storage change:', error);
+          console.error("Error updating user data from storage change:", error);
         }
       }
     };
 
-    window.addEventListener('storage', handleStorageChange);
-    
+    window.addEventListener("storage", handleStorageChange);
+
     // También escuchar cambios locales (mismo tab)
     const originalSetItem = localStorage.setItem;
-    localStorage.setItem = function(key, value) {
-      if (key === 'user') {
+    localStorage.setItem = function (key, value) {
+      if (key === "user") {
         // Disparar evento personalizado para cambios locales
-        window.dispatchEvent(new CustomEvent('localStorageChange', {
-          detail: { key, value }
-        }));
+        window.dispatchEvent(
+          new CustomEvent("localStorageChange", {
+            detail: { key, value },
+          })
+        );
       }
       originalSetItem.apply(this, arguments);
     };
 
-    window.addEventListener('localStorageChange', (e) => {
-      if (e.detail.key === 'user') {
+    window.addEventListener("localStorageChange", (e) => {
+      if (e.detail.key === "user") {
         try {
           const user = JSON.parse(e.detail.value);
-          const fullName = (user.first_name + ' ' + user.last_name).trim();
+          const fullName = (user.first_name + " " + user.last_name).trim();
           if (fullName) {
-            setFormData(prev => ({
+            setFormData((prev) => ({
               ...prev,
               name: fullName,
-              telefono: user.phone || ''
+              telefono: user.phone || "",
             }));
           }
         } catch (error) {
-          console.error('Error updating user data from local change:', error);
+          console.error("Error updating user data from local change:", error);
         }
       }
     });
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('localStorageChange', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("localStorageChange", handleStorageChange);
       localStorage.setItem = originalSetItem;
     };
   }, []);
@@ -104,13 +106,13 @@ export const useFormData = () => {
   // Resetear todos los datos temporales
   const resetFormData = () => {
     setFormData({
-      name: '',
-      telefono: '',
-      empleado: '',
-      descuento: '',
-      metodopago: '',
-      nota: '',
-      direccion: '',
+      name: "",
+      telefono: "",
+      empleado: "",
+      descuento: "",
+      metodopago: "",
+      nota: "",
+      direccion: "",
     });
     setSelectedDate(null);
     setSelectedTime(null);
@@ -121,9 +123,9 @@ export const useFormData = () => {
 
   // Actualizar datos del formulario
   const updateFormData = (field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -143,24 +145,24 @@ export const useFormData = () => {
     // Datos del formulario
     formData,
     updateFormData,
-    
+
     // Fecha y hora
     selectedDate,
     setSelectedDate,
     selectedTime,
     setSelectedTime,
-    
+
     // Empleado y dirección
     selectedEmployee,
     selectEmployee,
     selectedAddress,
     selectAddress,
-    
+
     // UI
     showDiscount,
     setShowDiscount,
-    
+
     // Utilidades
-    resetFormData
+    resetFormData,
   };
-}; 
+};

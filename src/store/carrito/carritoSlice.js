@@ -1,45 +1,44 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 export const carritoSlice = createSlice({
-  name: 'carrito',
+  name: "carrito",
   initialState: {
     isLoading: true,
     isSaving: false,
-    messageSaved: '',
-    services:[],
+    messageSaved: "",
+    services: [],
     active: null,
   },
   reducers: {
-    setDesactiveLoading: (state,  action ) => {
-        state.isLoading = false;
+    setDesactiveLoading: (state, action) => {
+      state.isLoading = false;
     },
-    addNewItem: (state,  action ) => {
-        state.services.push( action.payload );
-        state.isSaving = false;
+    addNewItem: (state, action) => {
+      state.services.push(action.payload);
+      state.isSaving = false;
     },
-    setItems: (state, action ) => {
-      state.services = action.payload ;
+    setItems: (state, action) => {
+      state.services = action.payload;
     },
     setActiveItem: (state, action) => {
       state.active = action.payload;
-      state.messageSaved = '';
+      state.messageSaved = "";
     },
-    updateItem: (state, action ) => { // payload: service
+    updateItem: (state, action) => {
+      // payload: service
       state.isSaving = false;
-      state.services = state.services.map( service => {
+      state.services = state.services.map((service) => {
+        if (service._id === action.payload._id) {
+          return action.payload;
+        }
 
-          if ( service._id === action.payload._id ) {
-              return action.payload;
-          }
-
-          return service;
+        return service;
       });
 
-      state.messageSaved = `${ action.payload.name }, actualizada correctamente`;
+      state.messageSaved = `${action.payload.name}, actualizada correctamente`;
     },
-  }
+  },
 });
 
-
 // Action creators are generated for each case reducer function
-export const { addNewItem,updateItem,setActiveItem,setItems,setDesactiveLoading } = carritoSlice.actions;
+export const { addNewItem, updateItem, setActiveItem, setItems, setDesactiveLoading } = carritoSlice.actions;

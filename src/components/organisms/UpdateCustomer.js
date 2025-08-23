@@ -43,7 +43,18 @@ export const UpdateCustomer = () => {
     }
   }, [error]);
 
-  const { formState, first_name, last_name, codePhone, phone, otpCode, onInputChange, isFormValid, first_nameValid, last_nameValid } = useForm(formData, formValidations);
+  const {
+    formState,
+    first_name,
+    last_name,
+    codePhone,
+    phone,
+    otpCode,
+    onInputChange,
+    isFormValid,
+    first_nameValid,
+    last_nameValid,
+  } = useForm(formData, formValidations);
 
   const onServicios = () => {
     navigate(`/${providerid}/`);
@@ -73,17 +84,39 @@ export const UpdateCustomer = () => {
       <h3 className="h3 text-primary">Completa tu perfil</h3>
       <div className="col-span-full">
         <div className="mb-3 sm:mb-6">
-          <Input type="text" label="Nombre(s)" name="first_name" value={first_name} onChange={onInputChange} error={!!first_nameValid && formSubmitedd} helperText={first_nameValid} />
+          <Input
+            type="text"
+            label="Nombre(s)"
+            name="first_name"
+            value={first_name}
+            onChange={onInputChange}
+            error={!!first_nameValid && formSubmitedd}
+            helperText={first_nameValid}
+          />
         </div>
       </div>
       <div className="col-span-full">
         <div className="mb-3 sm:mb-6">
-          <Input type="text" label="Apellido(s)" name="last_name" value={last_name} onChange={onInputChange} error={!!last_nameValid && formSubmitedd} helperText={last_nameValid} />
+          <Input
+            type="text"
+            label="Apellido(s)"
+            name="last_name"
+            value={last_name}
+            onChange={onInputChange}
+            error={!!last_nameValid && formSubmitedd}
+            helperText={last_nameValid}
+          />
         </div>
       </div>
       <div className="col-span-full">
         <div className="mb-3 sm:mb-6">
-          <select className={`rounded-2xl bg-white border-solid border border-primary w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary ${error ? "border-red-700" : ""} `} defaultValue={codePhone} value={codePhone} name="codePhone" onChange={onInputChange}>
+          <select
+            className={`rounded-2xl bg-white border-solid border border-primary w-full px-4 sm:px-6 py-2 sm:py-3 text-secondary ${error ? "border-red-700" : ""} `}
+            defaultValue={codePhone}
+            value={codePhone}
+            name="codePhone"
+            onChange={onInputChange}
+          >
             {phone_code.paises.map((pais) => (
               <option key={pais.name} value={pais.dial_code}>
                 {pais.name + " ( +" + pais.dial_code + ")"}
@@ -110,7 +143,13 @@ export const UpdateCustomer = () => {
 
       <div className="col-span-full">
         <div className="mb-3 sm:mb-6">
-          <Button disabled={loading || !isProviedor} type="submit" bg="bg-primary w-[250px] sm:w-[270px] mx-auto hover:bg-white " tc="text-white hover:text-secondary" className="sm:h-[48px] !text-[14px] bordered">
+          <Button
+            disabled={loading || !isProviedor}
+            type="submit"
+            bg="bg-primary w-[250px] sm:w-[270px] mx-auto hover:bg-white "
+            tc="text-white hover:text-secondary"
+            className="sm:h-[48px] !text-[14px] bordered"
+          >
             {loading ? (
               <div className="flex justify-center items-center">
                 <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></div>

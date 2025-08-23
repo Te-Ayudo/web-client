@@ -1,55 +1,55 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
-import { authSlice } from './auth';
-import { serviciosSlice } from './servicios';
-import { carritoSlice } from './carrito';
-import { proveedorSlice } from './proveedor';
-import { bookingSlice } from './booking';
-import { branchSlice } from './branch/branchSlice';
-import { categorySlice } from './category';
-import { tourSlice } from './tour';
+import { configureStore } from "@reduxjs/toolkit";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import { authSlice } from "./auth";
+import { serviciosSlice } from "./servicios";
+import { carritoSlice } from "./carrito";
+import { proveedorSlice } from "./proveedor";
+import { bookingSlice } from "./booking";
+import { branchSlice } from "./branch/branchSlice";
+import { categorySlice } from "./category";
+import { tourSlice } from "./tour";
 
 // Configuración de persistencia para booking - SOLO datos persistentes
 const bookingPersistConfig = {
-  key: 'booking',
+  key: "booking",
   storage,
-  whitelist: ['selected']
+  whitelist: ["selected"],
 };
 
 // Configuración de persistencia para proveedor
 const proveedorPersistConfig = {
-  key: 'proveedor',
+  key: "proveedor",
   storage,
-  whitelist: ['selected'], // Solo persistir el proveedor seleccionado
+  whitelist: ["selected"], // Solo persistir el proveedor seleccionado
 };
 
 // Configuración de persistencia para servicios
 const serviciosPersistConfig = {
-  key: 'servicios',
+  key: "servicios",
   storage,
-  whitelist: ['services', 'active'], // Persistir servicios y servicio activo
+  whitelist: ["services", "active"], // Persistir servicios y servicio activo
 };
 
 // Configuración de persistencia para carrito
 const carritoPersistConfig = {
-  key: 'carrito',
+  key: "carrito",
   storage,
-  whitelist: ['services'], // Persistir servicios en carrito
+  whitelist: ["services"], // Persistir servicios en carrito
 };
 
 // Configuración de persistencia para branch
 const branchPersistConfig = {
-  key: 'branch',
+  key: "branch",
   storage,
-  whitelist: ['selected'], // Persistir sucursal seleccionada
+  whitelist: ["selected"], // Persistir sucursal seleccionada
 };
 
 // Configuración de persistencia para tour
 const tourPersistConfig = {
-  key: 'tour',
+  key: "tour",
   storage,
-  whitelist: ['isActive', 'currentPage', 'continueTour'], // Persistir estado activo, página actual y flag de continuación
+  whitelist: ["isActive", "currentPage", "continueTour"], // Persistir estado activo, página actual y flag de continuación
 };
 
 export const store = configureStore({
@@ -66,7 +66,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
       },
     }),
 });

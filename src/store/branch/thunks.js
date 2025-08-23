@@ -4,17 +4,17 @@ import { getBranchById } from "../../wrappers/api";
 
 export const startListSucursales = (filter = {}) => {
   return async (dispatch) => {
-    dispatch( branch_getall_request() )
+    dispatch(branch_getall_request());
 
-    const {data} = await branchApi(filter);
-		let error = data.error;
+    const { data } = await branchApi(filter);
+    const error = data.error;
 
-    if( error  ) {
-      dispatch( branch_getall_failure(error.toString()) );
+    if (error) {
+      dispatch(branch_getall_failure(error.toString()));
       return;
     }
 
-    dispatch( branch_getall_success({data}) )
+    dispatch(branch_getall_success({ data }));
   };
 };
 

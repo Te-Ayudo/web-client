@@ -38,11 +38,9 @@ const OtpRegisterPage = () => {
     setFormSubmitted(true);
     // Eliminamos la llamada innecesaria a startListServicios
     // dispatch(startListServicios()); // si aún lo necesitas
-    dispatch(
-      startCreatingUserWithWhatsapp({ code }, () =>
-        navigate(`/${providerid}/`)
-      )
-    ).finally(() => setLoading(false));
+    dispatch(startCreatingUserWithWhatsapp({ code }, () => navigate(`/${providerid}/`))).finally(() =>
+      setLoading(false)
+    );
   };
 
   const handleInputChange = (i, v) => {
@@ -71,10 +69,9 @@ const OtpRegisterPage = () => {
   const resendCode = () => {
     setCanResend(false);
     setSecondsLeft(180);
-    dispatch(startLoginWithWhatsapp({ phone: storedPhone, codePhone: storedCodePhone }, () =>
-        {
-        }
-    )).finally(() => setLoading(false));
+    dispatch(startLoginWithWhatsapp({ phone: storedPhone, codePhone: storedCodePhone }, () => {})).finally(() =>
+      setLoading(false)
+    );
     Swal.fire({
       toast: true,
       position: "bottom-end",
@@ -122,22 +119,13 @@ const OtpRegisterPage = () => {
   return (
     <Main header={<Header />}>
       <Modal>
-        <form
-          onSubmit={handleSubmit}
-          className="px-6 pt-10 pb-6 flex flex-col items-center text-center"
-        >
+        <form onSubmit={handleSubmit} className="px-6 pt-10 pb-6 flex flex-col items-center text-center">
           <div className="mb-6 sm:mb-10">
-            <h1 className="text-orange-500 font-bold text-3xl">
-              Bienvenido a {providerid}
-            </h1>
+            <h1 className="text-orange-500 font-bold text-3xl">Bienvenido a {providerid}</h1>
           </div>
 
-          <h2 className="text-xl font-bold text-orange-500 mb-2">
-            Ingresa el código enviado a tu WhatsApp
-          </h2>
-          <p className="text-sm text-gray-600 mb-6">
-            Código de 6 dígitos. Puede tardar hasta 1&nbsp;minuto.
-          </p>
+          <h2 className="text-xl font-bold text-orange-500 mb-2">Ingresa el código enviado a tu WhatsApp</h2>
+          <p className="text-sm text-gray-600 mb-6">Código de 6 dígitos. Puede tardar hasta 1&nbsp;minuto.</p>
 
           <div className="flex justify-center gap-2 bg-white p-4 rounded-2xl mb-10">
             {otpCode.map((d, i) => (
@@ -154,10 +142,7 @@ const OtpRegisterPage = () => {
           </div>
           <div className="mt-4">
             {canResend ? (
-              <button
-                onClick={resendCode}
-                className="text-primary underline font-semibold"
-              >
+              <button onClick={resendCode} className="text-primary underline font-semibold">
                 Reenviar código
               </button>
             ) : (

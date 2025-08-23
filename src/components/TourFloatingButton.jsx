@@ -1,5 +1,5 @@
-import React from 'react';
-import { HiQuestionMarkCircle } from 'react-icons/hi';
+import React from "react";
+import { HiQuestionMarkCircle } from "react-icons/hi";
 
 const TourFloatingButton = ({ onClick }) => {
   return (

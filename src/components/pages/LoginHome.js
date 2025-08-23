@@ -1,17 +1,16 @@
 import { useEffect } from "react";
-import { startListProveedores } from '../../store';
+import { startListProveedores } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 
 import useModal from "../useModal";
 import Main from "../templates/Main";
-import Modal from '../molecules/Modal';
-import { useParams } from 'react-router-dom';
+import Modal from "../molecules/Modal";
+import { useParams } from "react-router-dom";
 import LoginWhatsappPage from "./LoginWhatsapp";
 import Header from "../organisms/HeaderInit";
 
 const LoginHome = () => {
-  const {providerid} = useParams();
-  
+  const { providerid } = useParams();
 
   const user = localStorage.getItem("user");
 
@@ -31,22 +30,19 @@ const LoginHome = () => {
     console.log("No se pudo obtener o parsear el usuario desde localStorage.");
   }
 
-
   const dispatch = useDispatch();
 
   useEffect(() => {
-     dispatch( startListProveedores(providerid) )
-  }, [])
-  
+    dispatch(startListProveedores(providerid));
+  }, []);
+
   return (
-    <Main
-      header={<Header/>}
-    >
+    <Main header={<Header />}>
       <Modal>
         <LoginWhatsappPage />
       </Modal>
     </Main>
-  )
-}
+  );
+};
 
-export default LoginHome
+export default LoginHome;

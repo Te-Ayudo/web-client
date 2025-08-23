@@ -1,1 +1,1 @@
-export * from './tourSlice';
+export * from "./tourSlice";

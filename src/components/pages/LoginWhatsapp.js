@@ -2,10 +2,10 @@ import Main from "../templates/Main";
 import Header from "../organisms/Header";
 import LoginWhatsapp from "../organisms/LoginWhatsapp";
 
-const LoginWhatsappPage = () => {  
+const LoginWhatsappPage = () => {
   return (
-    <Main header={<Header isAuthentication={false}/>} >
-        <LoginWhatsapp />
+    <Main header={<Header isAuthentication={false} />}>
+      <LoginWhatsapp />
     </Main>
   );
 };

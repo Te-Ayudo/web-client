@@ -1,11 +1,9 @@
-import React from "react";
-
-export const EmptyStateSelect = ({ 
-  title, 
-  message, 
-  actionText = "Escoger otra", 
+export const EmptyStateSelect = ({
+  title,
+  message,
+  actionText = "Escoger otra",
   onAction = null,
-  showAction = true 
+  showAction = true,
 }) => {
   return (
     <div className="w-full">
@@ -23,7 +21,7 @@ export const EmptyStateSelect = ({
             type="button"
             onClick={onAction}
             className="text-primary underline underline-offset-2 hover:text-orange-500 transition-colors text-sm font-medium"
-            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+            style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
           >
             {actionText}
           </button>
@@ -31,4 +29,4 @@ export const EmptyStateSelect = ({
       )}
     </div>
   );
-}; 
+};
