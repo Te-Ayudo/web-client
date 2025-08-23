@@ -1,7 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 export const tourSlice = createSlice({
-  name: 'tour',
+  name: "tour",
   initialState: {
     isActive: false,
     currentStep: 0,
@@ -29,16 +29,10 @@ export const tourSlice = createSlice({
     },
     setContinueTour: (state, action) => {
       state.continueTour = action.payload;
-    }
-  }
+    },
+  },
 });
 
-export const {
-  startTour,
-  endTour,
-  setTourStep,
-  setCurrentPage,
-  setContinueTour
-} = tourSlice.actions;
+export const { startTour, endTour, setTourStep, setCurrentPage, setContinueTour } = tourSlice.actions;
 
 export default tourSlice.reducer;

@@ -19,8 +19,7 @@ export const Service = () => {
   const provideSelect = useSelector((state) => state.proveedor.selected);
   const { error, selected } = useSelector((state) => state.proveedor);
   const booking = useSelector((state) => state.booking.selected);
-  const accesoBloqueado =
-    Boolean(error?.message) || selected?.providerEnabledForWeb === false;
+  const accesoBloqueado = Boolean(error?.message) || selected?.providerEnabledForWeb === false;
 
   // Verificar servicios disponibles cuando el proveedor cambie
   useEffect(() => {
@@ -28,25 +27,24 @@ export const Service = () => {
       if (provideSelect?._id && provideSelect._id !== "63aca8f96eeafc6f83a943f9") {
         try {
           setLoadingServices(true);
-          
+
           const servicesResponse = await getAllServicesByProvider(provideSelect._id);
           const services = servicesResponse.data;
-          
+
           // Verificar servicios a domicilio
-          const serviciosDomicilio = services.filter(service => 
-            service.method === "A domicilio" || service.method === "Ambos"
+          const serviciosDomicilio = services.filter(
+            (service) => service.method === "A domicilio" || service.method === "Ambos"
           );
 
           // Verificar servicios en local
-          const serviciosLocal = services.filter(service => 
-            service.method === "En sucursal" || service.method === "Ambos"
+          const serviciosLocal = services.filter(
+            (service) => service.method === "En sucursal" || service.method === "Ambos"
           );
-          
+
           setActDomicilio(serviciosDomicilio.length > 0);
           setActLocal(serviciosLocal.length > 0);
-          
         } catch (error) {
-          console.error('❌ Error verificando servicios disponibles:', error);
+          console.error("❌ Error verificando servicios disponibles:", error);
           setActDomicilio(false);
           setActLocal(false);
         } finally {
@@ -67,12 +65,11 @@ export const Service = () => {
       if (provideSelect?._id && provideSelect._id !== "63aca8f96eeafc6f83a943f9") {
         try {
           setLoadingBranches(true);
-          
+
           const branchesResponse = await getBranchesByProvider(provideSelect._id);
           setProviderBranches(branchesResponse);
-          
         } catch (error) {
-          console.error('❌ Error cargando sucursales:', error);
+          console.error("❌ Error cargando sucursales:", error);
           setProviderBranches([]);
         } finally {
           setLoadingBranches(false);
@@ -87,26 +84,26 @@ export const Service = () => {
 
   const onServicioDomicilio = (event) => {
     event.preventDefault();
-    
+
     // Solo limpiar servicios si estaba en modo local antes
-    if (booking.serviceType === 'local') {
+    if (booking.serviceType === "local") {
       dispatch(BOOKING_CLEAR_SERVICES());
     } else {
     }
-    
+
     dispatch(BOOKING_NOTISINBRANCH());
     status === "authenticated" ? navigate(`/${providerid}/servicios`) : navigate(`/${providerid}/login`);
   };
 
   const onServicioLocal = (e) => {
     e.preventDefault();
-    
+
     // Solo limpiar servicios si estaba en modo domicilio antes
-    if (booking.serviceType === 'domicilio') {
+    if (booking.serviceType === "domicilio") {
       dispatch(BOOKING_CLEAR_SERVICES());
     } else {
     }
-    
+
     dispatch(BOOKING_ISINBRANCH());
 
     // Si solo tiene una sucursal, ir directamente a esa sucursal
@@ -120,9 +117,7 @@ export const Service = () => {
       }
     } else if (providerBranches.length > 1) {
       // Si tiene múltiples sucursales, ir a la página de selección
-      status === "authenticated"
-        ? navigate(`/${providerid}/sucursales`)
-        : navigate(`/${providerid}/login`);
+      status === "authenticated" ? navigate(`/${providerid}/sucursales`) : navigate(`/${providerid}/login`);
     } else {
       if (status === "authenticated") {
         // Podrías mostrar un mensaje de error aquí
@@ -132,18 +127,16 @@ export const Service = () => {
       }
     }
   };
-  const generarLinkWhatsapp = (telefono, codeCountry = '591') => {
+  const generarLinkWhatsapp = (telefono, codeCountry = "591") => {
     const numero = `${codeCountry}${telefono}`;
     const mensaje = encodeURIComponent(
-      'Hola, estoy intentando acceder a su sitio web de clientes pero me aparece una restricción. ¿Podría ayudarme?'
+      "Hola, estoy intentando acceder a su sitio web de clientes pero me aparece una restricción. ¿Podría ayudarme?"
     );
     return `https://wa.me/${numero}?text=${mensaje}`;
   };
   const isProviedor = !!providerid;
   const storageUser = JSON.parse(localStorage.getItem("user"));
-  const capitalizedName = providerid
-    ? providerid.charAt(0).toUpperCase() + providerid.slice(1)
-    : "Proveedor";
+  const capitalizedName = providerid ? providerid.charAt(0).toUpperCase() + providerid.slice(1) : "Proveedor";
 
   // Validar que el proveedor sea válido y no sea el por defecto
   if (!provideSelect || provideSelect._id === "63aca8f96eeafc6f83a943f9") {
@@ -155,9 +148,7 @@ export const Service = () => {
         <h3 className="text-orange-500 text-lg font-semibold">
           Cargando proveedor<span className="animate-pulse">...</span>
         </h3>
-        <p className="text-gray-500 text-sm mt-2">
-          Por favor espera mientras verificamos la información
-        </p>
+        <p className="text-gray-500 text-sm mt-2">Por favor espera mientras verificamos la información</p>
       </div>
     );
   }
@@ -170,7 +161,8 @@ export const Service = () => {
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
         </div>
         <h3 className="text-orange-500 text-lg font-semibold">
-          {loadingServices ? 'Verificando servicios disponibles' : 'Cargando sucursales'}<span className="animate-pulse">...</span>
+          {loadingServices ? "Verificando servicios disponibles" : "Cargando sucursales"}
+          <span className="animate-pulse">...</span>
         </h3>
         <p className="text-gray-500 text-sm mt-2">
           Por favor espera mientras verificamos qué opciones están disponibles
@@ -178,14 +170,14 @@ export const Service = () => {
       </div>
     );
   }
-  
+
   return (
     <div className="text-center">
-      {accesoBloqueado ?
+      {accesoBloqueado ? (
         <>
           <div className="mb-6">
             <h1 className="text-orange-500 font-bold text-3xl">
-              Bienvenido a {selected?.first_name || 'Tu Proveedor'}
+              Bienvenido a {selected?.first_name || "Tu Proveedor"}
             </h1>
 
             {selected?.picture && (
@@ -206,10 +198,7 @@ export const Service = () => {
                 </p>
               ) : (
                 <p>
-                  El proveedor tiene habilitado el{' '}
-                  <span className="text-orange-500 font-semibold">
-                    plan gratuito
-                  </span>
+                  El proveedor tiene habilitado el <span className="text-orange-500 font-semibold">plan gratuito</span>
                   , el cual no incluye acceso web para clientes.
                   <br />
                   Contacta con el proveedor para actualizar su plan.
@@ -220,11 +209,8 @@ export const Service = () => {
             {selected?.phone && (
               <Button
                 onClick={() => {
-                  const link = generarLinkWhatsapp(
-                    selected.phone,
-                    selected.codeCountry || '591'
-                  );
-                  window.open(link, '_blank');
+                  const link = generarLinkWhatsapp(selected.phone, selected.codeCountry || "591");
+                  window.open(link, "_blank");
                 }}
                 bg="bg-orange-500 hover:bg-orange-500/90"
                 tc="text-white"
@@ -235,7 +221,7 @@ export const Service = () => {
             )}
           </div>
         </>
-        : 
+      ) : (
         <>
           <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-2 text-center" data-tour="bienvenida">
             <div className="flex items-center justify-center gap-2 flex-wrap">
@@ -247,16 +233,14 @@ export const Service = () => {
               Bienvenido a <span className="text-orange-500">{capitalizedName}</span>
             </div>
           </h1>
-          <p className="text-base sm:text-lg text-gray-600 mb-8">
-            ¿Dónde deseas realizar tu servicio?
-          </p>
+          <p className="text-base sm:text-lg text-gray-600 mb-8">¿Dónde deseas realizar tu servicio?</p>
           <div className="col-span-full">
             <div className="mb-3 sm:mb-12">
-              <Button 
-                disabled={!isProviedor || !actDomicilio} 
-                bg="btn-transparent" 
-                tc="text-secondary hover:text-white" 
-                onClick={onServicioDomicilio} 
+              <Button
+                disabled={!isProviedor || !actDomicilio}
+                bg="btn-transparent"
+                tc="text-secondary hover:text-white"
+                onClick={onServicioDomicilio}
                 className="sm:h-[80px] lg-text-[26px] sm bordered"
                 data-tour="servicio-domicilio"
               >
@@ -269,25 +253,26 @@ export const Service = () => {
           </div>
           <div className="col-span-full">
             <div className="mb-3 sm:mb-6">
-              <Button 
-                disabled={!isProviedor || !actLocal || providerBranches.length === 0} 
-                bg="btn-transparent" 
-                tc="text-secondary hover:text-white" 
-                onClick={onServicioLocal} 
+              <Button
+                disabled={!isProviedor || !actLocal || providerBranches.length === 0}
+                bg="btn-transparent"
+                tc="text-secondary hover:text-white"
+                onClick={onServicioLocal}
                 className="sm:h-[80px] lg-text-[26px] bordered"
                 data-tour="servicio-local"
               >
                 Servicio en el local
-                {(!actLocal || providerBranches.length === 0) && (actLocal !== undefined || providerBranches.length !== undefined) && (
-                  <span className="block text-xs text-gray-400 mt-1">
-                    {!actLocal ? 'No disponible' : 'Sin sucursales'}
-                  </span>
-                )}
+                {(!actLocal || providerBranches.length === 0) &&
+                  (actLocal !== undefined || providerBranches.length !== undefined) && (
+                    <span className="block text-xs text-gray-400 mt-1">
+                      {!actLocal ? "No disponible" : "Sin sucursales"}
+                    </span>
+                  )}
               </Button>
             </div>
           </div>
         </>
-      }
+      )}
     </div>
   );
 };

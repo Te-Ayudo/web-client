@@ -1,15 +1,8 @@
 // components/atoms/Button.jsx
 import React from "react";
-import { cn } from "@/lib/utils"; // o usa clsx si 
+import { cn } from "@/lib/utils"; // o usa clsx si
 
-export default function Button({
-  href,
-  onClick,
-  children,
-  className,
-  decoration,
-  ...props
-}) {
+export default function Button({ href, onClick, children, className, decoration, ...props }) {
   const classes = cn(
     `inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm sm:text-base
      font-semibold text-orange-500 bg-white 

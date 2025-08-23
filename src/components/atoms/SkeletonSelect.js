@@ -19,4 +19,4 @@ export const SkeletonSelect = ({ title, message = "Cargando..." }) => {
       </div>
     </div>
   );
-}; 
+};

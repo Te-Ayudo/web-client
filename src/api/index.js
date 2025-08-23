@@ -1,2 +1,1 @@
-
-export { default as teayudoAPI } from './teayudoAPI';
+export { default as teayudoAPI } from "./teayudoAPI";

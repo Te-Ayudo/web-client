@@ -1,5 +1,4 @@
-export const providerApi = async(slug) => {
-
+export const providerApi = async (slug) => {
   const urlApi = process.env.REACT_APP_API_URL;
   const urlPath = `${urlApi}/providerweb/${slug}`;
 
@@ -14,7 +13,7 @@ export const providerApi = async(slug) => {
   }
 };
 
-export const getBranchById = async(branchId) => {
+export const getBranchById = async (branchId) => {
   const urlApi = process.env.REACT_APP_API_URL;
   const urlPath = `${urlApi}/enterprise/branches/${branchId}`;
 

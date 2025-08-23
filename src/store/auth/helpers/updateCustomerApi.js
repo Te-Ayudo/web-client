@@ -5,12 +5,15 @@ export const updateCustomer = async ({ codePhone, phone }) => {
   const user = JSON.parse(localStorage.getItem("user"));
 
   const formData = new FormData();
-  formData.append("data", JSON.stringify({ 
-    first_name: first_name, 
-    last_name: last_name,
-    phone: phone,
-    codePhone: codePhone,
-  }));
+  formData.append(
+    "data",
+    JSON.stringify({
+      first_name: first_name,
+      last_name: last_name,
+      phone: phone,
+      codePhone: codePhone,
+    })
+  );
   formData.append("_id", user._id);
   try {
     const resp = await fetch(teayudoUrl, {

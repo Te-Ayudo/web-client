@@ -22,7 +22,7 @@ export const SucursalesItem = (item) => {
   const { _id, addressInfo, name } = item;
 
   const onSelect = () => {
-    console.log('🏢 Seleccionando sucursal:', { name, _id });
+    console.log("🏢 Seleccionando sucursal:", { name, _id });
     dispatch(BOOKING_SET_BRANCH(item));
     navigate(`/${providerid}/empresa/${item._id}`);
   };

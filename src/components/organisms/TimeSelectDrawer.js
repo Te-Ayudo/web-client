@@ -10,7 +10,7 @@ export default function TimeSelectDrawer({
   disabled = false,
   loading: externalLoading = false,
   noHoursMessage = "No hay horarios disponibles para esa fecha",
-  onSelectAnotherDate = null
+  onSelectAnotherDate = null,
 }) {
   const [availableSlots, setAvailableSlots] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -29,40 +29,37 @@ export default function TimeSelectDrawer({
   }, [hourPicker, selectedDate]);
 
   const processHourPicker = (hourPickerArray) => {
-    
     if (!hourPickerArray || hourPickerArray.length === 0) {
       setAvailableSlots([]);
       setHasLoadedOnce(true);
       return;
     }
-    
+
     setLoading(true);
-    
+
     try {
       // Procesar las horas disponibles
-      const isToday = moment(selectedDate).isSame(moment(), 'day');
+      const isToday = moment(selectedDate).isSame(moment(), "day");
       const now = new Date();
       const currentTime = moment(now);
 
-      const sortedSlots = hourPickerArray
-        .map((timestamp) => new Date(timestamp))
-        .sort((a, b) => a - b);
+      const sortedSlots = hourPickerArray.map((timestamp) => new Date(timestamp)).sort((a, b) => a - b);
 
       const filteredSlots = [];
 
       for (const time of sortedSlots) {
         const timeMoment = moment(time);
-        
+
         // Si es hoy, verificar que la hora no haya pasado
         if (isToday) {
           // Si la hora ya pasó, saltarla
           if (timeMoment.isBefore(currentTime)) {
             continue;
           }
-          
+
           // Aplicar maxAvailableAfterHours solo para hoy
           if (maxAvailableAfterHours < 24) {
-            const cutoffTime = moment().add(maxAvailableAfterHours, 'hours');
+            const cutoffTime = moment().add(maxAvailableAfterHours, "hours");
             if (timeMoment.isBefore(cutoffTime)) {
               continue;
             }
@@ -70,7 +67,7 @@ export default function TimeSelectDrawer({
         } else {
           // Para días futuros, solo aplicar maxAvailableAfterHours si es menos de 24 horas
           if (maxAvailableAfterHours < 24) {
-            const cutoffTime = moment().add(maxAvailableAfterHours, 'hours');
+            const cutoffTime = moment().add(maxAvailableAfterHours, "hours");
             if (timeMoment.isBefore(cutoffTime)) {
               continue;
             }
@@ -84,7 +81,7 @@ export default function TimeSelectDrawer({
       setAvailableSlots(filteredSlots);
       setHasLoadedOnce(true);
     } catch (error) {
-      console.error('Error procesando horas disponibles:', error);
+      console.error("Error procesando horas disponibles:", error);
       setAvailableSlots([]);
       setHasLoadedOnce(true);
     } finally {
@@ -94,11 +91,11 @@ export default function TimeSelectDrawer({
 
   const handleTimeChange = (timeValue) => {
     setSelectedTime(timeValue);
-    
+
     if (timeValue) {
       // Crear la fecha combinando la fecha seleccionada con la hora
       const selectedTimeObj = new Date(timeValue);
-      
+
       // Usar moment para combinar fecha y hora correctamente
       const combinedDateTime = moment(selectedDate)
         .hours(selectedTimeObj.getHours())
@@ -114,9 +111,8 @@ export default function TimeSelectDrawer({
   // Convertir las horas disponibles a opciones para el drawer
   const timeOptions = availableSlots.map((time) => ({
     value: time.toISOString(),
-    label: moment(time).format("hh:mm A")
+    label: moment(time).format("hh:mm A"),
   }));
-  
 
   // Determinar el mensaje de error
   const getErrorMessage = () => {
@@ -147,15 +143,13 @@ export default function TimeSelectDrawer({
       {/* Mostrar error y botón de acción debajo del input */}
       {getErrorMessage() && (
         <div className="mt-1">
-          <span className="text-red-500 text-xs block">
-            {getErrorMessage()}
-          </span>
+          <span className="text-red-500 text-xs block">{getErrorMessage()}</span>
           {shouldShowSelectAnother() && (
             <button
               type="button"
               onClick={onSelectAnotherDate}
               className="text-primary underline underline-offset-2 hover:text-orange-500 transition-colors text-xs font-medium mt-1"
-              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+              style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
             >
               Escoger otra fecha
             </button>
@@ -164,4 +158,4 @@ export default function TimeSelectDrawer({
       )}
     </div>
   );
-} 
+}

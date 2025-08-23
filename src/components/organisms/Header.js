@@ -1,18 +1,17 @@
-import { useNavigate } from 'react-router-dom';
-import Logo from '../atoms/Logo';
-import Navbar from './Navbar';
+import { useNavigate } from "react-router-dom";
+import Logo from "../atoms/Logo";
+import Navbar from "./Navbar";
 import { useSelector } from "react-redux";
-export const Header = ({onClick, isAuthentication = true, back = false, services = null}) => {
+export const Header = ({ onClick, isAuthentication = true, back = false, services = null }) => {
   const { status } = useSelector((s) => s.auth);
   const navigate = useNavigate();
-  const isAuth     = status === "authenticated";
+  const isAuth = status === "authenticated";
   const headerClass = isAuthentication
-     ? "sticky top-0 z-40 bg-white/95 backdrop-blur border-b-4 shadow-[0_6px_12px_-4px_rgba(0,0,0,0.15)] py-4 sm:py-6 flex justify-center"
-     : "";
-  return(
+    ? "sticky top-0 z-40 bg-white/95 backdrop-blur border-b-4 shadow-[0_6px_12px_-4px_rgba(0,0,0,0.15)] py-4 sm:py-6 flex justify-center"
+    : "";
+  return (
     <header className={headerClass}>
       <div className="container flexCenter flex-col">
-
         {/* ▲ BACK BUTTON ───────────────────────────────────────── */}
         {back && (
           <button
@@ -31,13 +30,14 @@ export const Header = ({onClick, isAuthentication = true, back = false, services
             ❮
           </button>
         )}
-                {/* LOGO solo si está logeado */}
+        {/* LOGO solo si está logeado */}
         {isAuth && <Logo className="h-12 sm:h-24" />}
 
         {/* NAVBAR (se puede ocultar con hideUI) */}
         <Navbar onClick={onClick} hideUI={!isAuth} services={services} />
       </div>
     </header>
-)};
+  );
+};
 
-export default Header
+export default Header;

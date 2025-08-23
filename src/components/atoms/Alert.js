@@ -1,4 +1,4 @@
-export const Alert = ({mensaje=""}) => {
+export const Alert = ({ mensaje = "" }) => {
   return (
     <>
       <div
@@ -22,7 +22,7 @@ export const Alert = ({mensaje=""}) => {
     </>
   );
 };
-export const AlertS = ({mensaje=""}) => {
+export const AlertS = ({ mensaje = "" }) => {
   return (
     <>
       <div

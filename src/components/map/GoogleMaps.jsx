@@ -14,10 +14,7 @@ const formData = {
 };
 
 const formValidations = {
-  nombre: [
-    (value) => value.length >= 4,
-    "El nombre debe tener mas de 4 letras.",
-  ],
+  nombre: [(value) => value.length >= 4, "El nombre debe tener mas de 4 letras."],
 };
 
 export const GoogleMaps = ({ locations, className }) => {
@@ -34,8 +31,7 @@ export const GoogleMaps = ({ locations, className }) => {
 
   const { success, error } = useSelector((state) => state.booking);
 
-  const { formState, nombre, onInputChange, isFormValid, nombreValid } =
-    useForm(formData, formValidations);
+  const { formState, nombre, onInputChange, isFormValid, nombreValid } = useForm(formData, formValidations);
 
   useEffect(() => {
     getUserLocationDefault();
@@ -76,8 +72,7 @@ export const GoogleMaps = ({ locations, className }) => {
     }, 1000); // Reducir a 1 segundo para mejor UX
   };
 
-  const onIdle = (m) => {
-  };
+  const onIdle = (m) => {};
 
   const form = (
     <div
@@ -105,12 +100,8 @@ export const GoogleMaps = ({ locations, className }) => {
         />
       </div>
 
-      <div className={`col-span-full ${!!error ? "" : "hidden"} `}>
-        {<Alert mensaje={error} />}
-      </div>
-      <div className={`col-span-full ${!!success ? "" : "hidden"} `}>
-        {<AlertS mensaje={success} />}
-      </div>
+      <div className={`col-span-full ${!!error ? "" : "hidden"} `}>{<Alert mensaje={error} />}</div>
+      <div className={`col-span-full ${!!success ? "" : "hidden"} `}>{<AlertS mensaje={success} />}</div>
 
       {/* <div className={`col-span-full ${!!error?'':'hidden'} `}  >
       <Alert mensaje={error} />
@@ -204,11 +195,7 @@ export const GoogleMaps = ({ locations, className }) => {
         {clicks.map((latLng, i) => (
           <Marker key={i} position={latLng} />
         ))}
-        {Object.entries(current).length === 0 ? (
-          ""
-        ) : (
-          <Marker position={current} />
-        )}
+        {Object.entries(current).length === 0 ? "" : <Marker position={current} />}
       </Map>
 
       {form}
@@ -236,9 +223,7 @@ const Map = ({ onClick, onIdle, children, style, ...options }) => {
 
   useEffect(() => {
     if (map) {
-      ["click", "idle"].forEach((eventName) =>
-        window.google.maps.event.clearListeners(map, eventName)
-      );
+      ["click", "idle"].forEach((eventName) => window.google.maps.event.clearListeners(map, eventName));
 
       if (onClick) {
         map.addListener("click", onClick);
@@ -290,15 +275,8 @@ const Marker = (options) => {
 };
 
 const deepCompareEqualsForMaps = createCustomEqual((deepEqual) => (a, b) => {
-  if (
-    a ||
-    a instanceof window.google.maps.LatLng ||
-    b ||
-    b instanceof window.google.maps.LatLng
-  ) {
-    return new window.google.maps.LatLng(a).equals(
-      new window.google.maps.LatLng(b)
-    );
+  if (a || a instanceof window.google.maps.LatLng || b || b instanceof window.google.maps.LatLng) {
+    return new window.google.maps.LatLng(a).equals(new window.google.maps.LatLng(b));
   }
 
   // TODO extend to other types

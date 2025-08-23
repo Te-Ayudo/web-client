@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "../ui/drawer";
+import { Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "../ui/drawer";
 import { ChevronDown } from "lucide-react";
 
 export default function SelectDrawer({
@@ -19,24 +12,24 @@ export default function SelectDrawer({
   loading = false,
   error = null,
   showImages = false,
-  noOptionsMessage = null
+  noOptionsMessage = null,
 }) {
   const [open, setOpen] = useState(false);
-  const selectedOption = options.find(option => 
-    typeof option === 'object' ? option.value === value : option === value
+  const selectedOption = options.find((option) =>
+    typeof option === "object" ? option.value === value : option === value
   );
 
   const handleSelect = (option) => {
-    const optionValue = typeof option === 'object' ? option.value : option;
+    const optionValue = typeof option === "object" ? option.value : option;
     onChange(optionValue);
     setOpen(false);
   };
 
   const getDisplayValue = () => {
-    if (disabled) return 'Selecciona una fecha primero';
+    if (disabled) return "Selecciona una fecha primero";
     if (error) return error;
     if (selectedOption) {
-      return typeof selectedOption === 'object' ? selectedOption.label : selectedOption;
+      return typeof selectedOption === "object" ? selectedOption.label : selectedOption;
     }
     return placeholder;
   };
@@ -49,19 +42,19 @@ export default function SelectDrawer({
             type="button"
             disabled={disabled}
             className={`peer w-full rounded-2xl border border-primary px-4 py-3 text-secondary text-left bg-white focus:outline-none focus:border-2 focus:border-primary appearance-none flex items-center justify-between ${
-              disabled ? 'bg-gray-100 cursor-not-allowed' : 'cursor-pointer'
-            } ${selectedOption ? 'text-black' : 'text-gray-400'}`}
+              disabled ? "bg-gray-100 cursor-not-allowed" : "cursor-pointer"
+            } ${selectedOption ? "text-black" : "text-gray-400"}`}
           >
             <span className="truncate">{getDisplayValue()}</span>
             <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" />
           </button>
         </DrawerTrigger>
-        
+
         <DrawerContent>
           <DrawerHeader className="border-b">
             <DrawerTitle className="text-center">{title}</DrawerTitle>
           </DrawerHeader>
-          
+
           <div className="flex-1 overflow-y-auto p-4">
             <div className="space-y-3">
               {loading ? (
@@ -69,9 +62,7 @@ export default function SelectDrawer({
                 Array.from({ length: 3 }).map((_, index) => (
                   <div key={index} className="w-full p-4 rounded-xl border border-gray-200 animate-pulse">
                     <div className="flex items-center gap-3">
-                      {showImages && (
-                        <div className="w-12 h-12 bg-gray-200 rounded-lg animate-pulse"></div>
-                      )}
+                      {showImages && <div className="w-12 h-12 bg-gray-200 rounded-lg animate-pulse"></div>}
                       <div className="flex-1">
                         <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div>
                       </div>
@@ -87,19 +78,19 @@ export default function SelectDrawer({
               ) : (
                 // Opciones normales
                 options.map((option, index) => {
-                  const optionValue = typeof option === 'object' ? option.value : option;
-                  const optionLabel = typeof option === 'object' ? option.label : option;
-                  const optionData = typeof option === 'object' ? option : null;
+                  const optionValue = typeof option === "object" ? option.value : option;
+                  const optionLabel = typeof option === "object" ? option.label : option;
+                  const optionData = typeof option === "object" ? option : null;
                   const isSelected = value === optionValue;
-                  
+
                   return (
                     <button
                       key={index}
                       onClick={() => handleSelect(option)}
                       className={`w-full text-left p-4 rounded-xl border transition-all duration-200 hover:shadow-sm ${
-                        isSelected 
-                          ? 'border-primary bg-orange-50 shadow-sm' 
-                          : 'border-gray-200 hover:border-primary hover:bg-gray-50'
+                        isSelected
+                          ? "border-primary bg-orange-50 shadow-sm"
+                          : "border-gray-200 hover:border-primary hover:bg-gray-50"
                       }`}
                     >
                       <div className="flex items-center justify-between gap-3">
@@ -115,24 +106,20 @@ export default function SelectDrawer({
                               />
                             </div>
                           )}
-                          
+
                           {/* Texto */}
-                          <span className={`font-medium truncate ${
-                            isSelected ? 'text-primary' : 'text-gray-700'
-                          }`}>
+                          <span className={`font-medium truncate ${isSelected ? "text-primary" : "text-gray-700"}`}>
                             {optionLabel}
                           </span>
                         </div>
-                        
+
                         {/* Radio Button a la derecha */}
-                        <div className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                          isSelected 
-                            ? 'border-primary bg-primary' 
-                            : 'border-gray-300'
-                        }`}>
-                          {isSelected && (
-                            <div className="w-2 h-2 bg-white rounded-full"></div>
-                          )}
+                        <div
+                          className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                            isSelected ? "border-primary bg-primary" : "border-gray-300"
+                          }`}
+                        >
+                          {isSelected && <div className="w-2 h-2 bg-white rounded-full"></div>}
                         </div>
                       </div>
                     </button>
@@ -141,7 +128,7 @@ export default function SelectDrawer({
               )}
             </div>
           </div>
-          
+
           <div className="p-4 border-t">
             <DrawerClose asChild>
               <button className="w-full py-3 px-4 text-gray-500 hover:text-gray-700 transition-colors font-medium">
@@ -151,13 +138,11 @@ export default function SelectDrawer({
           </div>
         </DrawerContent>
       </Drawer>
-      
+
       {/* Label flotante que solo aparece cuando hay valor */}
       {selectedOption && (
-        <label className="absolute left-4 bg-white px-1 text-xs text-primary -top-2 pointer-events-none">
-          {title}
-        </label>
+        <label className="absolute left-4 bg-white px-1 text-xs text-primary -top-2 pointer-events-none">{title}</label>
       )}
     </div>
   );
-} 
+}

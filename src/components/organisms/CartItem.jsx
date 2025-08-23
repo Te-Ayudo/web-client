@@ -13,22 +13,14 @@ export default function CartItem({ orden }) {
   return (
     <div className="grid grid-cols-[90px_1fr] gap-3 pb-4 border-b last:border-none">
       {/* Imagen */}
-      <img
-        src={imageURL}
-        alt={name}
-        className="w-full h-24 object-cover rounded-md"
-      />
+      <img src={imageURL} alt={name} className="w-full h-24 object-cover rounded-md" />
 
       {/* Contenido */}
       <div className="flex flex-col gap-2">
         {/* Nombre + precio */}
         <div>
-          <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">
-            {name}
-          </h3>
-          <p className="mt-1 text-primary font-bold text-base">
-            Bs {unitPrice}
-          </p>
+          <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">{name}</h3>
+          <p className="mt-1 text-primary font-bold text-base">Bs {unitPrice}</p>
         </div>
 
         {/* Atributos extra si los tienes (color, talla, etc.) */}
@@ -66,7 +58,7 @@ export default function CartItem({ orden }) {
 
         {/* Sub-total */}
         <div className="text-xs text-gray-500 pt-1 border-t">
-          SUB-TOTAL&nbsp; <span className="float-right font-semibold">Bs{ subTotal.toFixed(2) }</span>
+          SUB-TOTAL&nbsp; <span className="float-right font-semibold">Bs{subTotal.toFixed(2)}</span>
         </div>
       </div>
     </div>
