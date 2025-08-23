@@ -8,11 +8,10 @@ import Button from "./atoms/Button";
 import useTour from "../hooks/useTour";
 
 Modal.setAppElement("#root");
-const overlayCls =
-  "fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[50]";
+const overlayCls = "fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[50]";
 const contentCls =
-   "relative w-[92%] sm:w-[450px] max-h-[85vh] overflow-y-auto " +
-   "bg-white rounded-3xl shadow-2xl animate-modal-pop py-6";
+  "relative w-[92%] sm:w-[450px] max-h-[85vh] overflow-y-auto " +
+  "bg-white rounded-3xl shadow-2xl animate-modal-pop py-6";
 
 export const ServModal = ({
   openCart,
@@ -32,26 +31,29 @@ export const ServModal = ({
   const [cant, setCant] = useState(1);
   const [isReadMore, setIsReadMore] = useState(false);
 
+  // Efecto para inicializar el modal cuando se abre
   useEffect(() => {
     if (isOpen) {
       setIsReadMore(false);
       setCant(1);
-      
-      // Si hay un tour activo, detener completamente el tour de servicios
-      if (isActive) {
-        // Usar la función específica para detener el tour de servicios
-        stopServicesTour();
-        
-        // Cambiar el currentPage manualmente después de detener el tour
-        dispatch(setCurrentPage('modal-servicio'));
-        
-        // Luego esperar un momento antes de iniciar el tour del modal
-        setTimeout(() => {
-          startServiceModalTour(name);
-        }, 200);
-      }
     }
-  }, [isOpen, name, isActive, stopServicesTour, startServiceModalTour, dispatch]);
+  }, [isOpen, name]); // Solo depende de isOpen y name
+
+  // Efecto separado para el tour
+  useEffect(() => {
+    if (isOpen && isActive) {
+      // Si hay un tour activo, detener completamente el tour de servicios
+      stopServicesTour();
+
+      // Cambiar el currentPage manualmente después de detener el tour
+      dispatch(setCurrentPage("modal-servicio"));
+
+      // Luego esperar un momento antes de iniciar el tour del modal
+      setTimeout(() => {
+        startServiceModalTour(name);
+      }, 200);
+    }
+  }, [isOpen, isActive, name, stopServicesTour, startServiceModalTour, dispatch]);
 
   // Cleanup al desmontar el modal
   useEffect(() => {
@@ -63,17 +65,22 @@ export const ServModal = ({
   const onCloseModal = () => {
     // Limpiar tour del modal al cerrar
     cleanupCurrentInstance();
-    
+
     // Cambiar de vuelta el currentPage a servicios si hay un tour activo
     if (isActive) {
-      dispatch(setCurrentPage('servicios'));
+      dispatch(setCurrentPage("servicios"));
     }
-    
+
     dispatch(setNotActiveModal());
   };
 
-  const handleQty = (delta) =>
-    setCant((prev) => Math.max(1, prev + delta));
+  const handleQty = (delta) => {
+    setCant((prev) => {
+      const newValue = prev + delta;
+      // Asegurar que nunca sea menor a 1
+      return Math.max(1, newValue);
+    });
+  };
 
   const onCarrito = () => {
     const price = cant * unitPrice;
@@ -90,23 +97,20 @@ export const ServModal = ({
       availableAfterHours,
     };
 
-    dispatch(
-      BOOKING_ADD_TO_CART({ quantity, service: serv, price, estimatedWorkMinutes })
-    );
+    dispatch(BOOKING_ADD_TO_CART({ quantity, service: serv, price, estimatedWorkMinutes }));
 
     // Si hay un tour activo, hacer la transición al tour del carrito
     if (isActive) {
-      
       // 1. Limpiar completamente el tour del modal
       cleanupCurrentInstance();
-      
+
       // 2. Cerrar el modal primero
       dispatch(setNotActiveModal());
-      
+
       // 3. Pequeña pausa optimizada para que el modal se cierre
       setTimeout(() => {
-        dispatch(setCurrentPage('carrito'));
-        
+        dispatch(setCurrentPage("carrito"));
+
         openCart();
       }, 200);
     } else {
@@ -140,11 +144,7 @@ export const ServModal = ({
         {/* Imagen + nombre + precio */}
         <div className="flex items-center text-center gap-5 sm:flex-row">
           {/* Imagen */}
-          <img
-            src={imageURL}
-            alt={name}
-            className="w-40 h-40 object-cover rounded-2xl shadow-md shrink-0"
-          />
+          <img src={imageURL} alt={name} className="w-40 h-40 object-cover rounded-2xl shadow-md shrink-0" />
 
           {/* Nombre, precio, qty */}
           <div className="flex flex-col flex-1 gap-3">
@@ -153,9 +153,7 @@ export const ServModal = ({
 
             {/* Precio */}
             <p className="text-primary font-bold text-lg">
-              {variablePrice && (
-                <span className="text-xs text-gray-400 font-normal mr-1">Desde</span>
-              )}
+              {variablePrice && <span className="text-xs text-gray-400 font-normal mr-1">Desde</span>}
               Bs {unitPrice}
             </p>
 
@@ -163,18 +161,17 @@ export const ServModal = ({
             <div className="flex items-center justify-center gap-4">
               <button
                 onClick={() => handleQty(-1)}
-                className="qty-btn"
+                disabled={cant <= 1}
+                className={`qty-btn ${cant <= 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-orange-500"}`}
                 aria-label="Restar"
                 data-tour="btn-restar"
               >
                 −
               </button>
-              <span className="text-lg font-semibold min-w-[32px] text-center">
-                {cant}
-              </span>
+              <span className="text-lg font-semibold min-w-[32px] text-center">{cant}</span>
               <button
                 onClick={() => handleQty(1)}
-                className="qty-btn"
+                className="qty-btn hover:bg-orange-500"
                 aria-label="Sumar"
                 data-tour="btn-sumar"
               >
@@ -186,18 +183,9 @@ export const ServModal = ({
 
         {description && (
           <div className="text-sm text-gray-600 leading-relaxed">
-            <p
-              className={`whitespace-pre-line ${
-                isReadMore ? "" : "line-clamp-[8]"
-              }`}
-            >
-              {description}
-            </p>
+            <p className={`whitespace-pre-line ${isReadMore ? "" : "line-clamp-[8]"}`}>{description}</p>
             {description.split("\n").length > 8 && (
-              <button
-                onClick={() => setIsReadMore((v) => !v)}
-                className="text-primary font-medium mt-1"
-              >
+              <button onClick={() => setIsReadMore((v) => !v)} className="text-primary font-medium mt-1">
                 {isReadMore ? "Leer menos" : "Leer más"}
               </button>
             )}

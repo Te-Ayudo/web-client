@@ -1,6 +1,3 @@
+const Icon = () => <div>Icon</div>;
 
-const Icon = () =>  (
-  <div>Icon</div>
-);
-
-export default Icon
+export default Icon;

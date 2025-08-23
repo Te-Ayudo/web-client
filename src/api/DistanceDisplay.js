@@ -6,16 +6,17 @@ const calculateDistance = async (origin, destination) => {
     const proxyurl = "https://cors-anywhere.herokuapp.com/";
     const apiUrl = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin.latitude},${origin.longitude}&destinations=${destination.latitude},${destination.longitude}&key=${api_key}`;
 
-    const response = await fetch(apiUrl
-    //   ,{
-    //   method: "GET",
-    //   mode: "cors",
-    //   headers: {
-    //       Accept: "application/json",
-    //       "Content-Type": "application/json",
-    //   }
-    // }
-  );
+    const response = await fetch(
+      apiUrl
+      //   ,{
+      //   method: "GET",
+      //   mode: "cors",
+      //   headers: {
+      //       Accept: "application/json",
+      //       "Content-Type": "application/json",
+      //   }
+      // }
+    );
     const responseJSON = await response.json();
 
     if (responseJSON && responseJSON.rows[0].elements[0].status === "OK") {
@@ -42,10 +43,5 @@ export const DistanceDisplay = ({ origin, destination }) => {
     }
   }, [origin, destination]);
 
-  return (
-    <>
-            Distancia:{" "}
-        {distance !== null ? `${distance.toFixed(2)} km` : "No Disponible"}
-    </>
-  );
+  return <>Distancia: {distance !== null ? `${distance.toFixed(2)} km` : "No Disponible"}</>;
 };

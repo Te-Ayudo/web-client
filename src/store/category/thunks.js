@@ -3,16 +3,15 @@ import { categoryApi } from "./helpers/categoryApi";
 
 export const startListCategoria = () => {
   return async (dispatch) => {
-    dispatch( category_getall_request() )
+    dispatch(category_getall_request());
 
-    const {data} = await categoryApi();
-		let error = data.error;
-    if( error  ) {
-      dispatch( category_getall_failure(error.toString()) );
+    const { data } = await categoryApi();
+    const error = data.error;
+    if (error) {
+      dispatch(category_getall_failure(error.toString()));
       return;
     }
 
-    dispatch( category_getall_success(data) )
-
-  }
-}
+    dispatch(category_getall_success(data));
+  };
+};

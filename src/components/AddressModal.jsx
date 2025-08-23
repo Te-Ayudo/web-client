@@ -1,29 +1,28 @@
-import React from 'react'
-import Modal from 'react-modal'
-import { useDispatch } from 'react-redux';
-import { BOOKING_SET_ERROR, setNotActiveModalAddress } from '../store';
-import { MapComponent } from './map/MapComponent';
+import React from "react";
+import Modal from "react-modal";
+import { useDispatch } from "react-redux";
+import { BOOKING_SET_ERROR, setNotActiveModalAddress } from "../store";
+import { MapComponent } from "./map/MapComponent";
 
 const customStyles = {
   content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
   },
 };
 
-Modal.setAppElement('#root');
+Modal.setAppElement("#root");
 
-export const AddressModal = ({ isOpen=true  }) => {
-
+export const AddressModal = ({ isOpen = true }) => {
   const dispatch = useDispatch();
 
   const onCloseModal = () => {
     dispatch(setNotActiveModalAddress());
-    dispatch( BOOKING_SET_ERROR(null) );
-    dispatch( BOOKING_SET_ERROR(null) );
-  }
+    dispatch(BOOKING_SET_ERROR(null));
+    dispatch(BOOKING_SET_ERROR(null));
+  };
 
   return (
     <Modal
@@ -34,8 +33,7 @@ export const AddressModal = ({ isOpen=true  }) => {
       style={customStyles}
       className="modal"
     >
-
-      <MapComponent  />
+      <MapComponent />
     </Modal>
-  )
-}
+  );
+};

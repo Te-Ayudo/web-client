@@ -1,6 +1,6 @@
 import teayudoAPI from "../../../api/teayudoAPI";
 
-export const loginWhatsappOTPApi = async ({ phone, codePhone, code  }) => {
+export const loginWhatsappOTPApi = async ({ phone, codePhone, code }) => {
   try {
     const resp = await teayudoAPI.post("/validateLoginCode", { codePhone, phone, code });
 

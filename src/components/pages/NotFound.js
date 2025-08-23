@@ -8,10 +8,9 @@ const NotFound = () => {
   const navigate = useNavigate();
   const { providerid } = useParams();
   const provider = useSelector((state) => state.proveedor.selected);
-  
-  
+
   const handleGoHome = () => {
-    const providerSlug = provider?.slugUrl || providerid || '';
+    const providerSlug = provider?.slugUrl || providerid || "";
     navigate(`/${providerSlug}`);
   };
 
@@ -19,7 +18,6 @@ const NotFound = () => {
     <Main header={<Header />}>
       <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 flex items-center justify-center px-4">
         <div className="max-w-md w-full text-center">
-
           {/* Número 404 */}
           <div className="mb-6">
             <h1 className="text-8xl font-bold text-orange-500 mb-2">404</h1>
@@ -28,12 +26,10 @@ const NotFound = () => {
 
           {/* Mensaje principal */}
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-3">
-              ¡Oops! Página no encontrada
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-3">¡Oops! Página no encontrada</h2>
             <p className="text-gray-600 leading-relaxed">
-              La página que buscas no existe o ha sido movida. 
-              No te preocupes, te ayudamos a encontrar lo que necesitas.
+              La página que buscas no existe o ha sido movida. No te preocupes, te ayudamos a encontrar lo que
+              necesitas.
             </p>
           </div>
 
@@ -43,12 +39,7 @@ const NotFound = () => {
               onClick={handleGoHome}
               className="inline-flex items-center px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-2xl shadow-lg transform transition-all duration-200 hover:scale-105 hover:shadow-xl"
             >
-              <svg
-                className="w-5 h-5 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"

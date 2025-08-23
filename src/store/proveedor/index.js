@@ -1,3 +1,3 @@
-export * from './proveedorSlice';
-export * from './thunks';
-export * from './helpers';
+export * from "./proveedorSlice";
+export * from "./thunks";
+export * from "./helpers";

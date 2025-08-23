@@ -1,28 +1,28 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 export const proveedorSlice = createSlice({
-  name: 'proveedor',
+  name: "proveedor",
   initialState: {
     loading: false,
     error: {
-      message:null,
-      code:null
+      message: null,
+      code: null,
     },
-    item:[],
-    selected: null // Cambiamos de un objeto hardcodeado a null
+    item: [],
+    selected: null, // Cambiamos de un objeto hardcodeado a null
   },
   reducers: {
-    setGetProv:(state) => {
+    setGetProv: (state) => {
       state.loading = false;
     },
-    provider_getall_request:(state) => {
+    provider_getall_request: (state) => {
       state.loading = true;
-      state.error= {
-        message:null,
-        code:null,
-      }
+      state.error = {
+        message: null,
+        code: null,
+      };
     },
-    provider_getall_success:(state, {payload}) => {
+    provider_getall_success: (state, { payload }) => {
       state.item = payload;
       state.loading = false;
     },
@@ -30,38 +30,37 @@ export const proveedorSlice = createSlice({
       state.loading = false;
 
       // El payload puede ser un string o un objeto {message, code}
-      if (typeof payload === 'string') {
+      if (typeof payload === "string") {
         state.error = { message: payload, code: null };
       } else {
         state.error = {
-          message: payload?.message ?? 'Error desconocido',
+          message: payload?.message ?? "Error desconocido",
           code: payload?.code ?? null,
         };
       }
     },
-    provider_getone_request:(state) => {
-      state.loading=true;
+    provider_getone_request: (state) => {
+      state.loading = true;
       state.error = {
-         message:null,
-        code:null,
-      }
+        message: null,
+        code: null,
+      };
     },
-    provider_getone_success:(state, {payload}) => {
+    provider_getone_success: (state, { payload }) => {
       state.loading = false;
       state.selected = payload.response.data;
     },
-    provider_getone_failure:(state, {payload}) => {
+    provider_getone_failure: (state, { payload }) => {
       state.loading = false;
       state.error = {
-        message:payload.error.message,
-        code:payload.error.code,
-      }
+        message: payload.error.message,
+        code: payload.error.code,
+      };
     },
-    provider_set:(state,{payload}) => {  
-      state.selected = payload
-    }
-
-  }
+    provider_set: (state, { payload }) => {
+      state.selected = payload;
+    },
+  },
 });
 
 // Action creators are generated for each case reducer function
@@ -73,5 +72,5 @@ export const {
   provider_getone_failure,
   provider_getone_request,
   provider_getone_success,
-  provider_set
+  provider_set,
 } = proveedorSlice.actions;

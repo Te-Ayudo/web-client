@@ -1,9 +1,6 @@
-
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setActiveModalAddress,
-} from "../../store";
+import { setActiveModalAddress } from "../../store";
 import Button from "../atoms/Button";
 import "react-datepicker/dist/react-datepicker.css";
 import { useCreateBookingScreen, useFormData } from "./../../hooks";
@@ -20,10 +17,10 @@ export const Appointment = () => {
   const booking = useSelector((state) => state.booking.selected);
   const dispatch = useDispatch();
   const [isBranch, setIsBranch] = useState(false);
-  
+
   // Hook del tour
-  const { startAppointmentTour, checkAndStartTour } = useTour();
-  
+  const { startAppointmentTour, checkAndStartTour, stopTour } = useTour();
+
   // Hook para manejar datos temporales del formulario
   const {
     formData,
@@ -49,16 +46,16 @@ export const Appointment = () => {
   const finalPrice = useMemo(() => {
     const originalPrice = booking?.paymentInfo?.totalPrice || 0;
     let discount = 0;
-    
+
     if (booking.coupon) {
-      if (booking.coupon.discountType === 'Porcentaje') {
-        discount = (originalPrice * booking.coupon.discount / 100);
+      if (booking.coupon.discountType === "Porcentaje") {
+        discount = (originalPrice * booking.coupon.discount) / 100;
       } else {
         // Descuento fijo
         discount = booking.coupon.discount;
       }
     }
-    
+
     return Math.max(0, originalPrice - discount);
   }, [booking?.paymentInfo?.totalPrice, booking.coupon]);
 
@@ -87,16 +84,21 @@ export const Appointment = () => {
   const handleTimeSelect = (time) => {
     setSelectedTime(time);
     if (time) {
+      // Disparar evento personalizado para el tour inmediatamente
+      const event = new CustomEvent("appointmentFieldCompleted", {
+        detail: { field: "time", value: time },
+      });
+      window.dispatchEvent(event);
     }
   };
 
   const getBlockedDates = (unavailablePeriods = []) => {
-    let blockedDates = [];
+    const blockedDates = [];
     unavailablePeriods.forEach(({ startDate, endDate }) => {
-      let start = moment(startDate);
-      let end = moment(endDate);
-      let startDay = start.clone().startOf("day");
-      let endDay = end.clone().startOf("day");
+      const start = moment(startDate);
+      const end = moment(endDate);
+      const startDay = start.clone().startOf("day");
+      const endDay = end.clone().startOf("day");
       while (startDay.isSameOrBefore(endDay)) {
         if (startDay.isSame(start, "day")) {
           if (start.hours() <= 8) blockedDates.push(startDay.clone());
@@ -119,9 +121,7 @@ export const Appointment = () => {
 
   const employeeAvailableByBranch = (employees) => {
     return employees.filter((employee) =>
-      booking.isInBranch && booking.branch?._id === employee.branch
-        ? employee
-        : false
+      booking.isInBranch && booking.branch?._id === employee.branch ? employee : false
     );
   };
 
@@ -134,11 +134,11 @@ export const Appointment = () => {
       first_name = user.displayName;
     }
     const phone = user.phone;
-    
+
     // Solo actualizar si no hay datos previos
     if (!formData.name) {
-      updateFormData('name', first_name);
-      updateFormData('telefono', phone);
+      updateFormData("name", first_name);
+      updateFormData("telefono", phone);
     }
   }, []);
 
@@ -156,6 +156,14 @@ export const Appointment = () => {
 
   // Los datos del formulario no se persisten en Redux, solo se mantienen en estado local
 
+  // Función personalizada para manejar el envío del formulario
+  const handleSubmit = (e) => {
+    // Cerrar el tour antes de enviar el formulario
+    stopTour();
+    // Ejecutar la función original de envío
+    onSubmit(e);
+  };
+
   // Validación de campos obligatorios
   const validateForm = () => {
     const errors = {};
@@ -163,12 +171,12 @@ export const Appointment = () => {
     if (!formData.metodopago) errors.metodopago = "Selecciona un método de pago";
     if (!selectedDate) errors.date = "Selecciona una fecha";
     if (!selectedTime) errors.time = "Selecciona una hora";
-    
+
     // Validar dirección solo si es servicio a domicilio
     if (!booking.isInBranch && !selectedAddress) {
       errors.address = "Selecciona una dirección";
     }
-    
+
     return errors;
   };
 
@@ -180,15 +188,13 @@ export const Appointment = () => {
 
   const onInputChanged = ({ target }) => {
     updateFormData(target.name, target.value);
-    
-    if (target.name === "empleado") {
-      const a = !!target.value ? JSON.parse(target.value) : "{}";
-      selectEmployee(a);
-      setSelectedTime(null);
-    }
-    if (target.name === "direccion") {
-      const a = !!target.value ? JSON.parse(target.value) : null;
-      selectAddress(a);
+
+    // Para el campo de nombre
+    if (target.name === "name" && target.value.trim().length > 2) {
+      const event = new CustomEvent("appointmentFieldCompleted", {
+        detail: { field: "name", value: target.value },
+      });
+      window.dispatchEvent(event);
     }
   };
 
@@ -196,6 +202,14 @@ export const Appointment = () => {
     setSelectedDate(event);
     // Limpiar hora seleccionada cuando cambie la fecha
     setSelectedTime(null);
+
+    // Disparar evento personalizado para el tour inmediatamente
+    if (event) {
+      const customEvent = new CustomEvent("appointmentFieldCompleted", {
+        detail: { field: "date", value: event },
+      });
+      window.dispatchEvent(customEvent);
+    }
   };
 
   const onAddress = (e) => {
@@ -206,7 +220,7 @@ export const Appointment = () => {
   // Función para abrir el calendario desde el mensaje de "escoger otra"
   const openCalendar = () => {
     // Simular click en el DateSelect para abrirlo
-    const dateSelectElement = document.querySelector('[data-date-select]');
+    const dateSelectElement = document.querySelector("[data-date-select]");
     if (dateSelectElement) {
       dateSelectElement.click();
     }
@@ -227,7 +241,7 @@ export const Appointment = () => {
     // Solo iniciar el tour cuando los datos estén listos (siguiendo el patrón de otros componentes)
     if (!loading && booking.serviceCart && booking.serviceCart.length > 0 && paymentMethods.length > 0) {
       setTimeout(() => {
-        checkAndStartTour('formulario');
+        checkAndStartTour("formulario");
       }, 100);
     }
   }, [loading, booking.serviceCart, paymentMethods.length, checkAndStartTour]);
@@ -240,33 +254,33 @@ export const Appointment = () => {
   const employeeOptions = (isBranch ? employeeAvailableByBranch(employee) : employee).map((emp) => ({
     value: JSON.stringify(emp),
     label: emp.fullName,
-    picture: emp.picture
+    picture: emp.picture,
   }));
 
   const paymentMethodOptions = paymentMethods.map((method) => ({
     value: method.value,
-    label: method.label
+    label: method.label,
   }));
 
   const addressOptions = addresses.map((address) => ({
     value: JSON.stringify(address),
-    label: address.direction
+    label: address.direction,
   }));
 
   return (
     <>
       {/* Botón flotante para el tour */}
-      <TourFloatingButton 
+      <TourFloatingButton
         onClick={() => {
           startAppointmentTour();
         }}
       />
-      
+
       <div className="w-full">
         <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-10 mx-auto">
           <div className="mb-3 sm:mb-6 flex items-center justify-between">
             <h2 className="text-primary font-[600] text-xl sm:text-2xl">Programar el Servicio</h2>
-            
+
             {/* Botón de información de servicios */}
             {booking.serviceCart && booking.serviceCart.length > 0 && (
               <div className="relative">
@@ -278,13 +292,18 @@ export const Appointment = () => {
                 >
                   <span className="">Servicios</span>
                   <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                 </button>
-                
+
                 {/* Tooltip de información */}
                 {showServicesInfo && (
-                  <ServicesInfoTooltip 
+                  <ServicesInfoTooltip
                     services={booking.serviceCart}
                     totalPrice={booking.paymentInfo?.totalPrice || 0}
                   />
@@ -292,7 +311,7 @@ export const Appointment = () => {
               </div>
             )}
           </div>
-          <form className="text-center" method="POST" onSubmit={onSubmit}>
+          <form className="text-center" method="POST" onSubmit={handleSubmit}>
             {/* Nombre y Apellido */}
             <div className="col-span-full mb-4 text-left" data-tour="appointment-name">
               <div className="relative">
@@ -321,13 +340,19 @@ export const Appointment = () => {
               <SelectDrawer
                 value={formData.empleado}
                 onChange={(value) => {
-                  updateFormData('empleado', value);
+                  updateFormData("empleado", value);
                   if (value) {
                     const emp = JSON.parse(value);
                     selectEmployee(emp);
                     // Limpiar fecha y hora cuando cambia el empleado
                     setSelectedDate(null);
                     setSelectedTime(null);
+
+                    // Disparar evento personalizado para el tour inmediatamente
+                    const event = new CustomEvent("appointmentFieldCompleted", {
+                      detail: { field: "employee", value },
+                    });
+                    window.dispatchEvent(event);
                   }
                 }}
                 options={employeeOptions}
@@ -373,13 +398,23 @@ export const Appointment = () => {
               <SelectDrawer
                 value={formData.metodopago}
                 onChange={(value) => {
-                  updateFormData('metodopago', value);
+                  updateFormData("metodopago", value);
+
+                  // Disparar evento personalizado para el tour inmediatamente
+                  if (value) {
+                    const event = new CustomEvent("appointmentFieldCompleted", {
+                      detail: { field: "payment", value },
+                    });
+                    window.dispatchEvent(event);
+                  }
                 }}
                 options={paymentMethodOptions}
                 placeholder="Método de pago *"
                 title="Método de Pago *"
               />
-              {formErrors.metodopago && <span className="text-red-500 text-xs ml-2 mt-1 block">{formErrors.metodopago}</span>}
+              {formErrors.metodopago && (
+                <span className="text-red-500 text-xs ml-2 mt-1 block">{formErrors.metodopago}</span>
+              )}
             </div>
 
             {/* Dirección (si aplica) */}
@@ -390,10 +425,16 @@ export const Appointment = () => {
                     <SelectDrawer
                       value={formData.direccion}
                       onChange={(value) => {
-                        updateFormData('direccion', value);
+                        updateFormData("direccion", value);
                         if (value) {
                           const address = JSON.parse(value);
                           selectAddress(address);
+
+                          // Disparar evento personalizado para el tour inmediatamente
+                          const event = new CustomEvent("appointmentFieldCompleted", {
+                            detail: { field: "address", value },
+                          });
+                          window.dispatchEvent(event);
                         }
                       }}
                       options={addressOptions}
@@ -401,7 +442,11 @@ export const Appointment = () => {
                       title="Seleccionar Dirección"
                     />
                   </div>
-                  <Button href="#" onClick={onAddress} className="sm:h-[48px] !text-[14px] w-full sm:w-auto whitespace-nowrap">
+                  <Button
+                    href="#"
+                    onClick={onAddress}
+                    className="sm:h-[48px] !text-[14px] w-full sm:w-auto whitespace-nowrap"
+                  >
                     Añadir nueva dirección
                   </Button>
                 </div>
@@ -419,68 +464,73 @@ export const Appointment = () => {
                       setShowDiscount(true);
                     }}
                     className="text-primary underline underline-offset-2 hover:text-orange-500 transition-colors text-sm font-medium"
-                    style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+                    style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
                   >
                     ¿Tienes un cupón?
                   </button>
                 </div>
               ) : (
                 <div className="">
-                                      <div className="flex flex-col sm:flex-row gap-2 items-center">
-                      <div className="relative flex-1 w-full">
-                        <input
-                          name="descuento"
-                          type="text"
-                          value={formData.descuento}
-                          onChange={onInputChanged}
-                          onFocus={() => setFocusDescuento(true)}
-                          onBlur={() => setFocusDescuento(false)}
-                          placeholder="Código de descuento"
-                          className="peer w-full rounded-2xl border border-primary px-4 py-3 text-secondary placeholder-gray-400 focus:outline-none focus:border-2 focus:border-primary"
-                          autoComplete="off"
-                          disabled={!!booking.coupon}
-                        />
-                        {/* Label flotante que solo aparece cuando hay valor */}
-                        {formData.descuento && (
-                          <label className="absolute left-4 bg-white px-1 text-xs text-primary -top-2 pointer-events-none">
-                            Código de descuento
-                          </label>
-                        )}
-                      </div>
-                      <Button 
-                        disabled={!isCheckingCouponBtn} 
-                        onClick={booking.coupon ? onRemoveCoupon : onVerifyCoupon} 
-                        className="sm:h-[48px] !text-[14px] w-full sm:w-auto whitespace-nowrap"
-                      >
-                        {booking.coupon ? 'Quitar cupón' : 'Aplicar cupón'}
-                      </Button>
+                  <div className="flex flex-col sm:flex-row gap-2 items-center">
+                    <div className="relative flex-1 w-full">
+                      <input
+                        name="descuento"
+                        type="text"
+                        value={formData.descuento}
+                        onChange={onInputChanged}
+                        onFocus={() => setFocusDescuento(true)}
+                        onBlur={() => setFocusDescuento(false)}
+                        placeholder="Código de descuento"
+                        className="peer w-full rounded-2xl border border-primary px-4 py-3 text-secondary placeholder-gray-400 focus:outline-none focus:border-2 focus:border-primary"
+                        autoComplete="off"
+                        disabled={!!booking.coupon}
+                      />
+                      {/* Label flotante que solo aparece cuando hay valor */}
+                      {formData.descuento && (
+                        <label className="absolute left-4 bg-white px-1 text-xs text-primary -top-2 pointer-events-none">
+                          Código de descuento
+                        </label>
+                      )}
                     </div>
-                    
-                    {/* Mostrar información del cupón aplicado */}
-                    {booking.coupon && (
-                      <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span className="text-sm font-medium text-green-800">
-                              Cupón aplicado: {booking.coupon.code}
-                            </span>
+                    <Button
+                      disabled={!isCheckingCouponBtn}
+                      onClick={booking.coupon ? onRemoveCoupon : onVerifyCoupon}
+                      className="sm:h-[48px] !text-[14px] w-full sm:w-auto whitespace-nowrap"
+                    >
+                      {booking.coupon ? "Quitar cupón" : "Aplicar cupón"}
+                    </Button>
+                  </div>
+
+                  {/* Mostrar información del cupón aplicado */}
+                  {booking.coupon && (
+                    <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                          <span className="text-sm font-medium text-green-800">
+                            Cupón aplicado: {booking.coupon.code}
+                          </span>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm font-bold text-green-600">
+                            -Bs
+                            {(booking.coupon.discountType === "Porcentaje"
+                              ? (booking?.paymentInfo?.totalPrice * booking.coupon.discount) / 100
+                              : booking.coupon.discount
+                            ).toFixed(2)}
                           </div>
-                          <div className="text-right">
-                            <div className="text-sm font-bold text-green-600">
-                              -Bs{(booking.coupon.discountType === 'Porcentaje' 
-                                ? (booking?.paymentInfo?.totalPrice * booking.coupon.discount / 100)
-                                : booking.coupon.discount).toFixed(2)}
-                            </div>
-                            <div className="text-xs text-gray-600">
-                              Precio final: Bs{finalPrice.toFixed(2)}
-                            </div>
-                          </div>
+                          <div className="text-xs text-gray-600">Precio final: Bs{finalPrice.toFixed(2)}</div>
                         </div>
                       </div>
-                    )}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

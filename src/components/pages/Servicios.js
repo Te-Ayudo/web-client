@@ -1,15 +1,15 @@
-import {  useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Main from "../templates/Main";
 import Header from "../organisms/Header";
 import List from "../molecules/List";
 import Item from "../atoms/Item";
 import { ServModal } from "../ServModal";
 
-import { startListProveedores } from '../../store';
+import { startListProveedores } from "../../store";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import CartSidebar from "../organisms/CartSidebar";
-import { getServicesFilteredByMethod } from '../../wrappers/api';
+import { getServicesFilteredByMethod } from "../../wrappers/api";
 import { BOOKING_SET_SERVICE_TYPE } from "../../store/booking";
 import TourFloatingButton from "../TourFloatingButton";
 import useTour from "../../hooks/useTour";
@@ -111,7 +111,6 @@ const Servicios = (props) => {
       cleanupCurrentInstance();
     };
   }, [cleanupCurrentInstance]);
-  
 
   // Efecto único para cargar proveedor y servicios
   useEffect(() => {
@@ -119,16 +118,16 @@ const Servicios = (props) => {
       try {
         setLoading(true);
         setError(null);
-        
+
         // Configurar el tipo de servicio como "A domicilio"
-        dispatch(BOOKING_SET_SERVICE_TYPE('home'));
-        
+        dispatch(BOOKING_SET_SERVICE_TYPE("home"));
+
         // Cargar proveedor si no está cargado o es diferente
         if (!proveedor || proveedor.slugUrl !== params.providerid) {
           await dispatch(startListProveedores(params.providerid));
           return; // Salir aquí para que el efecto se ejecute de nuevo cuando el proveedor cambie
         }
-        
+
         // Cargar servicios solo si el proveedor es válido
         if (proveedor && proveedor._id && proveedor._id !== "63aca8f96eeafc6f83a943f9") {
           const servicesResponse = await getServicesFilteredByMethod(proveedor._id, "A domicilio");
@@ -151,24 +150,24 @@ const Servicios = (props) => {
   useEffect(() => {
     if (!loading && services.length > 0 && proveedor) {
       setTimeout(() => {
-        checkAndStartTour('servicios', services);
+        checkAndStartTour("servicios", services);
       }, 100);
     }
   }, [loading, services.length, proveedor, checkAndStartTour, services]);
 
-  const { isOpenModal, active } = useSelector( state => state.servicios );
+  const { isOpenModal, active } = useSelector((state) => state.servicios);
   const [cartOpen, setCartOpen] = useState(false);
 
-  const openCart  = () => setCartOpen(true);
+  const openCart = () => setCartOpen(true);
   const closeCart = () => setCartOpen(false);
-  
+
   return (
     <Main
-      header={<Header back={true} services={services}/>}
+      header={<Header back={true} services={services} />}
       // footer={<Footer />}
     >
-      <ServModal isOpen={ isOpenModal } {...active} openCart={openCart}/>
-    
+      <ServModal isOpen={isOpenModal} {...active} openCart={openCart} />
+
       <List>
         {loading ? (
           <>
@@ -181,12 +180,17 @@ const Servicios = (props) => {
           <div className="text-center py-8">
             <div className="mb-4">
               <svg className="mx-auto h-12 w-12 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                />
               </svg>
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">Error al cargar servicios</h3>
             <p className="text-gray-500 mb-4">{error}</p>
-            <button 
+            <button
               onClick={() => window.location.reload()}
               className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md font-semibold"
             >
@@ -206,12 +210,19 @@ const Servicios = (props) => {
           <div className="text-center py-8">
             <div className="mb-4">
               <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.47-.881-6.08-2.33" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.47-.881-6.08-2.33"
+                />
               </svg>
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">No hay servicios disponibles</h3>
-            <p className="text-gray-500 mb-4">Este proveedor no tiene servicios a domicilio disponibles en este momento.</p>
-            <button 
+            <p className="text-gray-500 mb-4">
+              Este proveedor no tiene servicios a domicilio disponibles en este momento.
+            </p>
+            <button
               onClick={() => navigate(`/${params.providerid}/`)}
               className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md font-semibold"
             >
@@ -225,24 +236,24 @@ const Servicios = (props) => {
               <p className="text-sm text-gray-600">Elija el servicio de su preferencia para continuar con su reserva</p>
             </div>
             <Item
-              key= {proveedor._id}
-              id= {proveedor._id}
-              empresa= {proveedor.first_name}
-              puntaje= {proveedor.avgRating}
-              image= {proveedor.picture}
-              categoria = {null}
-              servicios= {services}
+              key={proveedor._id}
+              id={proveedor._id}
+              empresa={proveedor.first_name}
+              puntaje={proveedor.avgRating}
+              image={proveedor.picture}
+              categoria={null}
+              servicios={services}
               recomendado={proveedor.recommendedServices}
             />
           </>
         )}
       </List>
       <CartSidebar visible={cartOpen} onClose={closeCart} />
-      
+
       {/* Botón flotante del tour - solo cuando el usuario tenga servicios disponibles */}
       {!loading && services.length > 0 && <TourFloatingButton onClick={() => startServiciosTour(services)} />}
     </Main>
-  )
-}
+  );
+};
 
-export default Servicios
+export default Servicios;

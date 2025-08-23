@@ -1,4 +1,3 @@
-
 export default async function _fetch(url, config) {
   try {
     const token = await localStorage.getItem("authToken");

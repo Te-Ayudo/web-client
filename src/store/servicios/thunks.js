@@ -1,22 +1,19 @@
-import { servicesApi } from "./helpers"
+import { servicesApi } from "./helpers";
 import { setServices } from "./serviciosSlice";
 import Swal from "sweetalert2";
 import { getServicesByIds } from "../../wrappers/api";
 
-export const startListServicios = (idProveedor=null) => {
+export const startListServicios = (idProveedor = null) => {
   return async (dispatch) => {
-
-    if (!!idProveedor){
-      const {_id}=idProveedor;
+    if (!!idProveedor) {
+      const { _id } = idProveedor;
       const services = await servicesApi(_id);
       dispatch(setServices(services.data));
     }
-
   };
 };
 export const startListServiciosbyProvider = (idProveedor) => {
   return async (dispatch) => {
-
     const idProveedora = process.env.REACT_APP_ID_PROVIDER_EXAMPLE;
     //if (!idProveedor) throw new Error("El ID del proveedor no existe");
     const services = await servicesApi(idProveedora);
@@ -24,7 +21,7 @@ export const startListServiciosbyProvider = (idProveedor) => {
   };
 };
 
-export const startListServiciosByIds = (serviceIds=[]) => {
+export const startListServiciosByIds = (serviceIds = []) => {
   return async (dispatch) => {
     if (serviceIds && serviceIds.length > 0) {
       const services = await getServicesByIds(serviceIds);
@@ -33,11 +30,9 @@ export const startListServiciosByIds = (serviceIds=[]) => {
   };
 };
 
-export const startAddService = ({ _id,imageURL,unitPrice,name,description }) => {
-
-return async(dispatch) =>{    
-
-    const count =0;
+export const startAddService = ({ _id, imageURL, unitPrice, name, description }) => {
+  return async (dispatch) => {
+    const count = 0;
 
     const { value: formValues } = await Swal.fire({
       title: "Cantidad",
@@ -51,22 +46,18 @@ return async(dispatch) =>{
         <input id="swal-input1" class="swal2-input" value="${count}">
 
       `,
-      confirmButtonText: 'Agregar',
+      confirmButtonText: "Agregar",
       focusConfirm: false,
       //didOpen: () => {
       //  const usernameInput = popup.querySelector('#username')
       //  usernameInput.onkeyup = (event) => event.key === 'Enter' && Swal.clickConfirm()
       //},
       preConfirm: () => {
-        return [
-          document.getElementById("swal-input1").value,
-        ];
-      }
+        return [document.getElementById("swal-input1").value];
+      },
     });
     if (formValues) {
       Swal.fire(JSON.stringify(formValues));
     }
-
-
   };
 };

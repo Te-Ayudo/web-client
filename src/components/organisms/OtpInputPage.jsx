@@ -16,36 +16,36 @@ const OtpInputPage = () => {
   const { error } = useSelector((state) => state.auth);
   const [secondsLeft, setSecondsLeft] = useState(180); // 3 min
   const [canResend, setCanResend] = useState(false);
-useEffect(() => {
-  if (formSubmitted && error) {
-    Swal.fire("Código incorrecto", error, "error");
-    // Limpia dígitos y vuelve a enfocar el primero
-    setOtpCode(["", "", "", "", "", ""]);
-    setLoading(false);
-    setFormSubmitted(false);
-    setTimeout(() => document.getElementById("otp-0")?.focus(), 0);
-  }
-}, [error, formSubmitted]);
+  useEffect(() => {
+    if (formSubmitted && error) {
+      Swal.fire("Código incorrecto", error, "error");
+      // Limpia dígitos y vuelve a enfocar el primero
+      setOtpCode(["", "", "", "", "", ""]);
+      setLoading(false);
+      setFormSubmitted(false);
+      setTimeout(() => document.getElementById("otp-0")?.focus(), 0);
+    }
+  }, [error, formSubmitted]);
   const handleInputChange = (index, value) => {
     if (value.length > 1) return;
-  
+
     const newCode = [...otpCode];
     newCode[index] = value;
     setOtpCode(newCode);
-  
+
     // Foco al siguiente input
     if (value && index < 5) {
       document.getElementById(`otp-${index + 1}`).focus();
     }
-  
+
     // Si todos los dígitos están llenos, enviar automáticamente
-    if (newCode.every(d => d !== "") && index === 5) {
+    if (newCode.every((d) => d !== "") && index === 5) {
       const code = newCode.join("");
       setLoading(true);
       setFormSubmitted(true);
-      dispatch(startLoginWithWhatsappOTP({ otpCode: code }, () =>
-        navigate(`/${providerid}/`)
-      )).finally(() => setLoading(false));
+      dispatch(startLoginWithWhatsappOTP({ otpCode: code }, () => navigate(`/${providerid}/`))).finally(() =>
+        setLoading(false)
+      );
     }
   };
   const storedPhone = localStorage.getItem("otpPhone");
@@ -61,10 +61,9 @@ useEffect(() => {
   const resendCode = () => {
     setCanResend(false);
     setSecondsLeft(180);
-    dispatch(startLoginWithWhatsapp({ phone: storedPhone, codePhone: storedCodePhone }, () =>
-        {
-        }
-    )).finally(() => setLoading(false));
+    dispatch(startLoginWithWhatsapp({ phone: storedPhone, codePhone: storedCodePhone }, () => {})).finally(() =>
+      setLoading(false)
+    );
     Swal.fire({
       toast: true,
       position: "bottom-end",
@@ -86,9 +85,9 @@ useEffect(() => {
     const code = otpCode.join("");
     setLoading(true);
     setFormSubmitted(true);
-    dispatch(startLoginWithWhatsappOTP({ otpCode: code }, () =>
-      navigate(`/${providerid}/`)
-    )).finally(() => setLoading(false));
+    dispatch(startLoginWithWhatsappOTP({ otpCode: code }, () => navigate(`/${providerid}/`))).finally(() =>
+      setLoading(false)
+    );
   };
 
   useEffect(() => {
@@ -120,28 +119,23 @@ useEffect(() => {
   }, []);
 
   return (
-    <Main
-      header={<Header/>}
-    >
+    <Main header={<Header />}>
       <Modal>
         <form
-        onSubmit={handleSubmit}
-        className="px-6 pt-10 pb-6 flex flex-col justify-between items-center text-center"
+          onSubmit={handleSubmit}
+          className="px-6 pt-10 pb-6 flex flex-col justify-between items-center text-center"
         >
-        <div>
+          <div>
             <div className="mb-6 sm:mb-10">
-                <h1 className="text-orange-500 font-bold text-3xl">Bienvenido a {providerid}</h1>
+              <h1 className="text-orange-500 font-bold text-3xl">Bienvenido a {providerid}</h1>
             </div>
-            <h2 className="text-xl font-bold text-orange-500 mb-2">
-            Ingresa el código recibido en tu WhatsApp
-            </h2>
+            <h2 className="text-xl font-bold text-orange-500 mb-2">Ingresa el código recibido en tu WhatsApp</h2>
             <p className="text-sm text-gray-600 mb-6">
-              Recibirás un código de 6 dígitos enviado al número {storedPhone}.
-              Esto puede tardar 1 minuto
+              Recibirás un código de 6 dígitos enviado al número {storedPhone}. Esto puede tardar 1 minuto
             </p>
 
             <div className="flex justify-center gap-2 bg-white p-4 rounded-2xl mb-10">
-            {otpCode.map((digit, index) => (
+              {otpCode.map((digit, index) => (
                 <input
                   key={index}
                   id={`otp-${index}`}
@@ -158,14 +152,11 @@ useEffect(() => {
                   value={digit}
                   onChange={(e) => handleInputChange(index, e.target.value)}
                 />
-            ))}
+              ))}
             </div>
             <div className="mt-4">
               {canResend ? (
-                <button
-                  onClick={resendCode}
-                  className="text-primary underline font-semibold"
-                >
+                <button onClick={resendCode} className="text-primary underline font-semibold">
                   Reenviar código
                 </button>
               ) : (
@@ -175,13 +166,13 @@ useEffect(() => {
                 </p>
               )}
             </div>
-        </div>
+          </div>
 
-        {loading && (
-        <div className="mt-4">
-            <div className="animate-spin rounded-full h-6 w-6 border-2 border-orange-500 border-t-transparent mx-auto" />
-        </div>
-        )}
+          {loading && (
+            <div className="mt-4">
+              <div className="animate-spin rounded-full h-6 w-6 border-2 border-orange-500 border-t-transparent mx-auto" />
+            </div>
+          )}
         </form>
       </Modal>
     </Main>

@@ -1,9 +1,6 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  BOOKING_CLEAR_SERVICES,
-  BOOKING_SET_SERVICE_TYPE
-} from '../store';
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { BOOKING_CLEAR_SERVICES, BOOKING_SET_SERVICE_TYPE } from "../store";
 
 export const useBookingPersistence = () => {
   const dispatch = useDispatch();
@@ -16,17 +13,13 @@ export const useBookingPersistence = () => {
     dispatch(BOOKING_SET_SERVICE_TYPE(newServiceType));
   };
 
-  const restoreFormData = () => {
-  };
+  const restoreFormData = () => {};
 
-  const updateFormData = (updates) => {
-  };
+  const updateFormData = (updates) => {};
 
-  const clearAllBookingData = () => {
-  };
+  const clearAllBookingData = () => {};
 
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     const criticalData = {
@@ -37,11 +30,19 @@ export const useBookingPersistence = () => {
       selectedServices: booking.selectedServices,
       totalEstimatedWorkMinutes: booking.totalEstimatedWorkMinutes,
       paymentInfo: {
-        totalPrice: booking.paymentInfo?.totalPrice || 0
-      }
+        totalPrice: booking.paymentInfo?.totalPrice || 0,
+      },
     };
-    localStorage.setItem('bookingBackup', JSON.stringify(criticalData));
-  }, [booking.serviceType, booking.isInBranch, booking.branch, booking.serviceCart, booking.selectedServices, booking.totalEstimatedWorkMinutes, booking.paymentInfo?.totalPrice]);
+    localStorage.setItem("bookingBackup", JSON.stringify(criticalData));
+  }, [
+    booking.serviceType,
+    booking.isInBranch,
+    booking.branch,
+    booking.serviceCart,
+    booking.selectedServices,
+    booking.totalEstimatedWorkMinutes,
+    booking.paymentInfo?.totalPrice,
+  ]);
 
   return {
     clearServicesOnTypeChange,
@@ -51,4 +52,4 @@ export const useBookingPersistence = () => {
     currentServiceType: booking.serviceType,
     isInBranch: booking.isInBranch,
   };
-}; 
+};

@@ -8,7 +8,14 @@ import Swal from "sweetalert2";
 import { employeeApi } from "../store/booking/helpers/employeeApi";
 import moment from "moment";
 
-export const useCreateBookingScreen = (selectedEmployee, selectedDate, selectedTime, formData, selectedAddress, updateFormData) => {
+export const useCreateBookingScreen = (
+  selectedEmployee,
+  selectedDate,
+  selectedTime,
+  formData,
+  selectedAddress,
+  updateFormData
+) => {
   const { providerid } = useParams();
   const navigate = useNavigate();
 
@@ -52,15 +59,15 @@ export const useCreateBookingScreen = (selectedEmployee, selectedDate, selectedT
       if (booking.branch?._id) {
         url += "&branch=" + booking.branch?._id;
       }
-      let response = await _fetch(url, {
+      const response = await _fetch(url, {
         method: "GET",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
       });
-      let responseJSON = await response.json();
-      let availability = {
+      const responseJSON = await response.json();
+      const availability = {
         0: [],
         1: [],
         2: [],
@@ -82,7 +89,7 @@ export const useCreateBookingScreen = (selectedEmployee, selectedDate, selectedT
   };
 
   const getAddresses = async () => {
-    let user = JSON.parse(await localStorage.getItem("user"));
+    const user = JSON.parse(await localStorage.getItem("user"));
     setUser(user);
 
     // Inicializar el nombre del usuario si no está establecido
@@ -117,11 +124,11 @@ export const useCreateBookingScreen = (selectedEmployee, selectedDate, selectedT
       const employee = booking.serviceCart?.map(function (element) {
         return element.service._id;
       });
-      
+
       if (employee && employee.length > 0) {
         localStorage.setItem("providerIdStorage", provider._id);
       }
-      
+
       const savedMetodo = bookingSelected?.isInBranch ? "En sucursal" : "A domicilio";
       const result = await employeeApi(savedMetodo, employee, provider._id);
 
@@ -275,7 +282,12 @@ export const useCreateBookingScreen = (selectedEmployee, selectedDate, selectedT
       );
     }
     setPaymentMethods(_paymentMethods);
-    setMaxAvailableAfterHours(booking.serviceCart.reduce((a, b) => Math.max(a?.service?.availableAfterHours ?? 0, b?.service?.availableAfterHours ?? 24), -Infinity));
+    setMaxAvailableAfterHours(
+      booking.serviceCart.reduce(
+        (a, b) => Math.max(a?.service?.availableAfterHours ?? 0, b?.service?.availableAfterHours ?? 24),
+        -Infinity
+      )
+    );
   }, [booking.serviceCart]);
 
   useEffect(() => {
@@ -364,29 +376,36 @@ export const useCreateBookingScreen = (selectedEmployee, selectedDate, selectedT
   const _hourPicker = async (date) => {
     setLoadingHours(true);
     try {
-      let array = [];
-      let today = moment();
-      let isSameDay = moment(today).isSame(date, "day");
+      const array = [];
+      const today = moment();
+      const isSameDay = moment(today).isSame(date, "day");
 
       // Usar el empleado seleccionado si existe, sino 0
       const id = selectedEmployee?._id ?? 0;
       const providerId = provider?._id || localStorage.getItem("providerIdStorage");
 
-      let response = await _fetch(process.env.REACT_APP_API_URL + "/dateAvailability/" + (id === 0 ? 0 : providerId) + "?idprovider=" + providerId, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          date: moment(date).startOf("day").utc().format(),
-          estimatedTime: booking.totalEstimatedWorkMinutes,
-          isInBranch: bookingSelected.isInBranch,
-          branch: booking.branch?._id,
-          employee: id === 0 ? null : id, // Usar el ID del empleado si existe
-          serviceCart: booking.serviceCart.map((e) => e.service?._id),
-        }),
-      });
+      const response = await _fetch(
+        process.env.REACT_APP_API_URL +
+          "/dateAvailability/" +
+          (id === 0 ? 0 : providerId) +
+          "?idprovider=" +
+          providerId,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            date: moment(date).startOf("day").utc().format(),
+            estimatedTime: booking.totalEstimatedWorkMinutes,
+            isInBranch: bookingSelected.isInBranch,
+            branch: booking.branch?._id,
+            employee: id === 0 ? null : id, // Usar el ID del empleado si existe
+            serviceCart: booking.serviceCart.map((e) => e.service?._id),
+          }),
+        }
+      );
       const responseJSON = await response.json();
 
       responseJSON.data.availability.map((e) => {

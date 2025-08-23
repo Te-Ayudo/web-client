@@ -59,61 +59,57 @@ export const startCreateBooking = (booking, providerId, navigate) => {
 };
 
 export const startVerifyCoupon = (couponData) => {
-  const{code,services} = couponData  
-  return async(dispatch) => {
+  const { code, services } = couponData;
+  return async (dispatch) => {
     dispatch(BOOKING_CREATE_REQUEST(couponData));
-    create({code,services},'coupon/verify').then(
-      (response)=>{
+    create({ code, services }, "coupon/verify").then(
+      (response) => {
         // Si el cupón es válido, actualizar el estado del booking
         if (response.valid) {
           // Guardar la respuesta completa del servidor como couponData
           dispatch(BOOKING_SET_COUPON_DATA(response));
-          
+
           // También guardar la información simplificada para compatibilidad
-          dispatch(BOOKING_SET_COUPON({
-            code: code,
-            coupon: response.coupon,
-            discount: response.coupon.discount,
-            discountType: response.coupon.discountType
-          }));
+          dispatch(
+            BOOKING_SET_COUPON({
+              code: code,
+              coupon: response.coupon,
+              discount: response.coupon.discount,
+              discountType: response.coupon.discountType,
+            })
+          );
         }
         setTimeout(function () {
-          Swal.fire('Cupón Aplicado.',response?.reason,'success')
-        }, 500)
+          Swal.fire("Cupón Aplicado.", response?.reason, "success");
+        }, 500);
       },
-      (error)=>{
+      (error) => {
         setTimeout(function () {
-          Swal.fire('Cupón Inválido.',error?.message,'error')
-        }, 500)
+          Swal.fire("Cupón Inválido.", error?.message, "error");
+        }, 500);
       }
     );
-  }
-}
+  };
+};
 
-export const startCreateAddress = (nombre,coord) => {
-  return async(dispatch) => {
-    let user = JSON.parse(await localStorage.getItem('user'))
-    let idUser = user._id    
-    const myResp = await registerApi(nombre,coord,idUser)
+export const startCreateAddress = (nombre, coord) => {
+  return async (dispatch) => {
+    const user = JSON.parse(await localStorage.getItem("user"));
+    const idUser = user._id;
+    const myResp = await registerApi(nombre, coord, idUser);
 
-    if (myResp['error']) {
-      return setTimeout(
-        function () {
-          dispatch(BOOKING_SET_ERROR(myResp['error']))
-        },
-        150
-      )
+    if (myResp["error"]) {
+      return setTimeout(function () {
+        dispatch(BOOKING_SET_ERROR(myResp["error"]));
+      }, 150);
     } else {
       // Actualizar el localStorage con el usuario actualizado que incluye la nueva dirección
       await localStorage.setItem("user", JSON.stringify(myResp.data.user));
-      
+
       // Disparar acción de éxito para que el hook sepa que debe actualizar las direcciones
-      return setTimeout(
-        function () {
-          dispatch(BOOKING_SET_SUCESS( 'Dirección registrada con éxito.' ));
-        },
-        150
-      )
+      return setTimeout(function () {
+        dispatch(BOOKING_SET_SUCESS("Dirección registrada con éxito."));
+      }, 150);
     }
-  }
-}
+  };
+};

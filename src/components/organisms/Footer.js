@@ -1,45 +1,36 @@
 import { useSelector } from "react-redux";
 import Button from "../atoms/Button";
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from "react-router-dom";
 
-const Footer = ( { titulo="Ver Carrito",enlace="carrito" } ) =>  {
-  const {providerid} = useParams();
+const Footer = ({ titulo = "Ver Carrito", enlace = "carrito" }) => {
+  const { providerid } = useParams();
   const navigate = useNavigate();
 
   const carrito = useSelector((state) => state.booking.selected.serviceCart);
 
-  const desabilitar = (enlace === "carrito" && carrito.length === 0 )
+  const desabilitar = enlace === "carrito" && carrito.length === 0;
 
   const onCarrito = () => {
-    const currentSlug = window.location.pathname.split('/')[1];
+    const currentSlug = window.location.pathname.split("/")[1];
 
-    enlace === 'carrito'
-    ?navigate(`/${providerid}/carrito` )
-    :navigate(`/${providerid}/programar`);
-  }
+    enlace === "carrito" ? navigate(`/${providerid}/carrito`) : navigate(`/${providerid}/programar`);
+  };
   return (
-
-  <footer className="fixed bottom-0 left-0 w-full z-10 shadowFooter py-4 sm:py-8">
-    <div className="container flexCenter mx-auto">
-      {
-        desabilitar
-        ?(
+    <footer className="fixed bottom-0 left-0 w-full z-10 shadowFooter py-4 sm:py-8">
+      <div className="container flexCenter mx-auto">
+        {desabilitar ? (
           <>
-            <Button className="" disabled onClick={ onCarrito } >
-              { titulo }
+            <Button className="" disabled onClick={onCarrito}>
+              {titulo}
             </Button>
           </>
-        )
-        :(
-      <Button className="" onClick={ onCarrito } >
-        { titulo }
-      </Button>
-        )
-      }
-    </div>
-  </footer>
-
-  )
-
-}
-export default Footer
+        ) : (
+          <Button className="" onClick={onCarrito}>
+            {titulo}
+          </Button>
+        )}
+      </div>
+    </footer>
+  );
+};
+export default Footer;

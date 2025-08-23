@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+build/
+dist/
+
+# Public assets
+public/
+
+# Configuration files
+craco.config.js
+tailwind.config.js
+
+# Test coverage
+coverage/
+
+# Package lock files
+package-lock.json
+
+# Environment files
+.env*
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
