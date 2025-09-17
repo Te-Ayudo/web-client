@@ -328,7 +328,7 @@ export const Appointment = () => {
                 {/* Label flotante que solo aparece cuando hay valor */}
                 {formData.name && (
                   <label className="absolute left-4 bg-white px-1 text-xs text-primary -top-2 pointer-events-none">
-                    Nombre y Apellido *
+                    Nombre y Apellido *-
                   </label>
                 )}
               </div>
