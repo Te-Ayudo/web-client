@@ -117,7 +117,7 @@ END:VCALENDAR`;
 
   return (
     <>
-      <div className="bg-white text-primary w-full relative z-50 flex items-center justify-center overflow-y-auto">
+      <div className="bg-white text-primary w-full relative z-50 flex items-center justify-center overflow-y-auto data-cy=[exito-page]">
         <div className="flex flex-col items-center justify-center w-full p-5">
           <p className="text-4xl font-semibold text-center mb-5">¡Tu servicio ha sido procesado con éxito!</p>
           <div className="flex items-center justify-center w-full content-center mb-5">

@@ -49,6 +49,7 @@ export const SucursalesItem = (item) => {
             data-tour="seleccionar-sucursal"
             data-sucursal-name={name}
             data-index={index}
+            data-cy="btn-select-branch"
           >
             Seleccionar sucursal
           </button>
