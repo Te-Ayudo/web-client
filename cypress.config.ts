@@ -1,17 +1,12 @@
 import { defineConfig } from "cypress";
 
 export default defineConfig({
+  projectId: "9j9yzo",
   e2e: {
-    baseUrl: 'http://localhost:35429',
-    specPattern: 'cypress/e2e/**/*.ts',           // Busca archivos .ts
-    supportFile: 'cypress/support/e2e.ts',
-    browser: 'chrome',
-    chromeWebSecurity: false, // Si usas CORS o tokens externos
-    supportFile: 'cypress/support/e2e.ts',
+    baseUrl: process.env.CYPRESS_BASE_URL,
+    supportFile: "cypress/support/e2e.ts",
+    chromeWebSecurity: false,
 
-    setupNodeEvents(on, config) {
-
-    },
+    setupNodeEvents(on, config) {},
   },
-  //projectId: "9j9yzo",
 });
