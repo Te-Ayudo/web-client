@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Registrarse from "./components/pages/Registrarse";
 import RegistrarUbicacion from "./components/pages/RegistrarUbicacion";
 import Home from "./components/pages/Home";
@@ -19,15 +19,8 @@ import LoginHome from "./components/pages/LoginHome";
 import { RutaProtegida } from "./utils/RutaProtegida";
 // import BookingDebugInfo from "./components/atoms/BookingDebugInfo";
 import DynamicHead from "./components/DynamicHead";
-import { useEffect } from "react";
-import { pageview } from "./analytics";
 
 function App() {
-  const location = useLocation();
-  useEffect(() => {
-    pageview(location.pathname + location.search);
-  }, [location]);
-
   return (
     <>
       <DynamicHead />
