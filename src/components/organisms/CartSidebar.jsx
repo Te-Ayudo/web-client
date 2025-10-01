@@ -66,9 +66,9 @@ export default function CartSidebar({ visible, onClose }) {
       <SheetContent
         side="right"
         className="
-                    flex h-full flex-col bg-white pb-6 pt-0 shadow-lg 
+                    flex h-full flex-col bg-white pb-6 pt-0 shadow-lg
                     w-[92vw] max-w-[1000px] sm:w-[90vw] sm:max-w-[500px] lg:w-[500px]
-                    rounded-tl-2xl rounded-bl-2xl overflow-hidden border-l-0  
+                    rounded-tl-2xl rounded-bl-2xl overflow-hidden border-l-0
                 "
       >
         <SheetHeader
@@ -160,7 +160,7 @@ export default function CartSidebar({ visible, onClose }) {
                         "
               data-tour="btn-solicitar"
             >
-              Solicitar servicio
+              Seleccionar mi horario
             </Button>
           </SheetFooter>
         )}
