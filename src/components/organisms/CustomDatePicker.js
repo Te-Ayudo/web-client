@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { Calendar } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogDescription, DialogClose } from "../ui/dialog";
+import { Calendar, X } from "lucide-react";
 import moment from "moment";
 import { es } from "date-fns/locale/es";
 
@@ -10,7 +11,6 @@ export default function CustomDatepicker({
   calendarRef,
   blockedDates,
   availability,
-  dateBusy,
   onDateChange,
   fullDateBusy,
   maxAvailableAfterHours,
@@ -18,6 +18,36 @@ export default function CustomDatepicker({
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [, setCurrentYear] = useState(new Date().getFullYear());
+  const [showBlockedMessage, setShowBlockedMessage] = useState(false);
+  console.log("showBlockedMessage", showBlockedMessage);
+  // Función para verificar si un día está bloqueado
+  const isDateBlocked = (date) => {
+    const _date = moment(date);
+    const cutoff = moment().add(maxAvailableAfterHours, "hours");
+
+    // Si dayMoment está por debajo de cutoff, se bloquea.
+    if (_date.isBefore(cutoff, "day")) {
+      return true;
+    }
+
+    // Chequea si está en fullDateBusy
+    if (fullDateBusy.includes(_date.format("YYYY-MM-DD"))) {
+      return true;
+    }
+
+    // Chequea si está en blockedDates
+    if (blockedDates.some((blockedDate) => _date.isSame(blockedDate, "day"))) {
+      return true;
+    }
+
+    // Chequea si no hay disponibilidad formal ese día
+    const dayIndex = _date.isoWeekday() - 1;
+    if (!availability[dayIndex] || availability[dayIndex].length === 0) {
+      return true;
+    }
+
+    return false;
+  };
 
   const renderHeader = ({
     date,
@@ -136,6 +166,13 @@ export default function CustomDatepicker({
       <DatePicker
         selected={selectedDate}
         onChange={(date) => {
+          // Si la fecha está bloqueada, mostrar mensaje y no seleccionar
+          if (isDateBlocked(date)) {
+            setShowBlockedMessage(true);
+            console.log("Entro a isDateBlocked");
+            return;
+          }
+          console.log("Date selected:", date);
           setSelectedDate(date);
           onDateChange(date);
         }}
@@ -144,35 +181,26 @@ export default function CustomDatepicker({
         renderCustomHeader={renderHeader}
         dateFormat="Pp"
         locale={es}
-        filterDate={(date) => {
-          const _date = moment(date);
-          const cutoff = moment().add(maxAvailableAfterHours, "hours");
-
-          // 2) Si dayMoment está por debajo de cutoff, se bloquea.
-          if (_date.isBefore(cutoff, "day")) {
-            return false;
-          }
-
-          // 1) Chequea si está en fullDateBusy
-          if (fullDateBusy.includes(_date.format("YYYY-MM-DD"))) {
-            return false;
-          }
-
-          // 2) Chequea si está en blockedDates
-          if (blockedDates.some((blockedDate) => _date.isSame(blockedDate, "day"))) {
-            return false;
-          }
-
-          // 3) Chequea si no hay disponibilidad formal ese día
-          const dayIndex = _date.isoWeekday() - 1;
-          if (!availability[dayIndex] || availability[dayIndex].length === 0) {
-            return false;
-          }
-
-          // 4) Si pasó todos los checks, se considera día habilitado
-          return true;
+        dayClassName={(date) => {
+          // Aplicar clase para días bloqueados para que se vean deshabilitados pero sean clickeables
+          return isDateBlocked(date) ? "react-datepicker__day--disabled" : "";
         }}
       />
+
+      {/* Modal para mostrar mensaje cuando el día está bloqueado */}
+      <Dialog open={showBlockedMessage} onOpenChange={setShowBlockedMessage}>
+        <DialogContent className="max-w-sm">
+          <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+            <X className="h-4 w-4" />
+            <span className="sr-only">Cerrar</span>
+          </DialogClose>
+          <DialogHeader>
+            <DialogDescription className="text-center">
+              No hay horarios disponibles en este día, seleccione otro por favor.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

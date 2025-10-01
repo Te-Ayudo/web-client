@@ -40,8 +40,15 @@ export default function SelectDrawer({
   };
 
   return (
-    <div className="relative" {...rest}>
-      <Drawer open={open} onOpenChange={setOpen}>
+
+    <div className="relative">
+      <Drawer
+        open={open}
+        onOpenChange={setOpen}
+        modal={true}
+        preventScrollRestoration={true}
+        disablePreventScroll={false}
+      >
         <DrawerTrigger asChild>
           <button
             type="button"
