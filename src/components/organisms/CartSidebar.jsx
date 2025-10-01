@@ -66,9 +66,9 @@ export default function CartSidebar({ visible, onClose }) {
       <SheetContent
         side="right"
         className="
-                    flex h-full flex-col bg-white pb-6 pt-0 shadow-lg 
+                    flex h-full flex-col bg-white pb-6 pt-0 shadow-lg
                     w-[92vw] max-w-[1000px] sm:w-[90vw] sm:max-w-[500px] lg:w-[500px]
-                    rounded-tl-2xl rounded-bl-2xl overflow-hidden border-l-0  
+                    rounded-tl-2xl rounded-bl-2xl overflow-hidden border-l-0
                 "
       >
         <SheetHeader
@@ -109,7 +109,7 @@ export default function CartSidebar({ visible, onClose }) {
         </SheetHeader>
         <div className="flex-1 overflow-y-auto px-6 py-6">
           {items.length > 0 ? (
-            <div className="space-y-6" data-tour="lista-servicios">
+            <div className="space-y-6" data-tour="lista-servicios" data-cy="cart-items">
               {items.map((orden) => (
                 <CartItem key={orden.service._id} orden={orden} />
               ))}
@@ -159,6 +159,7 @@ export default function CartSidebar({ visible, onClose }) {
                             whitespace-nowrap
                         "
               data-tour="btn-solicitar"
+              data-cy="btn-solicitar-servicio"
             >
               Solicitar servicio
             </Button>

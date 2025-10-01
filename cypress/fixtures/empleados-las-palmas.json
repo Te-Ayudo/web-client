@@ -1,0 +1,46 @@
+{
+  "data": [
+    {
+      "_id": "6723f96cc95d26dc914b0f51",
+      "first_name": "Luis",
+      "last_name": "Janco",
+      "email": "janco7249@gmail.com",
+      "availableServices": ["65e76e85b51f383b1dbb47ae"],
+      "branch": {
+        "_id": "647b4b14c60ba06fe4f6abad",
+        "name": "Sucursal Las Palmas"
+      },
+      "availability": [
+        { "day": "L", "startHour": 8, "endHour": 12 },
+        { "day": "M", "startHour": 14, "endHour": 18 },
+        { "day": "MM", "startHour": 8, "endHour": 12 },
+        { "day": "J", "startHour": 8, "endHour": 18 },
+        { "day": "V", "startHour": 8, "endHour": 19 },
+        { "day": "D", "startHour": 8, "endHour": 22 }
+      ],
+      "busy": [],
+      "permissions": { "Tablero": true }
+    },
+    {
+      "_id": "6749cb2961f9cd0d3d4790ff",
+      "first_name": "Ilse",
+      "last_name": "Romero",
+      "email": "ilse0@gmail.com",
+      "availableServices": ["65e76e85b51f383b1dbb47ae"],
+      "branch": {
+        "_id": "647b4b14c60ba06fe4f6abad",
+        "name": "Sucursal Las Palmas"
+      },
+      "availability": [
+        { "day": "L", "startHour": 8, "endHour": 12 },
+        { "day": "M", "startHour": 14, "endHour": 18 },
+        { "day": "MM", "startHour": 8, "endHour": 12 },
+        { "day": "J", "startHour": 8, "endHour": 18 },
+        { "day": "V", "startHour": 8, "endHour": 19 },
+        { "day": "D", "startHour": 8, "endHour": 22 }
+      ],
+      "busy": [],
+      "permissions": { "Tablero": true }
+    }
+  ]
+}

@@ -13,6 +13,11 @@ export default function SelectDrawer({
   error = null,
   showImages = false,
   noOptionsMessage = null,
+  //props para cypress
+  dataCyContainer = "select-empleado", // 👈 Nombre del contenedor
+  dataCyTrigger = "appointment-employee", // 👈 Nombre del botón que abre
+  dataCyOption = "employee-option", // 👈 Nombre de cada opción
+  ...rest
 }) {
   const [open, setOpen] = useState(false);
   const selectedOption = options.find((option) =>
@@ -35,6 +40,7 @@ export default function SelectDrawer({
   };
 
   return (
+
     <div className="relative">
       <Drawer
         open={open}
@@ -47,6 +53,7 @@ export default function SelectDrawer({
           <button
             type="button"
             disabled={disabled}
+            data-cy={dataCyTrigger}
             className={`peer w-full rounded-2xl border border-primary px-4 py-3 text-secondary text-left bg-white focus:outline-none focus:border-2 focus:border-primary appearance-none flex items-center justify-between ${
               disabled ? "bg-gray-100 cursor-not-allowed" : "cursor-pointer"
             } ${selectedOption ? "text-black" : "text-gray-400"}`}
@@ -93,6 +100,8 @@ export default function SelectDrawer({
                     <button
                       key={index}
                       onClick={() => handleSelect(option)}
+                      role="option"
+                      aria-selected={isSelected}
                       className={`w-full text-left p-4 rounded-xl border transition-all duration-200 hover:shadow-sm ${
                         isSelected
                           ? "border-primary bg-orange-50 shadow-sm"

@@ -243,6 +243,7 @@ export const Service = () => {
                 onClick={onServicioDomicilio}
                 className="sm:h-[80px] lg-text-[26px] sm bordered"
                 data-tour="servicio-domicilio"
+                data-cy="btn-servicio-domicilio"
               >
                 Servicio a domicilio
                 {!actDomicilio && actDomicilio !== undefined && (
@@ -260,6 +261,7 @@ export const Service = () => {
                 onClick={onServicioLocal}
                 className="sm:h-[80px] lg-text-[26px] bordered"
                 data-tour="servicio-local"
+                data-cy="btn-servicio-local"
               >
                 Servicio en el local
                 {(!actLocal || providerBranches.length === 0) &&

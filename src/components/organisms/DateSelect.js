@@ -24,6 +24,7 @@ export default function DateSelect({
     <div className="relative">
       <button
         type="button"
+        data-cy="btn-open-calendar"
         data-date-select
         className={`peer w-full rounded-2xl border border-primary px-4 py-3 text-secondary text-left bg-white focus:outline-none focus:border-2 focus:border-primary ${
           selectedDate ? "text-black" : "text-gray-400"

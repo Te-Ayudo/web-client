@@ -127,6 +127,7 @@ const PhoneInputPage = () => {
                   onChange={(e) => setPhone(e.target.value)}
                   className="flex-1 bg-gray-100 rounded-xl"
                   placeholder="Ej: 76543210"
+                  data-cy="input-phone"
                 />
               </div>
             </div>
@@ -137,6 +138,7 @@ const PhoneInputPage = () => {
             className="w-full max-w-sm py-3 mt-6 sm:mt-10"
             bg="bg-orange-500 hover:bg-orange-600"
             tc="text-white"
+            data-cy="btn-continue"
             disabled={loading || !phone}
           >
             {loading ? (
