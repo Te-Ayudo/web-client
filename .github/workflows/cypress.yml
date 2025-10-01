@@ -9,7 +9,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -19,29 +19,12 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      # 👇 instala librerías necesarias para Chrome/Electron
-      - name: Install system dependencies
-        run: sudo apt-get update && sudo apt-get install -y \
-          libgtk2.0-0 \
-          libgtk-3-0 \
-          libgbm-dev \
-          libnotify-dev \
-          libgconf-2-4 \
-          libnss3 \
-          libxss1 \
-          libasound2 \
-          libxtst6 \
-          xauth \
-          xvfb
-
       - name: Install
         run: npm ci
 
       - name: Run Cypress
         uses: cypress-io/github-action@v6
         with:
-          browser: chrome # 👈 fuerza chrome
-          headed: false # 👈 modo headless
           config: baseUrl=https://testreservas.teayudo.com.bo
           record: true
         env:
