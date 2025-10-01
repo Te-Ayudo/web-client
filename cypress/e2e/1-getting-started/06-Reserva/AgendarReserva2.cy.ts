@@ -194,8 +194,8 @@ describe('Flujo: Agendar reserva', () => {
             const targetDay = result.dayNumber;
             const targetDate = result.date;
 
-            cy.log(`📅 Buscando primer día hábil disponible después de hoy...`);
-            cy.log(`✅ Día encontrado: ${targetDate.toLocaleDateString('es-ES')} (${['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'][targetDate.getDay()]})`);
+            cy.log(`Buscando primer día hábil disponible después de hoy...`);
+            cy.log(`Día encontrado: ${targetDate.toLocaleDateString('es-ES')} (${['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'][targetDate.getDay()]})`);
 
             // Si el día está en otro mes, navegamos hasta que aparezca
             const checkAndNavigate = () => {
@@ -250,7 +250,7 @@ describe('Flujo: Agendar reserva', () => {
             .should('be.visible')
             .invoke('text')
             .then((hourText) => {
-                cy.log(`⏰ Primera hora disponible encontrada: ${hourText}`);
+                cy.log(`Primera hora disponible encontrada: ${hourText}`);
                 cy.get('button.w-full.text-left.p-4.rounded-xl.border')
                     .first()
                     .click();

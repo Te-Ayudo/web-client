@@ -1,12 +1,14 @@
 describe("Test de Registrarse ", () => {
   beforeEach(() => {
     // Aquí puedes poner cualquier configuración que necesites antes de cada prueba
-    cy.visit("/proveedor1/");
+    cy.visit("/");
   });
 
   it("Formulario de registro ", () => {
 
+    //cy.get('[data-cy="login-button"]').should('be.visible').click()
     cy.get('[data-cy="login-button"]').should('be.visible').click()
+    // cy.get(':nth-child(4) > .btn-base').should('be.visible').click()
     cy.visit("/proveedor1/login/telefono");
     cy.get('[data-cy="input-phone"]').type("7777777")
     cy.get('[data-cy="btn-continue"]').click();
