@@ -241,8 +241,9 @@ describe('Flujo: Agendar reserva', () => {
         cy.get('[data-tour="appointment-time"] > :nth-child(1) > .relative > .peer').click();
 
         // Esperar a que carguen las horas
-        cy.get('.space-y-3 > div')
-            .should('have.length.greaterThan', 0);
+        cy.get('.space-y-3 > div', { timeout: 8000 })
+            .should('be.visible')
+            .and('have.length.greaterThan', 0);
 
         // Filtrar y seleccionar la primera hora disponible (no deshabilitada)
         cy.get('button.w-full.text-left.p-4.rounded-xl.border')
