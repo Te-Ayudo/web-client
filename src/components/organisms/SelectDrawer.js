@@ -40,7 +40,6 @@ export default function SelectDrawer({
   };
 
   return (
-
     <div className="relative">
       <Drawer
         open={open}
