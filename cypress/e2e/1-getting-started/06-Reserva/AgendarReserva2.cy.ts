@@ -254,8 +254,8 @@ describe("Flujo: Agendar reserva", () => {
           .should("be.visible")
           .then(($btn) => {
             cy.log(`Hora encontrada: ${$btn.text().trim()}`);
-          })
-          .click({ force: true, multiple: false });
+            cy.wrap($btn).click({ force: true });
+          });
       } else {
         // Fallback: buscar dentro del contenedor de hora
         cy.log("Usando selector fallback dentro de appointment-time");
@@ -268,8 +268,8 @@ describe("Flujo: Agendar reserva", () => {
           .should("be.visible")
           .then(($btn) => {
             cy.log(`Hora encontrada (fallback): ${$btn.text().trim()}`);
-          })
-          .click({ force: true, multiple: false });
+            cy.wrap($btn).click({ force: true });
+          });
       }
     });
 
