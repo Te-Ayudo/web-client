@@ -12,6 +12,7 @@
 // You can read more here:
 // https://on.cypress.io/configuration
 // ***********************************************************
+// probando ahora si los cambios
 
 // Import commands.js using ES2015 syntax:
 import "./commands";
