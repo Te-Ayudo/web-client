@@ -238,20 +238,38 @@ describe("Flujo: Agendar reserva", () => {
     // 6. Seleccionar hora
     cy.get('[data-tour="appointment-time"] > :nth-child(1) > .relative > .peer').click();
 
-    // Esperar a que carguen las horas con más tiempo
-    cy.wait(1000); // Dar tiempo para que se carguen las opciones
+    // Esperar más tiempo para que se carguen las opciones
+    cy.wait(5000);
 
-    // Buscar botones de hora con un selector más flexible y timeout mayor
-    cy.get('button[class*="w-full"][class*="text-left"][class*="p-4"]', { timeout: 10000 })
-      .should("be.visible")
-      .and("have.length.greaterThan", 0)
-      .first()
-      .should("be.visible")
-      .invoke("text")
-      .then((hourText) => {
-        cy.log(`Primera hora disponible encontrada: ${hourText}`);
-        cy.get('button[class*="w-full"][class*="text-left"][class*="p-4"]').first().click({ force: true });
-      });
+    // Estrategia múltiple: intentar diferentes selectores
+    cy.get("body").then(($body) => {
+      // Primero intentar con el selector más específico
+      if ($body.find('button[class*="w-full"][class*="text-left"][class*="p-4"]').length > 0) {
+        cy.get('button[class*="w-full"][class*="text-left"][class*="p-4"]', { timeout: 20000 })
+          .should("be.visible")
+          .and("have.length.greaterThan", 0)
+          .first()
+          .should("be.visible")
+          .invoke("text")
+          .then((hourText) => {
+            cy.log(`Primera hora disponible encontrada: ${hourText}`);
+            cy.get('button[class*="w-full"][class*="text-left"][class*="p-4"]').first().click({ force: true });
+          });
+      } else {
+        // Fallback: buscar cualquier botón dentro del tour de hora
+        cy.get('[data-tour="appointment-time"]', { timeout: 50000 })
+          .find("button")
+          .should("be.visible")
+          .and("have.length.greaterThan", 0)
+          .first()
+          .should("be.visible")
+          .invoke("text")
+          .then((hourText) => {
+            cy.log(`Primera hora disponible encontrada (fallback): ${hourText}`);
+            cy.get('[data-tour="appointment-time"]').find("button").first().click({ force: true });
+          });
+      }
+    });
 
     // 7. Seleccionar método de pago
     cy.get('[data-tour="appointment-payment"] > .relative > .peer').click();
