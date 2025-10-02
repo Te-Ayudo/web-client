@@ -239,35 +239,37 @@ describe("Flujo: Agendar reserva", () => {
     cy.get('[data-tour="appointment-time"] > :nth-child(1) > .relative > .peer').click();
 
     // Esperar más tiempo para que se carguen las opciones
-    cy.wait(5000);
+    cy.wait(3000);
 
-    // Estrategia múltiple: intentar diferentes selectores
+    // Buscar botones de hora - intento 1: selector específico
     cy.get("body").then(($body) => {
-      // Primero intentar con el selector más específico
-      if ($body.find('button[class*="w-full"][class*="text-left"][class*="p-4"]').length > 0) {
-        cy.get('button[class*="w-full"][class*="text-left"][class*="p-4"]', { timeout: 20000 })
-          .should("be.visible")
+      const hasSpecificButtons = $body.find('button[class*="w-full"][class*="text-left"]').length > 0;
+
+      if (hasSpecificButtons) {
+        cy.log("Usando selector específico de botones de hora");
+        cy.get('button[class*="w-full"][class*="text-left"]', { timeout: 30000 })
+          .should("exist")
           .and("have.length.greaterThan", 0)
           .first()
           .should("be.visible")
-          .invoke("text")
-          .then((hourText) => {
-            cy.log(`Primera hora disponible encontrada: ${hourText}`);
-            cy.get('button[class*="w-full"][class*="text-left"][class*="p-4"]').first().click({ force: true });
-          });
+          .then(($btn) => {
+            cy.log(`Hora encontrada: ${$btn.text().trim()}`);
+          })
+          .click({ force: true, multiple: false });
       } else {
-        // Fallback: buscar cualquier botón dentro del tour de hora
-        cy.get('[data-tour="appointment-time"]', { timeout: 50000 })
-          .find("button")
+        // Fallback: buscar dentro del contenedor de hora
+        cy.log("Usando selector fallback dentro de appointment-time");
+        cy.get('[data-tour="appointment-time"]', { timeout: 30000 })
           .should("be.visible")
+          .find("button")
+          .should("exist")
           .and("have.length.greaterThan", 0)
           .first()
           .should("be.visible")
-          .invoke("text")
-          .then((hourText) => {
-            cy.log(`Primera hora disponible encontrada (fallback): ${hourText}`);
-            cy.get('[data-tour="appointment-time"]').find("button").first().click({ force: true });
-          });
+          .then(($btn) => {
+            cy.log(`Hora encontrada (fallback): ${$btn.text().trim()}`);
+          })
+          .click({ force: true, multiple: false });
       }
     });
 
