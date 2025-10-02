@@ -238,40 +238,40 @@ describe("Flujo: Agendar reserva", () => {
     // 6. Seleccionar hora
     cy.get('[data-tour="appointment-time"] > :nth-child(1) > .relative > .peer').click();
 
-    // Esperar más tiempo para que se carguen las opciones
-    cy.wait(3000);
+    // Esperar a que se carguen las opciones de hora
+    cy.wait(4000);
 
-    // Buscar botones de hora - intento 1: selector específico
-    cy.get("body").then(($body) => {
-      const hasSpecificButtons = $body.find('button[class*="w-full"][class*="text-left"]').length > 0;
+    // Intentar múltiples selectores de forma secuencial
+    cy.log("Buscando botones de hora disponibles...");
 
-      if (hasSpecificButtons) {
-        cy.log("Usando selector específico de botones de hora");
-        cy.get('button[class*="w-full"][class*="text-left"]', { timeout: 30000 })
-          .should("exist")
-          .and("have.length.greaterThan", 0)
-          .first()
-          .should("be.visible")
-          .then(($btn) => {
-            cy.log(`Hora encontrada: ${$btn.text().trim()}`);
-            cy.wrap($btn).click({ force: true });
+    // Estrategia simplificada: buscar directamente dentro del contenedor y hacer click
+    cy.get('[data-tour="appointment-time"]', { timeout: 30000 })
+      .should("be.visible")
+      .within(() => {
+        // Buscar cualquier botón dentro del contenedor de hora
+        cy.get("button", { timeout: 30000 })
+          .should("have.length.greaterThan", 0)
+          .then(($buttons) => {
+            cy.log(`Se encontraron ${$buttons.length} botones de hora`);
+
+            // Intentar hacer click en el primer botón visible y habilitado
+            let clicked = false;
+            for (let i = 0; i < $buttons.length && !clicked; i++) {
+              const $btn = $buttons.eq(i);
+              if ($btn.is(":visible") && !$btn.is(":disabled")) {
+                const hourText = $btn.text().trim();
+                cy.log(`Haciendo click en hora: ${hourText}`);
+                cy.wrap($btn).scrollIntoView().click({ force: true });
+                clicked = true;
+                break;
+              }
+            }
+
+            if (!clicked) {
+              throw new Error("No se encontró ningún botón de hora disponible para hacer click");
+            }
           });
-      } else {
-        // Fallback: buscar dentro del contenedor de hora
-        cy.log("Usando selector fallback dentro de appointment-time");
-        cy.get('[data-tour="appointment-time"]', { timeout: 30000 })
-          .should("be.visible")
-          .find("button")
-          .should("exist")
-          .and("have.length.greaterThan", 0)
-          .first()
-          .should("be.visible")
-          .then(($btn) => {
-            cy.log(`Hora encontrada (fallback): ${$btn.text().trim()}`);
-            cy.wrap($btn).click({ force: true });
-          });
-      }
-    });
+      });
 
     // 7. Seleccionar método de pago
     cy.get('[data-tour="appointment-payment"] > .relative > .peer').click();
