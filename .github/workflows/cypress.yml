@@ -4,7 +4,6 @@ on:
   pull_request:
     branches:
       - main
-      - dev
   workflow_dispatch: {}
 
 jobs:
@@ -29,3 +28,4 @@ jobs:
           record: true
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+
