@@ -1,7 +1,7 @@
 describe("Test de Registrarse ", () => {
   beforeEach(() => {
     // Aquí puedes poner cualquier configuración que necesites antes de cada prueba
-    cy.visit("/");
+    cy.visit("/proveedor1/");
   });
 
   it("Formulario de registro ", () => {
