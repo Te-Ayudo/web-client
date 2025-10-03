@@ -337,7 +337,11 @@ export const Appointment = () => {
             </div>
 
             {/* Empleado (opcional) */}
-            <div className="col-span-full mb-4 text-left" data-tour="appointment-employee">
+            <div
+              className="col-span-full mb-4 text-left"
+              data-tour="appointment-employee"
+              data-cy="appointment-employee"
+            >
               <SelectDrawer
                 value={formData.empleado}
                 onChange={(value) => {

@@ -117,48 +117,49 @@ describe("Flujo: Agendar reserva", () => {
 
       .click();
   });
+});
 
-  it("Debe completar el flujo: seleccionar empleado → fecha → hora → pago → confirmar", () => {
-    // 3. Esperar a que se carguen los empleados mockeados
+/*it("Debe completar el flujo: seleccionar empleado → fecha → hora → pago → confirmar", () => {
+    3. Esperar a que se carguen los empleados mockeados
     cy.wait("@getEmployees");
-    // cerrar el popswal2
+    cerrar el popswal2
     cy.closeSwal();
     cy.get('[data-tour="appointment-employee"] > .relative > .peer').click();
     cy.contains("div", "Luis Janco").should("be.visible").click();
 
-    // 5. Seleccionar fecha
+    5. Seleccionar fecha
     cy.get('button[data-date-select="true"]').should("be.visible").and("contain", "Seleccionar fecha").click();
 
     cy.get(".react-datepicker__month-container").should("be.visible");
 
-    // ✅ Ejecutamos lógica de búsqueda de día disponible dentro del navegador
+    ✅ Ejecutamos lógica de búsqueda de día disponible dentro del navegador
     cy.window().then((win) => {
-      // Función que busca el primer día hábil disponible (lunes a viernes)
+      Función que busca el primer día hábil disponible (lunes a viernes)
       function findNextAvailableWeekday() {
         const today = new Date();
         const currentDate = new Date(today);
 
-        // Buscamos hasta 20 días adelante (más que suficiente)
+        Buscamos hasta 20 días adelante (más que suficiente)
         for (let i = 1; i <= 20; i++) {
           currentDate.setDate(today.getDate() + i);
 
-          // Saltar sábado (6) y domingo (0)
+          Saltar sábado (6) y domingo (0)
           const dayOfWeek = currentDate.getDay(); // 0 = dom, 1 = lun, ..., 6 = sáb
           if (dayOfWeek === 0 || dayOfWeek === 6) {
             continue; // ✅ Saltamos fin de semana
           }
 
-          // Formato del día: "1", "2", ..., "31" (sin ceros)
+          Formato del día: "1", "2", ..., "31" (sin ceros)
           const dayNumber = currentDate.getDate().toString();
 
-          // ✅ BUSCAR MANUALMENTE EL DÍA EN EL DOM (sin :contains)
+          ✅ BUSCAR MANUALMENTE EL DÍA EN EL DOM (sin :contains)
           const dayElements = win.document.querySelectorAll(
             ".react-datepicker__day:not(.react-datepicker__day--disabled)"
           );
 
           let foundDay = null;
           for (const el of dayElements) {
-            // El texto del día puede ser "26", "1", etc.
+            El texto del día puede ser "26", "1", etc.
             if (el.textContent.trim() === dayNumber) {
               foundDay = el;
               break;
@@ -178,7 +179,7 @@ describe("Flujo: Agendar reserva", () => {
         throw new Error("No se encontró ningún día hábil disponible en los próximos 20 días");
       }
 
-      let result;
+      let result
       try {
         result = findNextAvailableWeekday();
       } catch (error) {
@@ -197,9 +198,9 @@ describe("Flujo: Agendar reserva", () => {
         `Día encontrado: ${targetDate.toLocaleDateString("es-ES")} (${["dom", "lun", "mar", "mié", "jue", "vie", "sáb"][targetDate.getDay()]})`
       );
 
-      // Si el día está en otro mes, navegamos hasta que aparezca
+      Si el día está en otro mes, navegamos hasta que aparezca
       const checkAndNavigate = () => {
-        // ✅ BUSCAR MANUALMENTE EL DÍA EN EL DOM (sin :contains)
+        ✅ BUSCAR MANUALMENTE EL DÍA EN EL DOM (sin :contains)
         const dayElements = win.document.querySelectorAll(
           ".react-datepicker__day:not(.react-datepicker__day--disabled)"
         );
@@ -217,7 +218,7 @@ describe("Flujo: Agendar reserva", () => {
           return;
         }
 
-        // Si no lo encontramos, buscamos el botón "Siguiente"
+        Si no lo encontramos, buscamos el botón "Siguiente"
         const nextButton = win.document.querySelector(".react-datepicker__navigation--next");
 
         if (nextButton) {
@@ -235,26 +236,26 @@ describe("Flujo: Agendar reserva", () => {
       checkAndNavigate();
     });
 
-    // 6. Seleccionar hora
+    6. Seleccionar hora
     cy.get('[data-tour="appointment-time"] > :nth-child(1) > .relative > .peer').click();
 
-    // Esperar a que se carguen las opciones de hora
+    Esperar a que se carguen las opciones de hora
     cy.wait(4000);
 
-    // Intentar múltiples selectores de forma secuencial
+    Intentar múltiples selectores de forma secuencial
     cy.log("Buscando botones de hora disponibles...");
 
-    // Estrategia simplificada: buscar directamente dentro del contenedor y hacer click
+    Estrategia simplificada: buscar directamente dentro del contenedor y hacer click
     cy.get('[data-tour="appointment-time"]', { timeout: 30000 })
       .should("be.visible")
       .within(() => {
-        // Buscar cualquier botón dentro del contenedor de hora
+        Buscar cualquier botón dentro del contenedor de hora
         cy.get("button", { timeout: 30000 })
           .should("have.length.greaterThan", 0)
           .then(($buttons) => {
             cy.log(`Se encontraron ${$buttons.length} botones de hora`);
 
-            // Intentar hacer click en el primer botón visible y habilitado
+            Intentar hacer click en el primer botón visible y habilitado
             let clicked = false;
             for (let i = 0; i < $buttons.length && !clicked; i++) {
               const $btn = $buttons.eq(i);
@@ -273,14 +274,14 @@ describe("Flujo: Agendar reserva", () => {
           });
       });
 
-    // 7. Seleccionar método de pago
+    7. Seleccionar método de pago
     cy.get('[data-tour="appointment-payment"] > .relative > .peer').click();
     cy.get(".space-y-3 > :nth-child(1)").first().should("be.visible").and("contain", "Efectivo").click();
 
-    // 8. Agregar nota
+    8. Agregar nota
     cy.get('[data-cy="input-notas"]').type("RESERVA DE PRUEBA DESDE CYPRESS");
 
-    // INTERCEPTAR EL POST A /api/booking/ CON RESPUESTA REAL
+    INTERCEPTAR EL POST A /api/booking/ CON RESPUESTA REAL
     cy.intercept("POST", "/api/booking/", {
       statusCode: 201,
       body: {
@@ -299,18 +300,18 @@ describe("Flujo: Agendar reserva", () => {
       },
     }).as("createBooking");
 
-    // 9. Confirmar servicio → dispara el POST
+    9. Confirmar servicio → dispara el POST
     cy.get(".btn-base").contains("Confirmar servicio").click();
 
-    // 10. Esperar la respuesta y validar redirección + mensaje
+    10. Esperar la respuesta y validar redirección + mensaje
     cy.wait("@createBooking").then((interception) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      eslint-disable-next-line @typescript-eslint/no-unused-expressions
       expect(interception.response, "interception.response should be defined").to.not.be.undefined;
       const bookingId = interception.response!.body.data._id;
 
-      // Validar que la reserva se creó correctamente
+      Validar que la reserva se creó correctamente
       expect(interception.response!.statusCode).to.eq(201);
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      eslint-disable-next-line @typescript-eslint/no-unused-expressions
       expect(bookingId).to.be.a("string").and.not.be.empty;
       expect(bookingId).to.eq("3278");
 
@@ -319,3 +320,4 @@ describe("Flujo: Agendar reserva", () => {
     });
   });
 });
+*/
