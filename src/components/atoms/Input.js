@@ -9,6 +9,7 @@ const Input = ({
   disabled,
   error = false,
   helperText = "",
+  ...rest
 }) => {
   const classes = `flex justify-end flex-row-reverse sm:w-2/3 rounded-2xl border-solid border-2 border-primary mb-3 sm:mb-0
                   ${className || ""}`;
@@ -24,6 +25,7 @@ const Input = ({
         placeholder={label}
         aria-label={label}
         onChange={onChange}
+        {...rest}
       />
       <div
         className={`flex items-center px-4 sm:px-6 py-2 sm:py-3
@@ -46,6 +48,7 @@ const Input = ({
         placeholder={label}
         aria-label={label}
         onChange={onChange}
+        {...rest}
       />
       <span className={`text-red-700 ${error ? "" : "hidden"} `}> {helperText} </span>
     </>

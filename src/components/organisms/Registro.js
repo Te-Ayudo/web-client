@@ -133,6 +133,7 @@ export const Registro = () => {
             onChange={onInputChange}
             error={!!first_nameValid && formSubmitedd}
             helperText={first_nameValid}
+            data-cy="input-first-name"
           />
         </div>
       </div>
@@ -142,6 +143,7 @@ export const Registro = () => {
             type="text"
             label="Apellido(s)"
             name="last_name"
+            data-cy="input-last-name"
             value={last_name}
             onChange={onInputChange}
             error={!!last_nameValid && formSubmitedd}
@@ -194,7 +196,15 @@ export const Registro = () => {
 
       <div className="col-span-full">
         <div className="mb-3 sm:mb-6">
-          <Input id="phone" type="text" label="Teléfono" name="phone" value={phone} onChange={onInputChange} />
+          <Input
+            id="phone"
+            type="text"
+            label="Teléfono"
+            name="phone"
+            value={phone}
+            onChange={onInputChange}
+            data-cy="input-phone"
+          />
         </div>
       </div>
       {otpSent && (
@@ -216,6 +226,7 @@ export const Registro = () => {
             bg="bg-primary w-[250px] sm:w-[270px] mx-auto hover:bg-white "
             tc="text-white hover:text-secondary"
             className="sm:h-[48px] !text-[14px] bordered"
+            data-cy="btn-submit"
           >
             {loading ? (
               <div className="flex justify-center items-center">

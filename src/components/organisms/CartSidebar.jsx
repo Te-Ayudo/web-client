@@ -109,7 +109,7 @@ export default function CartSidebar({ visible, onClose }) {
         </SheetHeader>
         <div className="flex-1 overflow-y-auto px-6 py-6">
           {items.length > 0 ? (
-            <div className="space-y-6" data-tour="lista-servicios">
+            <div className="space-y-6" data-tour="lista-servicios" data-cy="cart-items">
               {items.map((orden) => (
                 <CartItem key={orden.service._id} orden={orden} />
               ))}
@@ -159,6 +159,7 @@ export default function CartSidebar({ visible, onClose }) {
                             whitespace-nowrap
                         "
               data-tour="btn-solicitar"
+              data-cy="btn-solicitar-servicio"
             >
               Seleccionar mi horario
             </Button>

@@ -137,6 +137,7 @@ const OtpInputPage = () => {
             <div className="flex justify-center gap-2 bg-white p-4 rounded-2xl mb-10">
               {otpCode.map((digit, index) => (
                 <input
+                  data-testId={`otp-${index}`}
                   key={index}
                   id={`otp-${index}`}
                   type="tel"

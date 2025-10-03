@@ -191,7 +191,7 @@ export const ServModal = ({
             )}
           </div>
         )}
-        <Button className="w-full" onClick={onCarrito} data-tour="btn-añadir-carrito">
+        <Button className="w-full" onClick={onCarrito} data-tour="btn-añadir-carrito" data-cy="btn-add-cart">
           Añadir al carrito
         </Button>
       </div>

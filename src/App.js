@@ -105,7 +105,7 @@ function App() {
             path=":providerid/gracias/:bookingId"
             element={
               <RutaProtegida>
-                <Thanks />
+                <Thanks data-cy="exito-page" />
               </RutaProtegida>
             }
           />
