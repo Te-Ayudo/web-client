@@ -36,7 +36,7 @@ export const Appointment = () => {
     selectedAddress,
     selectAddress,
   } = useFormData();
-
+  console.log("selectedEmployee", selectedEmployee);
   const isCheckingCouponBtn = useMemo(() => {
     // Habilitar si hay código de cupón en el formulario O si ya hay un cupón aplicado
     return (!!formData.descuento && formData.descuento.trim().length > 0) || !!booking.coupon;
