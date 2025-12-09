@@ -324,6 +324,7 @@ export const Appointment = () => {
                   onBlur={() => setFocusName(false)}
                   placeholder="Nombre y Apellido *"
                   className="peer w-full rounded-2xl border border-primary px-4 py-3 text-secondary placeholder-gray-400 focus:outline-none focus:border-2 focus:border-primary"
+                  data-cy="input-nombre"
                 />
                 {/* Label flotante que solo aparece cuando hay valor */}
                 {formData.name && (
@@ -336,7 +337,11 @@ export const Appointment = () => {
             </div>
 
             {/* Empleado (opcional) */}
-            <div className="col-span-full mb-4 text-left" data-tour="appointment-employee">
+            <div
+              className="col-span-full mb-4 text-left"
+              data-tour="appointment-employee"
+              data-cy="appointment-employee"
+            >
               <SelectDrawer
                 value={formData.empleado}
                 onChange={(value) => {
@@ -361,6 +366,10 @@ export const Appointment = () => {
                 showImages={true}
                 loading={loadingEmployees}
                 noOptionsMessage="No hay empleados disponibles para los servicios seleccionados"
+                //data especificos
+                dataCyContainer="select-empleado"
+                dataCyTrigger="appointment-employee"
+                dataCyOption="employee-option"
               />
             </div>
 
@@ -411,6 +420,7 @@ export const Appointment = () => {
                 options={paymentMethodOptions}
                 placeholder="Método de pago *"
                 title="Método de Pago *"
+                data-cy="select-metodopago"
               />
               {formErrors.metodopago && (
                 <span className="text-red-500 text-xs ml-2 mt-1 block">{formErrors.metodopago}</span>
@@ -440,6 +450,7 @@ export const Appointment = () => {
                       options={addressOptions}
                       placeholder="Dirección"
                       title="Seleccionar Dirección"
+                      data-cy="select-direccion"
                     />
                   </div>
                   <Button
@@ -547,6 +558,7 @@ export const Appointment = () => {
                   placeholder="Notas (opcional)"
                   className="peer w-full rounded-2xl border border-primary px-4 py-3 text-secondary resize-none placeholder-gray-400 focus:outline-none focus:border-2 focus:border-primary"
                   rows={3}
+                  data-cy="input-notas"
                 />
                 {/* Label flotante que solo aparece cuando hay valor */}
                 {formData.nota && (
@@ -575,7 +587,12 @@ export const Appointment = () => {
             {/* Botón de confirmar */}
             <div className="col-span-full" data-tour="appointment-submit">
               <div className="mb-3 sm:mb-6">
-                <Button type="submit" className="sm:h-[48px] !text-[14px]" disabled={!isFormValid() || loading}>
+                <Button
+                  type="submit"
+                  className="sm:h-[48px] !text-[14px]"
+                  data-cy="btn-confirmar-servicio"
+                  disabled={!isFormValid() || loading}
+                >
                   {loading ? "Confirmando..." : "Confirmar servicio"}
                 </Button>
               </div>

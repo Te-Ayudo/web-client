@@ -1,0 +1,33 @@
+{
+  "data": [
+    {
+      "_id": "5f023a2cc06d0e2230e8fe0c",
+      "first_name": "Aaron",
+      "last_name": "Salas",
+      "email": "aaron.salasrodriguez@gmail.com",
+      "availableServices": ["65e76e85b51f383b1dbb47ae"],
+      "availability": [
+        { "day": "L", "startHour": 8, "endHour": 20 },
+        { "day": "M", "startHour": 8, "endHour": 20 }
+      ],
+      "busy": []
+    },
+    {
+      "_id": "5f2d8809bceaa5798cbf861c",
+      "first_name": "Empleado",
+      "last_name": "Te Ayudo",
+      "email": "empleado@teayudo.com",
+      "availableServices": ["65e76e85b51f383b1dbb47ae"],
+      "availability": [
+        { "day": "L", "startHour": 8, "endHour": 20 },
+        { "day": "M", "startHour": 8, "endHour": 20 }
+      ],
+      "busy": []
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "perPage": 25,
+    "total": 2
+  }
+}

@@ -31,6 +31,7 @@ export const Lista = ({ servicio, showallicon = false, quantity = 0, orden = "",
         data-tour="servicio-item"
         data-service-name={name}
         data-index={index}
+        data-cy="btn-servicio"
       >
         <div className="w-2/3 bg-white flex flex-col space-y-2 p-3  inline-flex items-start space-x-2 text-wrap break-all ">
           {showallicon ? (

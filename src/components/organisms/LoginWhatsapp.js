@@ -82,6 +82,7 @@ export const LoginWhatsapp = () => {
               bg="bg-orange-500 hover:bg-orange-600"
               tc="text-white"
               className="w-full rounded-full py-3"
+              data-cy="register-button"
             >
               Registrarte
             </Button>
@@ -93,6 +94,7 @@ export const LoginWhatsapp = () => {
               bg="bg-white hover:bg-orange-100"
               tc="text-orange-600"
               className="w-full rounded-full py-3 border border-orange-500"
+              data-cy="login-button"
             >
               Iniciar sesión
             </Button>

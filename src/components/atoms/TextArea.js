@@ -14,6 +14,7 @@ const TextArea = ({ className, name, type, label, value, onChange, decoration, d
         aria-label={label}
         onChange={onChange}
       />
+
       <div
         className={`flex items-center px-4 sm:px-6 py-2 sm:py-3
           ${disabled ? "bg-gray-200" : ""} `}
