@@ -17,7 +17,7 @@ import OtpInputPage from "./components/organisms/OtpInputPage";
 import OtpRegisterPage from "./components/organisms/OtpRegisterPage";
 import LoginHome from "./components/pages/LoginHome";
 import { RutaProtegida } from "./utils/RutaProtegida";
-import BookingDebugInfo from "./components/atoms/BookingDebugInfo";
+// import BookingDebugInfo from "./components/atoms/BookingDebugInfo";
 import DynamicHead from "./components/DynamicHead";
 
 function App() {
