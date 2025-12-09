@@ -161,7 +161,7 @@ export default function CartSidebar({ visible, onClose }) {
               data-tour="btn-solicitar"
               data-cy="btn-solicitar-servicio"
             >
-              Solicitar servicio
+              Seleccionar mi horario
             </Button>
           </SheetFooter>
         )}
